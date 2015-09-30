@@ -17,8 +17,7 @@ random.seed(0)
 
 '''
  @brief     Function that samples a random location within a 2D bounding box.
- @details   A point is randomly and uniformally sampled in the bounding box 
-            provided in the input.
+ @details   A point is randomly and uniformally sampled in the bounding box             provided in the input.
  @param     x_min the minimum x-coordinate in the bounding box
  @param     x_max the maximum x-coordinate in the bounding box
  @param     y_min the minimum y-coordinate in the bounding box
