@@ -102,9 +102,37 @@ def sample_location(x_min, x_max, y_min, y_max, z_min, z_max):
 #       neutron until its final absorption, noting the distance between the
 #       starting and ending point, appending this value to the crow_distances
 #       list.
-def transport_neutron(sigma_t, simga_s, x_min, x_max, y_min, y_max, z_min, 
+def transport_neutron(sigma_t, sigma_s, x_min, x_max, y_min, y_max, z_min, 
         z_max, crow_distances):
-    raise NotImplementedError
+ 
+    # sample initial location, set neutron as alive
+    x_init, y_init, z_init = sample_location(x_min, x_max, y_min, y_max, z_min,
+            z_max)
+    x, y, z = (x_init, y_init, z_init)
+    alive = True
+
+    while alive:
+        
+        # sample direction
+        theta = sample_polar_angle()
+        phi = sample_azimuthal_angle()
+        
+        # sample distance and move neutron
+        dist = sample_distance(sigma_t)
+        x += dist * sin(theta) * cos(phi)
+        y += dist * sin(theta) * sin(phi)
+        z += dist * cos(theta)
+
+        # sample collision
+        interaction = sample_interaction(sigma_t, sigma_s)
+        
+        # if neutron is absorbed, kill neutron
+        if interaction == 1:
+            alive = False
+
+    # calculate crow distance
+    crow_dist = sqrt((x-x_init)**2 + (y-y_init)**2 + (z-z_init)**2)
+    crow_distances.append(crow_dist)
 
 
 '''
@@ -122,7 +150,7 @@ def generate_neutron_histories(n_histories, sigma_t, sigma_s, x_min, x_max,
         transport_neutron(sigma_t, sigma_s, x_min, x_max, y_min, y_max, z_min,
                 z_max, crow_distances)
 
-    mean_crow_distance = sum(crow_distances) / num_neutrons
+    mean_crow_distance = sum(crow_distances) / n_histories
     print "Mean crow fly distance = ", mean_crow_distance
 
 

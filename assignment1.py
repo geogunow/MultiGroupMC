@@ -39,8 +39,8 @@ def plot_unit_sphere(azimuthal_sampler, polar_sampler, num_points):
     plot_3D_points(xdata, ydata, zdata)
 
 # Script starts here
-plot_unit_sphere(sample_azimuthal_angle, sample_polar_angle, 2000)
-plot_unit_sphere(sample_azimuthal_angle, sample_incorrect_polar_angle, 2000)
+#plot_unit_sphere(sample_azimuthal_angle, sample_polar_angle, 2000)
+#plot_unit_sphere(sample_azimuthal_angle, sample_incorrect_polar_angle, 2000)
 
 # TODO: uncomment to run monte carlo code:
-#generate_neutron_histories(10000, 2, 1, -1, 1, -1, 1, -1, 1)
+generate_neutron_histories(10000, 2, 1, -1, 1, -1, 1, -1, 1)
