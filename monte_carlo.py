@@ -102,8 +102,8 @@ def sample_location(x_min, x_max, y_min, y_max, z_min, z_max):
 #       neutron until its final absorption, noting the distance between the
 #       starting and ending point, appending this value to the crow_distances
 #       list.
-def transport_neutron(sigma_t, simga_s, min_x, max_x, min_y, max_y, min_z, 
-        max_z, crow_distances):
+def transport_neutron(sigma_t, simga_s, x_min, x_max, y_min, y_max, z_min, 
+        z_max, crow_distances):
     raise NotImplementedError
 
 
@@ -114,13 +114,13 @@ def transport_neutron(sigma_t, simga_s, min_x, max_x, min_y, max_y, min_z,
  @param     sigma_t total cross section of the material 
  @param     sigma_s scattering cross section of the material
 '''
-def generate_neutron_histories(n_histories, sigma_t, sigma_s, min_x, max_x,
-        min_y, max_y, min_z, max_z):
+def generate_neutron_histories(n_histories, sigma_t, sigma_s, x_min, x_max,
+        y_min, y_max, z_min, z_max):
     
     crow_distances = list()
     for i in xrange(n_histories):
-        transport_neutron(sigma_t, sigma_s, min_x,  max_x, min_y, max_y, min_z,
-                max_z, crow_distances)
+        transport_neutron(sigma_t, sigma_s, x_min, x_max, y_min, y_max, z_min,
+                z_max, crow_distances)
 
     mean_crow_distance = sum(crow_distances) / num_neutrons
     print "Mean crow fly distance = ", mean_crow_distance
