@@ -89,6 +89,7 @@ def sample_interaction(sigma_t, sigma_s):
  @param     z_max the maximum z-coordinate in the bounding box
  @return    A tuple containing the x, y, and z coordinates of the sampled 
             location
+
 '''
 def sample_location(x_min, x_max, y_min, y_max, z_min, z_max):
     x_pos = x_min + (x_max - x_min) * random.random()
@@ -102,9 +103,31 @@ def sample_location(x_min, x_max, y_min, y_max, z_min, z_max):
 #       neutron until its final absorption, noting the distance between the
 #       starting and ending point, appending this value to the crow_distances
 #       list.
+
+'''
+ @brief     Function that generates a neutron and measures how far it travels before being absorbed.
+ @details   A neutron is created in the bounding box using sample_location(). It moves a distance determined by sample_distance(). It is then either absorbed or scattered as determined by sample_interaction(). When it is absorbed, the total distance traveled is appended to crow_distances.
+ @param	    sigma_t the total cross-section 
+ @param     sigma_s the scattering cross-section
+ @param     x_min the minimum x-coordinate in the bounding box
+ @param     x_max the maximum x-coordinate in the bounding box
+ @param     y_min the minimum y-coordinate in the bounding box
+ @param     y_max the maximum y-coordinate in the bounding box
+ @param     z_min the minimum z-coordinate in the bounding box
+ @param     z_max the maximum z-coordinate in the bounding box
+ @param     crow_distances a list containg the distances traveled by each neutron
+
+'''
 def transport_neutron(sigma_t, sigma_s, x_min, x_max, y_min, y_max, z_min, 
         z_max, crow_distances):
-    raise NotImplementedError
+	starting_point = sample_location(x_min, x_max, y_min, y_max, z_min, z_max)
+	neutron_distance = 0
+	neutron_interaction = 0
+	while neutron_interaction != 1:
+		neutron_distance += sample_distance(sigma_t)
+		neutron_interaction = sample_interaction(float(sigma_t), float(sigma_s))
+	crow_distances.append(neutron_distance) 
+		
 
 
 '''
