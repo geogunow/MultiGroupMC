@@ -89,7 +89,6 @@ def sample_interaction(sigma_t, sigma_s):
  @param     z_max the maximum z-coordinate in the bounding box
  @return    A tuple containing the x, y, and z coordinates of the sampled 
             location
-
 '''
 def sample_location(x_min, x_max, y_min, y_max, z_min, z_max):
     x_pos = x_min + (x_max - x_min) * random.random()

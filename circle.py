@@ -33,12 +33,12 @@ def generate_2D_coordinate(x_min, x_max, y_min, y_max):
     y = y_min + random.random() * (y_max - y_min)
     return (x, y)
 
-
 '''
  @brief	    Function that calcultes pi
  @details   The function randomly places points in a 1x1 box using 
             generate_2D_coordinates. It uses the ratio of points that land in a
-            circle with radius one vs the number of points thrown to calculate pi.
+            circle with radius one vs the number of points thrown to calculate
+            pi.
  @param     num_darts the number of points to be tested
  @return    The calculated value for pi	
 '''
@@ -53,7 +53,6 @@ def calculate_pi(num_darts):
             misses += 1
     my_pi = 4*float(hits)/(float(hits+misses))
     return my_pi
-
 
 # calculate pi
 print "Pi = " + str(calculate_pi(500000))
