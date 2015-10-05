@@ -97,13 +97,6 @@ def sample_location(x_min, x_max, y_min, y_max, z_min, z_max):
     z_pos = z_min + (z_max - z_min) * random.random()
     return (x_pos, y_pos, z_pos)
 
-
-#TODO: implement a function, and its documentation, which generates an initial
-#       neutron position within the bounds of the problem, then follows the
-#       neutron until its final absorption, noting the distance between the
-#       starting and ending point, appending this value to the crow_distances
-#       list.
-
 '''
  @brief     Function that generates a neutron and measures how 
             far it travels before being absorbed.
@@ -127,21 +120,25 @@ def sample_location(x_min, x_max, y_min, y_max, z_min, z_max):
 '''
 def transport_neutron(sigma_t, sigma_s, x_min, x_max, y_min, y_max, z_min, 
     z_max, crow_distances):
-    neutron_starting_point = list(sample_location(x_min, x_max, y_min, y_max, z_min, z_max))
+    neutron_starting_point = list(sample_location(x_min, x_max, y_min, 
+        y_max, z_min, z_max))
     neutron_position = [neutron_starting_point[i] for i in [0,1,2]] 
     neutron_interaction = 0
     while neutron_interaction != 1:
         neutron_distance = sample_distance(sigma_t)
         theta = sample_polar_angle()
         phi = sample_azimuthal_angle()
-        neutron_position[0] += neutron_distance*sin(phi)*cos(theta)
-        neutron_position[1] += neutron_distance*sin(phi)*sin(theta)
-        neutron_position[2] += neutron_distance*cos(phi)
-        neutron_interaction = sample_interaction(float(sigma_t), float(sigma_s))
+        neutron_position[0] += neutron_distance*sin(theta)*cos(phi)
+        neutron_position[1] += neutron_distance*sin(theta)*sin(phi)
+        neutron_position[2] += neutron_distance*cos(theta)
+        neutron_interaction = sample_interaction(float(sigma_t),
+            float(sigma_s))
     neutron_distance_vector = [0, 0, 0]
     for i in [0,1,2]:
-        neutron_distance_vector[i] = neutron_position[i] - neutron_starting_point[i]
-    crow_distance = sqrt(neutron_distance_vector[0]**2+neutron_distance_vector[1]**2+neutron_distance_vector[2]**2)
+        neutron_distance_vector[i] = neutron_position[i] - \
+        neutron_starting_point[i]
+    crow_distance = sqrt(neutron_distance_vector[0]**2 + \
+    neutron_distance_vector[1]**2+neutron_distance_vector[2]**2)
     crow_distances.append(crow_distance) 
 		
 
