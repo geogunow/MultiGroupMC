@@ -40,7 +40,7 @@ def plot_unit_sphere(azimuthal_sampler, polar_sampler, num_points):
 
 # Script starts here
 plot_unit_sphere(sample_azimuthal_angle, sample_polar_angle, 2000)
-plot_unit_sphere(sample_azimuthal_angle, sample_incorrect_polar_angle, 2000)
+# this should use sample_correct_polar_angle
+plot_unit_sphere(sample_azimuthal_angle, sample_incorrect_polar_angle, 2000)  
 
-# TODO: uncomment to run monte carlo code:
-#generate_neutron_histories(10000, 2, 1, -1, 1, -1, 1, -1, 1)
+generate_neutron_histories(10000, 2, 1, -1, 1, -1, 1, -1, 1)

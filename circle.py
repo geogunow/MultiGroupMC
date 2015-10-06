@@ -11,14 +11,15 @@
 
 # Import libraries and set random number seed to 0
 import random
+import math
 random.seed(0)
 
 
 
 '''
  @brief     Function that samples a random location within a 2D bounding box.
- @details   A point is randomly and uniformally sampled in the bounding box 
-            provided in the input.
+ @details   A point is randomly and uniformally sampled in the bounding box
+            provided in the input
  @param     x_min the minimum x-coordinate in the bounding box
  @param     x_max the maximum x-coordinate in the bounding box
  @param     y_min the minimum y-coordinate in the bounding box
@@ -32,7 +33,26 @@ def generate_2D_coordinate(x_min, x_max, y_min, y_max):
     y = y_min + random.random() * (y_max - y_min)
     return (x, y)
 
+'''
+ @brief     Function that calcultes pi
+ @details   The function randomly places points in a 1x1 box using
+            generate_2D_coordinates. It uses the ratio of points that land in a
+            circle with radius one vs the number of points thrown to calculate
+            pi.
+ @param     num_darts the number of points to be tested
+ @return    The calculated value for pi	
+'''
+def calculate_pi(num_darts):
+    hits = 0
+    misses = 0
+    for i in xrange(num_darts):	
+        x, y = generate_2D_coordinate(-1, 1, -1, 1)
+        if math.sqrt(x**2 + y**2) <= 1:
+            hits += 1
+        else: 
+            misses += 1
+    my_pi = 4*float(hits)/(float(hits+misses))
+    return my_pi
 
-# Below is an example of how to generate a random 2D coordinate
-x, y = generate_2D_coordinate(-1, 1, -1, 1)
-
+# calculate pi
+print "Pi = " + str(calculate_pi(500000))
