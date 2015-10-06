@@ -121,7 +121,7 @@ def transport_neutron(sigma_t, sigma_s, x_min, x_max, y_min, y_max, z_min,
     z_max, crow_distances):
     neutron_starting_point = list(sample_location(x_min, x_max, y_min, 
         y_max, z_min, z_max))
-    neutron_position = [neutron_starting_point[i] for i in [0,1,2]] 
+    neutron_position = [neutron_starting_point[i] for i in range(3)] 
     neutron_interaction = 0
     while neutron_interaction != 1:
         neutron_distance = sample_distance(sigma_t)
@@ -133,11 +133,11 @@ def transport_neutron(sigma_t, sigma_s, x_min, x_max, y_min, y_max, z_min,
         neutron_interaction = sample_interaction(float(sigma_t),
             float(sigma_s))
     neutron_distance_vector = [0, 0, 0]
-    for i in [0,1,2]:
+    for i in range(3):
         neutron_distance_vector[i] = neutron_position[i] - \
-        neutron_starting_point[i]
+            neutron_starting_point[i]
     crow_distance = sqrt(neutron_distance_vector[0]**2 + \
-    neutron_distance_vector[1]**2+neutron_distance_vector[2]**2)
+        neutron_distance_vector[1]**2 + neutron_distance_vector[2]**2)
     crow_distances.append(crow_distance) 
 		
 
