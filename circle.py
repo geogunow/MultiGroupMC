@@ -34,8 +34,8 @@ def generate_2D_coordinate(x_min, x_max, y_min, y_max):
     return (x, y)
 
 '''
- @brief	    Function that calcultes pi
- @details   The function randomly places points in a 1x1 box using 
+ @brief     Function that calcultes pi
+ @details   The function randomly places points in a 1x1 box using
             generate_2D_coordinates. It uses the ratio of points that land in a
             circle with radius one vs the number of points thrown to calculate
             pi.
