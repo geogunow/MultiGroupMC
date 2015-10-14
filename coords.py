@@ -56,3 +56,11 @@ class Coords():
     def __rmul__(self, other):
         return self._data * other
 
+    
+    # functions that edit  existing instances of Coord
+    def __sadd__(self, other):
+        self._data += other
+    def __ssub__(self, other):
+        self._data -= other
+    def __smul__(self, other):
+        self._data = self._data * other

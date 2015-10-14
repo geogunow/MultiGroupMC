@@ -28,3 +28,23 @@ class Material:
 
         # absorption cross-section
         self._sigma_a = sigma_t - sigma_s
+
+
+    # functions to allow access to the values stored in Material
+    @property
+    def __sigma_t__(self):
+        return self._sigma_t
+
+    @property
+    def __sigma_s__(self):
+        return self._sigma_s
+   
+    @property
+    def __nu__(self):
+        return self._nu
+
+    @property
+    def __sigma_f__(self):
+        return self._sigma_f
+
+

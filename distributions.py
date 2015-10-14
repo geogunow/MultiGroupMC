@@ -10,7 +10,10 @@
 # Import libraries and set random number seed to 0
 from copy import deepcopy as copy
 import random
+from math import *
+import coords
 random.seed(0)
+
 
 
 '''
@@ -49,11 +52,12 @@ def sample_incorrect_polar_angle():
             cross-section.
  @details   A distance of travel is sampled in [0, infinity) assuming an
             exponential distibution of the form sigma_t * exp(-sigma_t * d).
- @param     sigma_t the total cross-section of the material region.
+ @param     mat in instance of the class Material that contains information
+            about the material
  @return    A randomly sampled distance in [0, infinity)
 '''
-def sample_distance(sigma_t):
-    return -log(random.random()) / sigma_t
+def sample_distance(mat):
+    return -log(random.random()) / mat.__sigma_t__
 
 
 '''
@@ -61,31 +65,35 @@ def sample_distance(sigma_t):
             1 = absorption)
  @details   Based on cross-sections, the interaction is sampled as scattering
             (0) or absorption (1).
- @param     sigma_t the total cross-section of the material region.
- @param     sigma_s the scattering cross-section of the material region.
+ @param     mat in instance of the class Material that contains information
+            about the material            
  @return    An interaction type (0 = scattering, 1 = absorption)
 '''
-def sample_interaction(sigma_t, sigma_s):
-    return int(random.random() < sigma_s / sigma_t):
+def sample_interaction(mat):
+    return int(random.random() < mat.__sigma_s__ / mat.__sigma_t__)
 
 '''
  @brief     Function that samples a random location within a bounding box.
  @details   A point is randomly and uniformally sampled in the bounding box 
             provided in the input.
- @param     x_min the minimum x-coordinate in the bounding box
- @param     x_max the maximum x-coordinate in the bounding box
- @param     y_min the minimum y-coordinate in the bounding box
- @param     y_max the maximum y-coordinate in the bounding box
- @param     z_min the minimum z-coordinate in the bounding box
- @param     z_max the maximum z-coordinate in the bounding box
- @return    A tuple containing the x, y, and z coordinates of the sampled 
-            location
+ @param     bounds an instance of the boundaries class containing the limits
+            of the bounding box
+ @return    point an instance of the Coords class that contains the coordinates
+            of a point
 '''
-def sample_location(x_min, x_max, y_min, y_max, z_min, z_max):
+def sample_location(bounds):
+    x_max = bounds.get_x_max()
+    x_min = bounds.get_x_min()
+    y_max = bounds.get_y_max()
+    y_min = bounds.get_y_min()
+    z_max = bounds.get_z_max()
+    z_min = bounds.get_z_min()
+    
     x_pos = x_min + (x_max - x_min) * random.random()
     y_pos = y_min + (y_max - y_min) * random.random()
     z_pos = z_min + (z_max - z_min) * random.random()
-    return (x_pos, y_pos, z_pos)
+    point = coords.Coords(x_pos, y_pos, z_pos)
+    return point
 
 
 '''
@@ -98,7 +106,7 @@ def sample_location(x_min, x_max, y_min, y_max, z_min, z_max):
  @return    An interaction type (0 = capture, 1 = fission)
 '''
 def sample_fission(simga_a, sigma_f):
-    return int(random.random() < sigma_f / sigma_a):
+    return int(random.random() < sigma_f / sigma_a)
 
 
 '''

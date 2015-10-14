@@ -31,3 +31,38 @@ class Boundaries():
         for surface in self._surfaces:
             for side in ['min', 'max']:
                 self._surfaces[surface][side]['type'] = 0
+    
+
+    def get_x_max(self):
+        return self._surfaces['x']['max']['coord'] 
+
+    def get_x_min(self):
+        return self._surfaces['x']['min']['coord'] 
+
+    def get_y_max(self):
+        return self._surfaces['y']['max']['coord'] 
+
+    def get_y_min(self):
+        return self._surfaces['y']['min']['coord'] 
+
+    def get_z_max(self):
+        return self._surfaces['z']['max']['coord']
+    
+    def get_z_min(self):
+        return self._surfaces['z']['min']['coord']
+
+    # functions to get the surface types
+    def get_surface_type(self, surface):
+        if surface == 'x_max':
+            return self._surfaces['x']['max']['type']
+        if surface == 'x_min':
+            return self._surfaces['x']['min']['type']
+        if surface == 'y_max':
+            return self._surfaces['y']['max']['type']
+        if surface == 'y_min':
+            return self._surfaces['y']['min']['type']
+        if surface == 'z_max':
+            return self._surfaces['z']['max']['type']
+        if surface == 'z_min':
+            return self._surfaces['z']['min']['type']
+
