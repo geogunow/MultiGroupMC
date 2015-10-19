@@ -58,9 +58,9 @@ class Coords():
 
     
     # functions that edit  existing instances of Coord
-    def __sadd__(self, other):
+    def sadd(self, other):
         self._data += other
-    def __ssub__(self, other):
+    def ssub(self, other):
         self._data -= other
-    def __smul__(self, other):
+    def smul(self, other):
         self._data = self._data * other

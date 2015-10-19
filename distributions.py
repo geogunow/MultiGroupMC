@@ -13,7 +13,7 @@ import random
 from math import *
 import coords
 random.seed(0)
-
+import fission
 
 
 '''
@@ -57,7 +57,7 @@ def sample_incorrect_polar_angle():
  @return    A randomly sampled distance in [0, infinity)
 '''
 def sample_distance(mat):
-    return -log(random.random()) / mat.__sigma_t__
+    return -log(random.random()) / mat.sigma_t
 
 
 '''
@@ -70,7 +70,7 @@ def sample_distance(mat):
  @return    An interaction type (0 = scattering, 1 = absorption)
 '''
 def sample_interaction(mat):
-    return int(random.random() < mat.__sigma_s__ / mat.__sigma_t__)
+    return int(random.random() < mat.sigma_s / mat.sigma_t)
 
 '''
  @brief     Function that samples a random location within a bounding box.
@@ -101,30 +101,38 @@ def sample_location(bounds):
             (0 = capture, 1 = fission)
  @details   Based on cross-sections, the interaction is sampled as capture
             (0) or fission (1).
- @param     sigma_a the absorption cross-section of the material region.
- @param     sigma_f the fission cross-section of the material region.
+ @param     mat an instance of the Material class that contains information
+            about the material
  @return    An interaction type (0 = capture, 1 = fission)
 '''
-def sample_fission(simga_a, sigma_f):
-    return int(random.random() < sigma_f / sigma_a)
+def sample_fission(mat):
+    return int(random.random() < mat.sigma_f / mat.sigma_a)
 
 
 '''
  @brief     Samples the nunber of neutrons produced from a fission event
- @param     nu average number of neutrons emitted per fission
+ @param     mat an instance of the Material class that contains information
+            about the material
  @return    number of neutrons emitted from the sampled fission event
 '''
-def sample_num_fission(nu):
-    lower = int(nu)
-    add = int(random.random() < (nu - lower))
+def sample_num_fission(mat):
+    lower = int(mat.nu)
+    add = int(random.random() < (mat.nu - lower))
     return lower + add
 
 
 '''
  @brief     Samples a neutron position in the fission bank
- @param     fission_bank a list of neutron locations in the fission bank
+ @param     fission_bank an instance of the Fission class containing
+            neutron locations
  @return    sampled neutron location
 '''
 def sample_fission_site(fission_bank):
-    index = random.randint(0, len(fission_bank)-1)
-    return copy(fission_bank[index])
+    if fission_bank.length >= 1:
+        index = random.randint(0, fission_bank.length-1)
+        point = fission_bank.location(index)
+    else:
+        print "Random malfunction"
+        point = [0,0,0]
+    return coords.Coords(point[0], point[1], point[2])
+

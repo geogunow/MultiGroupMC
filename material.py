@@ -32,19 +32,21 @@ class Material:
 
     # functions to allow access to the values stored in Material
     @property
-    def __sigma_t__(self):
+    def sigma_t(self):
         return self._sigma_t
 
     @property
-    def __sigma_s__(self):
+    def sigma_s(self):
         return self._sigma_s
    
     @property
-    def __nu__(self):
+    def nu(self):
         return self._nu
 
     @property
-    def __sigma_f__(self):
+    def sigma_f(self):
         return self._sigma_f
 
-
+    @property
+    def sigma_a(self):
+        return self._sigma_a

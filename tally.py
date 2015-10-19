@@ -17,7 +17,8 @@ class Tally():
         self.count = 0
     def increment(self, amt):
         self.count += amt
-    
+    def clear(self):
+        self.count = 0
     @property
     def amt(self):
-        return self.count
+        return float(self.count)
