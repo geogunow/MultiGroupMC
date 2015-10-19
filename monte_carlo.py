@@ -170,7 +170,6 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round):
         if not neutron_lost:
             neutron_interaction = sample_interaction(mat)
 
-
     # neutron_position turns into a vector pointing from the neutron's origin
     # to its absorption point
     if not neutron_lost:
@@ -184,7 +183,7 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round):
             neutron_starting_point.y, neutron_starting_point.z])
         tallies["crows"].increment(neutron_position.getDistance())
         tallies["num_crows"].increment(1)
-                            
+
 '''
  @brief     Generates and transports neutron histories, calculates the mean
             crow distance
@@ -228,13 +227,12 @@ def generate_neutron_histories(n_histories, mat, bounds):
         # simulate the neutron behavior
         for i in xrange(n_histories):
             transport_neutron(mat, bounds, tallies, fission_banks, first_round)
-        
-        
+
         print "For batch ", batch + 1, ", k = ", \
                 tallies["fissions"].amt/(tallies["leaks"].amt + \
                 tallies["absorptions"].amt)
         first_round = False
-    
+
     mean_crow_distance = crow_distances.amt / num_crow_distances.amt
     print "Mean crow fly distance = ", mean_crow_distance
 
@@ -254,13 +252,4 @@ def generate_neutron_histories(n_histories, mat, bounds):
  @param     crow_distances a list containg the distances
             from each neutron's starting point to the point that
             it is absorbed.
-
-
-
-
-
-nu = 2.4
-nu is average number of neutrons released in a fission event
-
-
 '''

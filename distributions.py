@@ -15,7 +15,6 @@ import coords
 random.seed(0)
 import fission
 
-
 '''
  @brief     Function that randomly samples an azimuthal angle
  @details   An azimuthal angle is uniformally sampled in [0, 2 pi]
@@ -23,7 +22,6 @@ import fission
 '''
 def sample_azimuthal_angle():
     return 2*pi*random.random()
-
 
 '''
  @brief     Function that randomly samples a polar angle
@@ -35,7 +33,6 @@ def sample_polar_angle():
     cos_theta = 2*random.random() - 1
     return acos(cos_theta)
 
-
 '''
  @brief     Function that incorrecly randomly samples a polar angle
  @details   A polar angle is sampled uniformly in [0, pi]. This is incorrect
@@ -44,8 +41,7 @@ def sample_polar_angle():
  @return    A randomly sampled polar angle in [0, pi]
 '''
 def sample_incorrect_polar_angle():
-    return pi*random.random()
-
+    return pi*random.random(
 
 '''
  @brief     Function that samples the distance of travel based on a total
@@ -58,7 +54,6 @@ def sample_incorrect_polar_angle():
 '''
 def sample_distance(mat):
     return -log(random.random()) / mat.sigma_t
-
 
 '''
  @brief     Function that samples the interaction type (0 = scattering,
@@ -95,7 +90,6 @@ def sample_location(bounds):
     point = coords.Coords(x_pos, y_pos, z_pos)
     return point
 
-
 '''
  @brief     Function that samples the interaction type given an absorption
             (0 = capture, 1 = fission)
@@ -108,7 +102,6 @@ def sample_location(bounds):
 def sample_fission(mat):
     return int(random.random() < mat.sigma_f / mat.sigma_a)
 
-
 '''
  @brief     Samples the nunber of neutrons produced from a fission event
  @param     mat an instance of the Material class that contains information
@@ -119,7 +112,6 @@ def sample_num_fission(mat):
     lower = int(mat.nu)
     add = int(random.random() < (mat.nu - lower))
     return lower + add
-
 
 '''
  @brief     Samples a neutron position in the fission bank
@@ -135,4 +127,3 @@ def sample_fission_site(fission_bank):
         print "Random malfunction"
         point = [0,0,0]
     return coords.Coords(point[0], point[1], point[2])
-

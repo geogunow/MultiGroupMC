@@ -30,8 +30,7 @@ class Boundaries():
         # initialize all boundaries as vacuum
         for surface in self._surfaces:
             for side in ['min', 'max']:
-                self._surfaces[surface][side]['type'] = 0
-    
+                self._surfaces[surface][side]['type'] = 0    
 
     def get_x_max(self):
         return self._surfaces['x']['max']['coord'] 
@@ -65,4 +64,3 @@ class Boundaries():
             return self._surfaces['z']['max']['type']
         if surface == 'z_min':
             return self._surfaces['z']['min']['type']
-

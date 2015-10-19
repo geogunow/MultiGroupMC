@@ -55,7 +55,6 @@ class Coords():
 
     def __rmul__(self, other):
         return self._data * other
-
     
     # functions that edit  existing instances of Coord
     def sadd(self, other):

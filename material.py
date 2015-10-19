@@ -5,7 +5,6 @@
  @date      October 7, 2015
 '''
 
-
 '''
  @class     Material material.py "material.py"
  @brief     The Material class represents a unique material and its relevant
