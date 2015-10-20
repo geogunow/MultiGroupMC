@@ -22,14 +22,17 @@ import fission
  @brief     Function that generates a neutron and measures how 
             far it travels before being absorbed.
  @details   A neutron is created in the bounding box using
-            sample_location(). It moves a distance determined by
+            sample_location() for the first batch and sample_fission_site()
+            for the rest of the batches. It moves a distance determined by
             sample_distance(). It is then either absorbed or
             scattered as determined by sample_interaction(). When
             it is absorbed, its distance from its starting point
-            is appended to crow_distances.
- @param	    mat an instance of the Material class containing information
-            about the material
- @param     bounds an instance of the boundaries class containing the limits
+            is appended to crow_distances. If the absorption creates
+            a fission event, the number of neutrons emited is sampled.
+            The location of the fission event is added to a list of fission
+            events.
+ @param	    mat a Material object containing information about the material
+ @param     bounds a Boundaries object containing the limits
             of the bounding box
  @param     tallies a dictionary containing tallies of crow distances,
             leakages, absorptions, and fissions
@@ -38,16 +41,6 @@ import fission
             batch to be tested
 '''
 def transport_neutron(mat, bounds, tallies, fission_banks, first_round):
-    
-    '''
-    for i in xrange(10):
-    
-        old_fission_locations.clear()
-        for num in xrange(new_fission_locations.length):
-            old_fission_locations.add(new_fission_locations.next())
-        new_fission_locations.clear()
-    '''
-
     # first round
     if first_round:
         neutron_starting_point = sample_location(bounds)
@@ -188,10 +181,10 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round):
  @brief     Generates and transports neutron histories, calculates the mean
             crow distance
  @param     n_histories number of neutron histories to run
- @param     mat an instance of the Material class containing information
+ @param     mat a Material object containing information
             about the material
- @param     bounds an instance of the boundaries class containing the limits
-            of the bounding box
+ @param     bounds a Boundaries object containing the limits of the
+            bounding box
 '''
 def generate_neutron_histories(n_histories, mat, bounds):
     

@@ -1,5 +1,5 @@
 '''
- @file      fission.oy
+ @file      fission.py
  @brief     contains the Fission class
  @author    Luke Eure
  @date      October 18, 2015
@@ -7,6 +7,10 @@
 
 import numpy as np
 
+'''
+ @class Fission fission.py "fission.py"
+ @brief Contains a list of locations where fission events occured
+'''
 class Fission():
     
     def __init__(self):

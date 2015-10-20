@@ -36,8 +36,8 @@ def sample_polar_angle():
 '''
  @brief     Function that incorrecly randomly samples a polar angle
  @details   A polar angle is sampled uniformly in [0, pi]. This is incorrect
-            because the cosine of the polar should be unifromly sampled, not the 
-            actual angle directly.
+            because the cosine of the polar should be unifromly sampled,
+            not the actual angle directly.
  @return    A randomly sampled polar angle in [0, pi]
 '''
 def sample_incorrect_polar_angle():
@@ -71,10 +71,9 @@ def sample_interaction(mat):
  @brief     Function that samples a random location within a bounding box.
  @details   A point is randomly and uniformally sampled in the bounding box 
             provided in the input.
- @param     bounds an instance of the boundaries class containing the limits
-            of the bounding box
- @return    point an instance of the Coords class that contains the coordinates
-            of a point
+ @param     bounds a Boundaries object containing the limits of the
+            bounding box
+ @return    point a Coords object that contains the coordinates of a point
 '''
 def sample_location(bounds):
     x_max = bounds.get_x_max()
@@ -95,7 +94,7 @@ def sample_location(bounds):
             (0 = capture, 1 = fission)
  @details   Based on cross-sections, the interaction is sampled as capture
             (0) or fission (1).
- @param     mat an instance of the Material class that contains information
+ @param     mat a Material object that contains information
             about the material
  @return    An interaction type (0 = capture, 1 = fission)
 '''
@@ -104,8 +103,7 @@ def sample_fission(mat):
 
 '''
  @brief     Samples the nunber of neutrons produced from a fission event
- @param     mat an instance of the Material class that contains information
-            about the material
+ @param     mat a Material object that contains information about the material
  @return    number of neutrons emitted from the sampled fission event
 '''
 def sample_num_fission(mat):
@@ -115,8 +113,7 @@ def sample_num_fission(mat):
 
 '''
  @brief     Samples a neutron position in the fission bank
- @param     fission_bank an instance of the Fission class containing
-            neutron locations
+ @param     fission_bank a Fission object containing neutron locations
  @return    sampled neutron location
 '''
 def sample_fission_site(fission_bank):
