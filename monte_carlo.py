@@ -228,28 +228,10 @@ def generate_neutron_histories(n_histories, mat, bounds):
         for i in xrange(n_histories):
             transport_neutron(mat, bounds, tallies, fission_banks, first_round)
 
-        print "For batch ", batch + 1, ", k = ", \
+        print "For batch ", batch + 1, " k = ", \
                 tallies["fissions"].amt/(tallies["leaks"].amt + \
                 tallies["absorptions"].amt)
         first_round = False
 
     mean_crow_distance = crow_distances.amt / num_crow_distances.amt
     print "Mean crow fly distance = ", mean_crow_distance
-
-'''
- @brief     Function that determines what a neutron's new position
-            is, taking into account the surface
- @details   A neutron is created in the bounding box using
-            sample_location(). It moves a distance determined by
-            sample_distance(). It is then either absorbed or
-            scattered as determined by sample_interaction(). When
-            it is absorbed, its distance from its starting point
-            is appended to crow_distances.
- @param	    mat an instance of the Material class containing information
-            about the material
- @param     bounds an instance of the boundaries class containing the limits
-            of the bounding box
- @param     crow_distances a list containg the distances
-            from each neutron's starting point to the point that
-            it is absorbed.
-'''

@@ -41,7 +41,7 @@ def sample_polar_angle():
  @return    A randomly sampled polar angle in [0, pi]
 '''
 def sample_incorrect_polar_angle():
-    return pi*random.random(
+    return pi*random.random()
 
 '''
  @brief     Function that samples the distance of travel based on a total
