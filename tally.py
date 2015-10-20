@@ -14,11 +14,12 @@ import numpy as np
 
 class Tally():
     def __init__(self):
-        self.count = 0
-    def increment(self, amt):
-        self.count += amt
+        self._count = 0
+    def add(self, amt):
+        self._count += amt
     def clear(self):
-        self.count = 0
+        self._count = 0
+    
     @property
-    def amt(self):
-        return float(self.count)
+    def count(self):
+        return float(self._count)

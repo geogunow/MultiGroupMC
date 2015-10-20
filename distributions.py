@@ -48,8 +48,7 @@ def sample_incorrect_polar_angle():
             cross-section.
  @details   A distance of travel is sampled in [0, infinity) assuming an
             exponential distibution of the form sigma_t * exp(-sigma_t * d).
- @param     mat in instance of the class Material that contains information
-            about the material
+ @param     mat a Material object that contains information about the material
  @return    A randomly sampled distance in [0, infinity)
 '''
 def sample_distance(mat):
@@ -60,7 +59,7 @@ def sample_distance(mat):
             1 = absorption)
  @details   Based on cross-sections, the interaction is sampled as scattering
             (0) or absorption (1).
- @param     mat in instance of the class Material that contains information
+ @param     mat a Material object that contains information
             about the material            
  @return    An interaction type (0 = scattering, 1 = absorption)
 '''
@@ -94,8 +93,7 @@ def sample_location(bounds):
             (0 = capture, 1 = fission)
  @details   Based on cross-sections, the interaction is sampled as capture
             (0) or fission (1).
- @param     mat a Material object that contains information
-            about the material
+ @param     mat a Material object that contains information about the material
  @return    An interaction type (0 = capture, 1 = fission)
 '''
 def sample_fission(mat):
@@ -121,6 +119,6 @@ def sample_fission_site(fission_bank):
         index = random.randint(0, fission_bank.length-1)
         point = fission_bank.location(index)
     else:
-        print "Random malfunction"
+        print 'ERROR, No fission sites'
         point = [0,0,0]
     return coords.Coords(point[0], point[1], point[2])
