@@ -69,12 +69,18 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round):
             axises = ['x', 'x', 'y', 'y', 'z', 'z']
             directions = ['max', 'min', 'max', 'min', 'max', 'min']
             
-            boundary_max_distances.append(bounds.get_x_max() - neutron_position.x)
-            boundary_max_distances.append(bounds.get_x_min() - neutron_position.x)
-            boundary_max_distances.append(bounds.get_y_max() - neutron_position.y)
-            boundary_max_distances.append(bounds.get_y_min() - neutron_position.y)
-            boundary_max_distances.append(bounds.get_z_max() - neutron_position.z)
-            boundary_max_distances.append(bounds.get_z_min() - neutron_position.z)
+            boundary_max_distances.append(bounds.get_x_max() - \
+                    neutron_position.x)
+            boundary_max_distances.append(bounds.get_x_min() - \
+                    neutron_position.x)
+            boundary_max_distances.append(bounds.get_y_max() - \
+                    neutron_position.y)
+            boundary_max_distances.append(bounds.get_y_min() - \
+                    neutron_position.y)
+            boundary_max_distances.append(bounds.get_z_max() - \
+                    neutron_position.z)
+            boundary_max_distances.append(bounds.get_z_min() - \
+                    neutron_position.z)
            
 
             # lim_bound contains the string of the limiting boundary
@@ -110,11 +116,11 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round):
                 # if the neutron is reflected
                 if (bounds.get_surface_type(surface) == 1):
                     if surface == 'x_max' or surface == 'x_min':
-                        neutron_movement_unit_vector.smul([-1, 1, 1])
+                        neutron_movement_unit_vector *= [-1, 1, 1]
                     if surface == 'y_max' or surface == 'y_min':
-                        neutron_movement_unit_vector.smul([1, -1, 1])
+                        neutron_movement_unit_vector *= [1, -1, 1]
                     if surface == 'z_max' or surface == 'z_min':
-                        neutron_movement_unit_vector.smul([1, 1, -1])
+                        neutron_movement_unit_vector *= [1, 1, -1]
                     neutron_reflected = True
     
                 # if the neutron escapes
@@ -139,7 +145,7 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round):
                     neutron_position.y, neutron_position.z])
                 tallies['fissions'].add(1) 
         neutron_position.ssub([neutron_starting_point.x,
-            neutron_starting_point.y, neutron_starting_point.z])
+                neutron_starting_point.y, neutron_starting_point.z])
         tallies['crows'].add(neutron_position.getDistance())
         tallies['num_crows'].add(1)
 
@@ -173,11 +179,19 @@ def generate_neutron_histories(n_histories, mat, bounds):
     for batch in xrange(10):
         
         # assign the new fission locations to the old fission list
+        
+        # code that doesn't currently work
+        '''
+        old_fission_locations = new_fission_locations
+        new_fission_locations = fission.Fission()
+        '''
+
         old_fission_locations.clear()
         for num in xrange(new_fission_locations.length):
             old_fission_locations.add(new_fission_locations.next())
         new_fission_locations.clear()
-        
+    
+
         # clear the tallies for leaks absorptions and fissions
         tallies['leaks'].clear()
         tallies['absorptions'].clear()
