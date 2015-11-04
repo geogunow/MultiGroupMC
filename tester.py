@@ -22,4 +22,4 @@ test_mesh = mesh.Mesh(bounds, .1)
 
 test_material = material.Material(2.0, 1.0, 2.4, .5)
 
-monte_carlo.generate_neutron_histories(1000, test_material, bounds, test_mesh, 10)
+monte_carlo.generate_neutron_histories(1000, test_material, bounds, test_mesh, 1)
