@@ -67,28 +67,12 @@ class Mesh():
     def get_cell_bounds(self, direction, max_or_min, number):
         return self._cell[direction][max_or_min][int(number)]
 
-    def get_cell(self, x, y, z):
-        x_return = -1
-        y_return = -1
-        z_return = -1
-        for i in xrange(len(self._cell['x']['number'])):
-            if x <= self._cell['x']['max'][i] and \
-                    x > self._cell['x']['min'][i]:
-                x_return = self._cell['x']['number'][i]
-        for i in xrange(len(self._cell['y']['number'])):
-            if y <= self._cell['y']['max'][i] and \
-                    y > self._cell['y']['min'][i]:
-                y_return = self._cell['y']['number'][i]
-        for i in xrange(len(self._cell['z']['number'])):
-            if z <= self._cell['z']['max'][i] and \
-                    z > self._cell['z']['min'][i]:
-                z_return = self._cell['z']['number'][i]        
-        if x_return == -1 or y_return == -1 or z_return == -1:
-            print "Cell boundary error"
-            print x_return, y_return, z_return
-            print x, y, z
-
-        return [x_return, y_return, z_return]
+    def get_cell(self, position):
+        x = position[0]
+        y = position[1]
+        z = position[2]
+        return 0
+        raise NotImplementedError
 
     def get_mesh_length(self, direction):
         return len(self._cell[direction]['number'])
