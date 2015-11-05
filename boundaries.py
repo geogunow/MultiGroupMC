@@ -50,17 +50,9 @@ class Boundaries():
     def get_z_min(self):
         return self._surfaces['z']['min']['coord']
 
-    # functions to get the surface types
-    def get_surface_type(self, surface):
-        if surface == 'x_max':
-            return self._surfaces['x']['max']['type']
-        if surface == 'x_min':
-            return self._surfaces['x']['min']['type']
-        if surface == 'y_max':
-            return self._surfaces['y']['max']['type']
-        if surface == 'y_min':
-            return self._surfaces['y']['min']['type']
-        if surface == 'z_max':
-            return self._surfaces['z']['max']['type']
-        if surface == 'z_min':
-            return self._surfaces['z']['min']['type']
+    def get_surface_coord(self, axis, side):
+        return self._surfaces[axis][side]['coord']
+
+    def get_surface_type(self, axis, side):
+        return self._surfaces[axis][side]['type']
+

@@ -6,7 +6,6 @@
 '''
 
 import numpy as np
-import coords
 
 '''
  @class Fission fission.py "fission.py"
@@ -29,7 +28,7 @@ class Fission():
         self._fission_locations.pop(0)
         return item
 
-    # location should be a Coords object
+    # location should be a numpy array
     def add(self, location):
         self._fission_locations.append(location)
 

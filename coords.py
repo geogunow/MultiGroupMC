@@ -12,21 +12,35 @@ from math import *
  @class Coords coords.py "coords.py"
  @brief Contains a cartesian coordinate
 '''
+#TODO: MAKE NEUTRON CLASS
 class Coords():
     def __init__(self, x, y, z):
-        self._data = np.array([x, y, z])
-    
+        self._xyz = np.array([x, y, z])
+
     @property
     def x(self):
-        return self._data[0]
+        return self._xyz[0]
 
     @property
     def y(self):
-        return self._data[1]
+        return self._xyz[1]
 
     @property
     def z(self):
-        return self._data[2]
+        return self._xyz[2]
+
+    def move(self, direction, distance):
+        self._xyz += direction * distance 
+    
+    def getCoordinate(self, var):
+        if var == 'x':
+            return self._xyz[0]
+        elif var == 'y':    
+            return self._xyz[1]
+        elif var == 'z':
+            return self._xyz[2]
+        
+        raise ValueError
 
     def getPolar(self):
         return atan(self.z / sqrt(self.x**2 + self.y**2 + self.z**2))
@@ -34,32 +48,15 @@ class Coords():
     def getAzimuthal(self):
         return acos(self.x / self.y)
 
-    def getDistance(self):
+    def getDistanceFromOrigin(self):
         return sqrt(self.x**2 + self.y**2 + self.z**2)
 
-    # overloading operators for use as Coords (*/+/-) value
-    def __add__(self, other):
-        return self._data + other
+    def getDistance(self, other):
+        return sqrt((self.x - other.x)**2 + (self.y - other.y)**2 + \
+                (self.z - other.z)**2)
 
-    def __radd__(self, other):
-        return self._data + other
-    
-    def __sub__(self, other):
-        return self._data - other
-    
-    def __rsub__(self, other):
-        return other - self._data
+    def __repr__(self):
+        string = "<x = " + str(self._xyz[0]) + ", y = " + str(self._xyz[1]) \
+                    + ", z = " + str(self._xyz[2]) + ">"
+        return string
 
-    def __mul__(self, other):
-        return self._data * other
-
-    def __rmul__(self, other):
-        return self._data * other
-    
-    # functions that edit  existing instances of Coord
-    def sadd(self, other):
-        self._data += other
-    def ssub(self, other):
-        self._data -= other
-    def smul(self, other):
-        self._data = self._data * other

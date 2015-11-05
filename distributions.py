@@ -11,7 +11,6 @@
 from copy import deepcopy as copy
 import random
 from math import *
-import coords
 random.seed(0)
 import fission
 
@@ -72,7 +71,7 @@ def sample_interaction(mat):
             provided in the input.
  @param     bounds a Boundaries object containing the limits of the
             bounding box
- @return    point a Coords object that contains the coordinates of a point
+ @return    point a numpy array that contains the coordinates of a point
 '''
 def sample_location(bounds):
     x_max = bounds.get_x_max()
@@ -85,8 +84,7 @@ def sample_location(bounds):
     x_pos = x_min + (x_max - x_min) * random.random()
     y_pos = y_min + (y_max - y_min) * random.random()
     z_pos = z_min + (z_max - z_min) * random.random()
-    point = coords.Coords(x_pos, y_pos, z_pos)
-    return point
+    return np.array([x_pos, y_pos, z_pos])
 
 '''
  @brief     Function that samples the interaction type given an absorption
@@ -121,4 +119,4 @@ def sample_fission_site(fission_bank):
     else:
         print 'ERROR, No fission sites'
         point = [0,0,0]
-    return coords.Coords(point[0], point[1], point[2])
+    return np.array(point)
