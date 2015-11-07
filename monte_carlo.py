@@ -18,6 +18,7 @@ from neutron import *
 import tally
 import fission
 import mesh
+
 '''
  @brief     Function that generates a neutron and measures how 
             far it travels before being absorbed.
@@ -50,7 +51,7 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
     # subsequent approximations using previous fission sites
     else:
         neutron_starting_point = sample_fission_site(fission_banks['old'])
-
+    
     # initialize neutron
     neutron_lost = False
     neutron_reflected = False
@@ -59,11 +60,8 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
     neutron = Neutron(neutron_starting_point, theta, phi)
 
     # get mesh cell
-    # FIXME
-    #print "Neutron starting at position", neutron_starting_point
     cell = mesh1.get_cell(neutron.get_position_vector())
     neutron.set_cell(cell)
-    
     # follow neutron while alive
     while neutron.alive:
         
@@ -73,6 +71,7 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
         # track neutron until collision or leakage
         while neutron_distance > 0:
 
+            '''
             # calculate distances to boundaries
             distance_to_boundary = dict()
             axes = ['x','y', 'z']
@@ -82,8 +81,18 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
                     distance_to_boundary[axis][side] = \
                             bounds.get_surface_coord(axis, side) \
                             - neutron.get_position(axis)
+            '''
 
-            
+            # calculate distances to cell boundaries
+            distance_to_cell_edge = dict()
+            axes = ['x','y', 'z']
+            for axis in axes:
+                distance_to_cell_edge[axis] = dict()
+                for side in ['min', 'max']:
+                    distance_to_boundary[axis][side] = \
+                            bounds.get_surface_coord(axis, side) \
+                            - neutron.get_position(axis)
+
             # these contains the strings of the limiting boundary of the cell
             # and bounding box respectively
             box_lim_bound = list()
@@ -106,24 +115,8 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
                     elif r == tempd:
                         box_lim_bound.append((axis, side))
             
-            # if the neutron stays within the box
-            if box_lim_bound == []:
-                
-                
-                #TODO: REMOVE (Debugging)
-                if neutron.x > 1 or neutron.x < -1 \
-                        or neutron.y > 1 or neutron.y < -1 \
-                        or neutron.z > 1 or neutron.z < -1:
-                    exit()
-
             # move neutron
             neutron.move(tempd)
-            
-            '''
-            print "Moving distance ", tempd, " at position ", \
-                    neutron.get_position_vector(), " in direction ", \
-                    neutron.get_direction_vector()
-            '''
 
             # check boundary conditions on all hit surfaces
             for surface, side in box_lim_bound:  
@@ -171,7 +164,7 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
 
                     # sample number of neutrons
                     for j in xrange(sample_num_fission(mat)):
-                        fission_banks['new'].add(neutron.get_position_vector)
+                        fission_banks['new'].add(neutron.get_position_vector())
                         tallies['fissions'].add(1) 
                     
                 # end neutron history
@@ -181,7 +174,6 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
     crow_distance = neutron.get_distance(neutron_starting_point)
     tallies['crows'].add(crow_distance)
     tallies['num_crows'].add(1)
-
 
 '''
  @brief     Generates and transports neutron histories, calculates the mean
@@ -202,13 +194,15 @@ def generate_neutron_histories(n_histories, mat, bounds, mesh1, num_batches):
     absorption_tally = tally.Tally()
     fission_tally = tally.Tally()
     mesh_tallies = {'x': [], 'y': [], 'z': []}
+    '''
     for direction in ['x', 'y', 'z']:
         for i in xrange(mesh1.get_mesh_length(direction)):
             mesh_tallies[direction].append(tally.Tally())
-    
+    '''
+
     tallies = {'crows': crow_distances, 'num_crows': num_crow_distances,
             'leaks': leakage_tally, 'absorptions': absorption_tally,
-            'fissions': fission_tally, 'mesh': mesh_tallies}
+            'fissions': fission_tally}
 
     old_fission_locations = fission.Fission()
     new_fission_locations = fission.Fission()

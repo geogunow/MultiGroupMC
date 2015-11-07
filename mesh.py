@@ -13,66 +13,45 @@ import numpy as np
         core
 '''
 class Mesh():
-    def __init__(self, bounds, spacing):
+    def __init__(self, bounds, delta_x, delta_y, delta_z):
+        self._delta_x = delta_x
+        self._delta_y = delta_y
+        self._delta_z = delta_z
+        self._x_min = bounds.get_x_min()
+        self._y_min = bounds.get_y_min()
+        self._z_min = bounds.get_z_min()
         '''
-        self._cell_x = []
-        self._cell_y = []
-        self._cell_z = []
-        self._cell_x_bounds = []
-        self._cell_y_bounds = []
-        self._cell_z_bounds = []
+        self._flux = [[[0]*int((bounds.get_z_max()-bounds.get_z_min())/delta_z)] \
+                * int((bounds.get_y_max()-bounds.get_y_min())/delta_y)] \
+                * int((bounds.get_x_max()-bounds.get_x_min())/delta_x)
         '''
-
-        self._cell = dict()
-        for direction in ['x', 'y', 'z']:
-            self._cell[direction] = {'number': [], 'min': [], 'max': []}
-        # TODO: this will be off by one cell in instances when the spacing
-        # doesn't lead to all cells being the exact same size. To fix this
-        # the int() inside the xrange() needs to round up in all cases
-        # when the argument isn't an integer value.
-        # Also, is hardcoding the round(x, 5) the best way to avoid huge 
-        # decimal errors?
-        for i in xrange(int((float(bounds.get_x_max() - bounds.get_x_min()) \
-                / spacing))):
-            # self._cell_x.append(i)
-            self._cell['x']['min'].append(round(bounds.get_x_min() + i*spacing,
-                5))
-            self._cell['x']['number'].append(i)
-        for j in xrange(int((float(bounds.get_y_max() - bounds.get_y_min()) \
-                / spacing))):
-            # self._cell_y.append(j)
-            self._cell['y']['min'].append(round(bounds.get_y_min() + j*spacing,
-                5)) 
-            self._cell['y']['number'].append(j)
-        
-        for k in xrange(int((float(bounds.get_z_max() - bounds.get_z_min()) \
-                / spacing))):
-            # self._cell_z.append(k)
-            self._cell['z']['min'].append(round(bounds.get_z_min() + k*spacing,
-                5))
-            self._cell['z']['number'].append(k) 
-        
-        for direction in ['x', 'y', 'z']:
-            for i in xrange(len(self._cell[direction]['min'])):
-                self._cell[direction]['max'].append(round( \
-                        self._cell[direction]['min'][i] + spacing, 5))
-
-    def print_mesh(self):
-        print self._cell['x']['number']
-        print self._cell['y']['number']
-        print self._cell['z']['number']
-        print self._cell['x']['min']
-        print self._cell['x']['max']
-    
-    def get_cell_bounds(self, direction, max_or_min, number):
-        return self._cell[direction][max_or_min][int(number)]
+        self._flux = np.zeros(( \
+                (bounds.get_x_max()-bounds.get_x_min())/delta_x, \
+                (bounds.get_y_max()-bounds.get_y_min())/delta_y, \
+                (bounds.get_z_max()-bounds.get_z_min())/delta_z))
 
     def get_cell(self, position):
-        x = position[0]
-        y = position[1]
-        z = position[2]
-        return 0
-        raise NotImplementedError
+        x = int((position[0]-self._x_min)/self._delta_x)
+        y = int((position[1]-self._y_min)/self._delta_y)
+        z = int((position[2]-self._z_min)/self._delta_z)
+        return [x, y, z]
 
-    def get_mesh_length(self, direction):
-        return len(self._cell[direction]['number'])
+    def flux_add(self, cell, distance):
+        self._flux[cell[0]][cell[1]][cell[2]] += distance
+        
+    def display_flux(self):
+        print self._flux
+
+    def get_cell_max(self, position):
+        cell_number = self.get_cell(position)
+        x_max = (cell_number[0] + 1) * self._delta_x
+        y_max = (cell_number[1] + 1) * self._delta_y
+        z_max = (cell_number[2] + 1) * self._delta_z
+        return [x_max, y_max, z_max]
+
+    def get_cell_min(self, position):
+        cell_number = self.get_cell(position)
+        x_min = cell_number[0]*self._delta_x
+        y_min = cell_number[1]*self._delta_y
+        z_min = cell_number[2]*self._delta_z
+        return [x_min, y_min, z_min]

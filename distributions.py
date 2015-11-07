@@ -120,4 +120,4 @@ def sample_fission_site(fission_bank):
     else:
         print 'ERROR, No fission sites'
         point = [0,0,0]
-    return np.array(point)
+    return point
