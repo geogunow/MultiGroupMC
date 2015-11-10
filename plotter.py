@@ -7,7 +7,7 @@
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-
+import numpy as np
 '''
  @brief     Creates a scatter plot of 3D points
  @details   Input data referring to point locations is plotted on a 3D graph.
@@ -22,3 +22,19 @@ def plot_3D_points(xdata, ydata, zdata):
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(xdata, ydata, zdata, s=10, c='k')
     plt.show()
+
+'''
+def plot_neutron_flux(3D_matrix_of_flux):
+
+
+plt.imshow(
+x = np.linspace(-1, 1, 100)
+y = np.cos(x)
+
+plt.plot(x, y, 'k.-')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Simple Matplotlib Example')
+plt.show()
+'''
+
