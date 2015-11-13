@@ -43,6 +43,8 @@ import mesh
  @param     mesh1 a Mesh object containing information about the mesh
 '''
 def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
+
+    TINY_MOVE = 1e-10
     
     # initial guess of neutron source distribution
     if first_round:
@@ -62,6 +64,8 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
     cell = mesh1.get_cell(neutron.get_position_vector())
     neutron.set_cell(cell)
 
+    axes = ['x','y', 'z']
+    
     # follow neutron while alive
     while neutron.alive:
         
@@ -71,12 +75,32 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
         # track neutron until collision or leakage
         while neutron_distance > 0:
 
-            # calculate distances to cell boundaries
-            distance_to_cell_edge = dict()
-            axes = ['x','y', 'z']
+            # get cell boundaries
             cell_boundaries = { \
                     'min': mesh1.get_cell_min(neutron.get_position_vector()),
                     'max': mesh1.get_cell_max(neutron.get_position_vector())}
+            
+            # nudge neutron forward
+            neutron.move(TINY_MOVE)
+            for axis in axes:
+                min_bound = bounds.get_surface_coord(axis, 'min')
+                max_bound = bounds.get_surface_coord(axis, 'max')
+                neutron_coord = neutron.get_position(axis)
+                if neutron_coord < min_bound:
+                    neutron.set_position(axis, min_bound)
+                if neutron_coord > max_bound:
+                    neutron.set_position(axis, max_bound)
+            cell = mesh1.get_cell(neutron.get_position_vector())
+            neutron.set_cell(cell)
+            
+            for i in range(3):
+                if cell[i] >= 20 or cell[i] < 0:
+                    print "OUT OF BOUNDS"
+                    print "Position = ", neutron.get_position_vector()
+                    print "Cell = ", cell
+            
+            # calculate distances to cell boundaries
+            distance_to_cell_edge = dict()
             for axis in axes:
                 distance_to_cell_edge[axis] = dict()
                 for side in ['min', 'max']:
@@ -145,12 +169,15 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
             neutron_distance -= tempd
 
             # add distance to cell flux
-            mesh1.flux_add(neutron.get_cell(), tempd)
+            for i in range(3):
+                if cell[i] >= 20 or cell[i] < 0:
+                    print "OUT OF BOUNDS"
+                    print "Position = ", neutron.get_position_vector()
+                    print "Cell = ", cell
+            mesh1.flux_add(cell, tempd)
             
             # nudge neutron and find cell
-            neutron.move(1e-10)
-            cell = mesh1.get_cell(neutron.get_position_vector())
-            neutron.set_cell(cell)
+            neutron.move(-TINY_MOVE)
 
         # check interaction
         if neutron.alive:

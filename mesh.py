@@ -31,8 +31,14 @@ class Mesh():
     # Should I run this function as a loop or explicitly assign each value?
     def get_cell(self, position):
         x = int((position[0]-self._x_min)/self._delta_x)
+        if x == self._flux.shape[0]:
+            x -= 1
         y = int((position[1]-self._y_min)/self._delta_y)
+        if y == self._flux.shape[1]:
+            y -= 1
         z = int((position[2]-self._z_min)/self._delta_z)
+        if z == self._flux.shape[2]:
+            z -= 1
         '''
         cell_num = list()
         for axis in ['x', 'y', 'z']:
