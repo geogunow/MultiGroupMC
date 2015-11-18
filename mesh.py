@@ -6,6 +6,7 @@
 '''
 
 import numpy as np
+import plotter
 
 '''
  @class Mesh mesh.py "mesh.py"
@@ -15,59 +16,47 @@ import numpy as np
 class Mesh():
     def __init__(self, bounds, delta_x, delta_y, delta_z):
         self._delta_axes = {'x': delta_x, 'y': delta_y, 'z': delta_z}
-        self._delta_x = delta_x
-        self._delta_y = delta_y
-        self._delta_z = delta_z
-        self._boundary_mins = {'x': bounds.get_x_min(),
-                'y': bounds.get_y_min(), 'z': bounds.get_z_min()}
-        self._x_min = bounds.get_x_min()
-        self._y_min = bounds.get_y_min()
-        self._z_min = bounds.get_z_min()
+        self._boundary_mins = {'x': bounds.get_surface_coord('x', 'min'),
+                'y': bounds.get_surface_coord('y', 'min'),
+                'z': bounds.get_surface_coord('z', 'min')}
         self._flux = np.zeros(( \
-                (bounds.get_x_max()-bounds.get_x_min())/delta_x, \
-                (bounds.get_y_max()-bounds.get_y_min())/delta_y, \
-                (bounds.get_z_max()-bounds.get_z_min())/delta_z))
+                (bounds.get_surface_coord('x', 'max') \
+                - self._boundary_mins['x'])/delta_x,
+                (bounds.get_surface_coord('y', 'max') \
+                - self._boundary_mins['y'])/delta_y,
+                (bounds.get_surface_coord('z', 'max') \
+                - self._boundary_mins['z'])/delta_z))
 
-    # Should I run this function as a loop or explicitly assign each value?
     def get_cell(self, position):
-        x = int((position[0]-self._x_min)/self._delta_x)
-        if x == self._flux.shape[0]:
-            x -= 1
-        y = int((position[1]-self._y_min)/self._delta_y)
-        if y == self._flux.shape[1]:
-            y -= 1
-        z = int((position[2]-self._z_min)/self._delta_z)
-        if z == self._flux.shape[2]:
-            z -= 1
-        '''
-        cell_num = list()
-        for axis in ['x', 'y', 'z']:
-        ''' 
-        return [x, y, z]
+        cell_num_vector = list()
+        for num, axis in zip(xrange(3), ['x', 'y', 'z']):
+            cell_num = int((position[num]-self._boundary_mins[axis]) \
+                    / self._delta_axes[axis])
+
+            # correct error if neutron is on upper boundary of the geometry
+            if cell_num == self._flux.shape[num]:
+                cell_num -= 1
+            cell_num_vector.append(cell_num)
+        return cell_num_vector
 
     def flux_add(self, cell, distance):
         self._flux[cell[0]][cell[1]][cell[2]] += distance
     
-    def display_flux_sum(self):
-        total = 0
-        for i in self._flux:
-            for j in i:
-                total += sum(j)
-        print total
-
-    def display_flux(self):
-        print self._flux
+    def display_flux(self, index):
+        plotter.plot_heat_map(self._flux, index)
 
     def get_cell_max(self, position):
         cell_number = self.get_cell(position)
-        x_max = (cell_number[0] + 1) * self._delta_x + self._x_min
-        y_max = (cell_number[1] + 1) * self._delta_y + self._y_min
-        z_max = (cell_number[2] + 1) * self._delta_z + self._z_min
-        return {'x': x_max, 'y': y_max, 'z': z_max}
+        maxes = dict()
+        for num, axis in zip(xrange(3), ['x', 'y', 'z']):
+            maxes.update({axis:((cell_number[num] + 1) * \
+                    self._delta_axes[axis] + self._boundary_mins[axis])})
+        return maxes
 
     def get_cell_min(self, position):
         cell_number = self.get_cell(position)
-        x_min = cell_number[0]*self._delta_x + self._x_min
-        y_min = cell_number[1]*self._delta_y + self._y_min
-        z_min = cell_number[2]*self._delta_z + self._z_min
-        return {'x': x_min, 'y': y_min, 'z': z_min}
+        mins = dict()
+        for num, axis in zip(xrange(3), ['x', 'y', 'z']):
+            mins.update({axis:(cell_number[num] * self._delta_axes[axis] \
+                    + self._boundary_mins[axis])})
+        return mins

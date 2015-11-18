@@ -13,7 +13,6 @@ from copy import deepcopy as copy
  @class Neutron neutron.py "neutron.py"
  @brief Contains neutron position and direction information
 '''
-#TODO: description + getters and setters
 class Neutron():
     def __init__(self, position, theta, phi):
         

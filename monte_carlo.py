@@ -93,12 +93,6 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
             cell = mesh1.get_cell(neutron.get_position_vector())
             neutron.set_cell(cell)
             
-            for i in range(3):
-                if cell[i] >= 20 or cell[i] < 0:
-                    print "OUT OF BOUNDS"
-                    print "Position = ", neutron.get_position_vector()
-                    print "Cell = ", cell
-            
             # calculate distances to cell boundaries
             distance_to_cell_edge = dict()
             for axis in axes:
@@ -130,14 +124,6 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
                         cell_lim_bound.append((axis, side))
                     elif r == tempd:
                         cell_lim_bound.append((axis, side))
-            '''
-            print 'Moving neutron ', tempd
-            print 'Cell:', neutron.get_cell()
-            print 'lim_bound:', cell_lim_bound
-            for axis, side in cell_lim_bound:
-                print 'Distance to cell edge:', distance_to_cell_edge[axis][side]
-            print 'position:', neutron.get_position_vector
-            '''
 
             # move neutron
             neutron.move(tempd)
@@ -169,11 +155,6 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
             neutron_distance -= tempd
 
             # add distance to cell flux
-            for i in range(3):
-                if cell[i] >= 20 or cell[i] < 0:
-                    print "OUT OF BOUNDS"
-                    print "Position = ", neutron.get_position_vector()
-                    print "Cell = ", cell
             mesh1.flux_add(cell, tempd)
             
             # nudge neutron and find cell
@@ -274,4 +255,3 @@ def generate_neutron_histories(n_histories, mat, bounds, mesh1, num_batches):
 
     mean_crow_distance = crow_distances.count / num_crow_distances.count
     print 'Mean crow fly distance = ', mean_crow_distance
-    print 'Crow distances:', crow_distances.count

@@ -11,7 +11,6 @@ import numpy as np
  @class Tally tally.py "tally.py"
  @brief Tally contains tallies of information used in neutron simulation
 '''
-
 class Tally():
     def __init__(self):
         self._count = 0

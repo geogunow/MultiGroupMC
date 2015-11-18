@@ -75,17 +75,12 @@ def sample_interaction(mat):
  @return    point a numpy array that contains the coordinates of a point
 '''
 def sample_location(bounds):
-    x_max = bounds.get_x_max()
-    x_min = bounds.get_x_min()
-    y_max = bounds.get_y_max()
-    y_min = bounds.get_y_min()
-    z_max = bounds.get_z_max()
-    z_min = bounds.get_z_min()
-    
-    x_pos = x_min + (x_max - x_min) * random.random()
-    y_pos = y_min + (y_max - y_min) * random.random()
-    z_pos = z_min + (z_max - z_min) * random.random()
-    return np.array([x_pos, y_pos, z_pos])
+    location = np.empty(shape = (3))
+    for num, axis in zip(range(3),['x', 'y', 'z']):
+        location[num] = (bounds.get_surface_coord(axis, 'max') \
+                + (bounds.get_surface_coord(axis, 'max') - \
+                bounds.get_surface_coord(axis, 'min')) * random.random())
+    return location            
 
 '''
  @brief     Function that samples the interaction type given an absorption
