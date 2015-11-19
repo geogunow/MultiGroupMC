@@ -76,10 +76,10 @@ def sample_interaction(mat):
 '''
 def sample_location(bounds):
     location = np.empty(shape = (3))
-    for num, axis in zip(range(3),['x', 'y', 'z']):
-        location[num] = (bounds.get_surface_coord(axis, 'max') \
+    for i, axis in enumerate(['x', 'y', 'z']):
+        location[i] = bounds.get_surface_coord(axis, 'min') \
                 + (bounds.get_surface_coord(axis, 'max') - \
-                bounds.get_surface_coord(axis, 'min')) * random.random())
+                bounds.get_surface_coord(axis, 'min')) * random.random()
     return location            
 
 '''

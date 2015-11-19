@@ -6,7 +6,6 @@
 '''
 
 import numpy as np
-import plotter
 
 '''
  @class Mesh mesh.py "mesh.py"
@@ -42,9 +41,15 @@ class Mesh():
     def flux_add(self, cell, distance):
         self._flux[cell[0]][cell[1]][cell[2]] += distance
     
+    def flux_clear(self):
+        self._flux[:][:][:] = 0
+
     def display_flux(self, index):
         plotter.plot_heat_map(self._flux, index)
-
+    
+    def get_flux(self):
+        return self._flux
+    
     def get_cell_max(self, position):
         cell_number = self.get_cell(position)
         maxes = dict()

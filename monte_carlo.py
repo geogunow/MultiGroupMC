@@ -40,9 +40,9 @@ import mesh
  @param     fission_banks a dictionary containing the old and new fission banks
  @param     first_round a boolean telling whenther or not this is the first
             batch to be tested
- @param     mesh1 a Mesh object containing information about the mesh
+ @param     mesh a Mesh object containing information about the mesh
 '''
-def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
+def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh):
 
     TINY_MOVE = 1e-10
     
@@ -61,7 +61,7 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
     neutron = Neutron(neutron_starting_point, theta, phi)
 
     # get mesh cell
-    cell = mesh1.get_cell(neutron.get_position_vector())
+    cell = mesh.get_cell(neutron.get_position_vector())
     neutron.set_cell(cell)
 
     axes = ['x','y', 'z']
@@ -77,8 +77,8 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
 
             # get cell boundaries
             cell_boundaries = { \
-                    'min': mesh1.get_cell_min(neutron.get_position_vector()),
-                    'max': mesh1.get_cell_max(neutron.get_position_vector())}
+                    'min': mesh.get_cell_min(neutron.get_position_vector()),
+                    'max': mesh.get_cell_max(neutron.get_position_vector())}
             
             # nudge neutron forward
             neutron.move(TINY_MOVE)
@@ -90,7 +90,7 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
                     neutron.set_position(axis, min_bound)
                 if neutron_coord > max_bound:
                     neutron.set_position(axis, max_bound)
-            cell = mesh1.get_cell(neutron.get_position_vector())
+            cell = mesh.get_cell(neutron.get_position_vector())
             neutron.set_cell(cell)
             
             # calculate distances to cell boundaries
@@ -155,7 +155,7 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
             neutron_distance -= tempd
 
             # add distance to cell flux
-            mesh1.flux_add(cell, tempd)
+            mesh.flux_add(cell, tempd)
             
             # nudge neutron and find cell
             neutron.move(-TINY_MOVE)
@@ -175,7 +175,7 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
                 neutron.set_direction(theta, phi)
 
                 # reassign cell location
-                cell = mesh1.get_cell(neutron.get_position_vector())
+                cell = mesh.get_cell(neutron.get_position_vector())
                 neutron.set_cell(cell)
 
             # absorption event
@@ -211,7 +211,7 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1):
  @param     mesh a Mesh object containing information about the mesh
  @param     num_batches the number of batches to be tested
 '''
-def generate_neutron_histories(n_histories, mat, bounds, mesh1, num_batches):
+def generate_neutron_histories(n_histories, mat, bounds, mesh, num_batches):
     
     crow_distances = tally.Tally()
     num_crow_distances = tally.Tally()
@@ -231,7 +231,10 @@ def generate_neutron_histories(n_histories, mat, bounds, mesh1, num_batches):
     
     first_round = True
     for batch in xrange(num_batches):
-        
+       
+        #clear flux data
+        mesh.flux_clear()
+
         # assign the new fission locations to the old fission list
         old_fission_locations.clear()
         for num in xrange(new_fission_locations.length):
@@ -246,7 +249,7 @@ def generate_neutron_histories(n_histories, mat, bounds, mesh1, num_batches):
 
         # simulate the neutron behavior
         for i in xrange(n_histories):
-            transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh1)
+            transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh)
 
         print 'For batch ', batch + 1, ' k = ', \
                 tallies['fissions'].count/(tallies['leaks'].count + \
