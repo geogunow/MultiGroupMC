@@ -36,7 +36,6 @@ def plot_heat_map(flux_data, index):
     lum_img = img[:, :, index]
     
     
-    '''    
     nx = len(lum_img)
     ny = len(lum_img[0])
 
@@ -47,7 +46,6 @@ def plot_heat_map(flux_data, index):
             for j in range(ny):
                 for jj in range(j*repeat, (j+1)*repeat):
                     plot_array[ii, jj] = lum_img[i, j]
-    '''
-    plt.imshow(lum_img, origin='lower')
+    plt.imshow(plot_array, origin='lower')
     plt.colorbar()
     plt.show()

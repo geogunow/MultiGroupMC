@@ -211,7 +211,8 @@ def transport_neutron(mat, bounds, tallies, fission_banks, first_round, mesh):
  @param     mesh a Mesh object containing information about the mesh
  @param     num_batches the number of batches to be tested
 '''
-def generate_neutron_histories(n_histories, mat, bounds, mesh, num_batches):
+def generate_neutron_histories(n_histories=0, mat=0, bounds=0, 
+        mesh=0, num_batches=0):
     
     crow_distances = tally.Tally()
     num_crow_distances = tally.Tally()
