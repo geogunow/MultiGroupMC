@@ -30,7 +30,7 @@ def plot_3D_points(xdata, ydata, zdata):
  @param     flux_data a 3d numpy array containing the flux information
  @param     index the z cell-value at which the heat map is displayed
 '''
-def plot_heat_map(flux_data, index):
+def plot_heat_map(flux_data, index, repeat = 100):
 
     img = flux_data
     lum_img = img[:, :, index]
@@ -39,7 +39,6 @@ def plot_heat_map(flux_data, index):
     nx = len(lum_img)
     ny = len(lum_img[0])
 
-    repeat = 100
     plot_array = np.zeros( (nx*repeat, ny*repeat) )
     for i in range(nx):
         for ii in range(i*repeat, (i+1)*repeat):

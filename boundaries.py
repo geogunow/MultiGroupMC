@@ -29,7 +29,7 @@ class Boundaries():
         # store boundary types (0 = vacuum, 1 = reflective)
         for surface in self._surfaces:
             for side in ['min', 'max']:
-                self._surfaces[surface][side]['type'] = 1 
+                self._surfaces[surface][side]['type'] = 0 
 
     def get_surface_coord(self, axis, side):
         return self._surfaces[axis][side]['coord']
