@@ -11,7 +11,7 @@
             nulcear data (i.e. cross-sections) for neutron transport.
 '''
 class Material:
-    def __init__(self, sigma_t, sigma_s, nu, sigma_f):
+    def __init__(self, sigma_t=0, sigma_s=0, nu=0, sigma_f=0):
         
         # total cross-section
         self._sigma_t = sigma_t

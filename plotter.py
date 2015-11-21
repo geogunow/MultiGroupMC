@@ -8,6 +8,8 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
+import matplotlib.image as mpimg
+
 '''
  @brief     Creates a scatter plot of 3D points
  @details   Input data referring to point locations is plotted on a 3D graph.
@@ -24,17 +26,25 @@ def plot_3D_points(xdata, ydata, zdata):
     plt.show()
 
 '''
-def plot_neutron_flux(3D_matrix_of_flux):
-
-
-plt.imshow(
-x = np.linspace(-1, 1, 100)
-y = np.cos(x)
-
-plt.plot(x, y, 'k.-')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title('Simple Matplotlib Example')
-plt.show()
+ @brief     Creates a heat map of the flux data
+ @param     flux_data a 3d numpy array containing the flux information
+ @param     index the z cell-value at which the heat map is displayed
 '''
+def plot_heat_map(flux_data, index, repeat = 100):
 
+    img = flux_data
+    lum_img = img[:, :, index]
+    
+    
+    nx = len(lum_img)
+    ny = len(lum_img[0])
+
+    plot_array = np.zeros( (nx*repeat, ny*repeat) )
+    for i in range(nx):
+        for ii in range(i*repeat, (i+1)*repeat):
+            for j in range(ny):
+                for jj in range(j*repeat, (j+1)*repeat):
+                    plot_array[ii, jj] = lum_img[i, j]
+    plt.imshow(plot_array, origin='lower')
+    plt.colorbar()
+    plt.show()
