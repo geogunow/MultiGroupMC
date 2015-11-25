@@ -114,5 +114,6 @@ def sample_fission_site(fission_bank):
         point = fission_bank.location(index)
     else:
         print 'ERROR, No fission sites'
+        exit()
         point = [0,0,0]
     return point
