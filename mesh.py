@@ -95,19 +95,11 @@ class Mesh():
     # Locations should be a 3x2 array with the maxes and mins of the area to
     # be filled in each dimension
     def fill_material(self, material_type, locations):
-        x_smallest_cell = self.get_cell([locations[0][0],
-            self._boundary_mins['x'],self._boundary_mins['x']])
-        x_largest_cell = self.get_cell([locations[0][1],
-            self._boundary_mins['x'],self._boundary_mins['x']])
-        y_smallest_cell = self.get_cell([self._boundary_mins['y'],
-            locations[1][0],self._boundary_mins['y']])
-        y_largest_cell = self.get_cell([self._boundary_mins['y'],
-            locations[1][1],self._boundary_mins['y']])
-        z_smallest_cell = self.get_cell([self._boundary_mins['z'],
-            self._boundary_mins['z'],locations[2][0]])
-        z_largest_cell = self.get_cell([self._boundary_mins['z'],
-            self._boundary_mins['z'],locations[2][1]])
-        for i in range(x_smallest_cell[0], x_largest_cell[0]+1):
-            for j in range(y_smallest_cell[1], y_largest_cell[1]):
-                for k in range(z_smallest_cell[2], z_largest_cell[2]+1):
+        smallest_cell = self.get_cell( \
+                [locations[0][0], locations[1][0], locations[2][0]])
+        largest_cell = self.get_cell( \
+                [locations[0][1], locations[1][1], locations[2][1]])
+        for i in range(smallest_cell[0], largest_cell[0]+1):
+            for j in range(smallest_cell[1], largest_cell[1]):
+                for k in range(smallest_cell[2], largest_cell[2]+1):
                     self._cell_materials[i][j][k] = material_type
