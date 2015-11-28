@@ -174,22 +174,22 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
 
                 # set direction
                 neutron.set_direction(theta, phi)
-                
+
                 # reassign cell location
                 cell = mesh.get_cell(neutron.get_position_vector(),
                         neutron.get_direction_vector())
                 neutron.set_cell(cell)
             # absorption event
             else:
-               
+
                 # tally absorption
                 tallies['absorptions'].add(1)
                 
                 # sample for fission event
                 mat = materials[mesh.get_material(neutron.get_cell())]
                 if sample_fission(mat) == 1:
+                    
                     # sample number of neutrons
-
                     for j in xrange(sample_num_fission( \
                             materials[mesh.get_material(neutron.get_cell())])):
                         fission_banks['new'].add(neutron.get_position_vector())
