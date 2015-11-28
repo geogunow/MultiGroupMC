@@ -14,8 +14,16 @@ import numpy as np
 class Tally():
     def __init__(self):
         self._count = 0
+    
+    '''
+     @brief add an amount to the tally
+    '''
     def add(self, amt):
         self._count += amt
+
+    '''
+     @brief cleara the tally
+    '''
     def clear(self):
         self._count = 0
     

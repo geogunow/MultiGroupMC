@@ -16,6 +16,9 @@ class Fission():
     def __init__(self):
         self._fission_locations = list()
     
+    '''
+     @brief clears the fission sites
+    '''
     def clear(self):
         self._fission_locations = list()
 
@@ -23,14 +26,25 @@ class Fission():
     def length(self):
         return len(self._fission_locations)
 
+    '''
+     @brief returns the first item in the fission_locations list then deletes
+            that item
+    '''
     def next(self):
         item = self._fission_locations[0]
         self._fission_locations.pop(0)
         return item
-
-    # location should be a numpy array
+ 
+    '''
+     @brief adds a location to the fission_locations list
+     @param location a numpy array of the location to be added
+    '''
     def add(self, location):
         self._fission_locations.append(location)
 
+
+    '''
+     @brief returns the location in fission_locations with index num
+    '''
     def location(self, num):
         return self._fission_locations[num]

@@ -37,15 +37,14 @@ class Mesh():
                 for j in range(self._axis_sizes['y'])]  \
                 for i in range(self._axis_sizes['x'])]
 
+    '''
+     @brief get the cell of a position within the geometry
+    '''
     def get_cell(self, position, direction=[0,0,0]):
         cell_num_vector = list()
-        for num, axis in zip(xrange(3), ['x', 'y', 'z']):
+        for num, axis in enumerate(['x', 'y', 'z']):
             cell_num = int(round((position[num]-self._boundary_mins[axis]) \
                     / self._delta_axes[axis], 7))
-
-            # correct error if neutron is on upper boundary of the geometry
-            if cell_num == self._flux.shape[num]:
-                cell_num -= 1
 
             # correct error if neutron is on upper boundary of cell
             if position[num] == (self._boundary_mins[axis] \
@@ -55,22 +54,41 @@ class Mesh():
 
             cell_num_vector.append(cell_num)
         return cell_num_vector
-
+    
+    '''
+     @brief add the distance a neutron has traveled within the cell to the flux
+            array
+    '''
     def flux_add(self, cell, distance):
         self._flux[cell[0]][cell[1]][cell[2]] += distance
     
+    '''
+     @brief clear the flux
+    '''
     def flux_clear(self):
         self._flux[:][:][:] = 0
 
+    '''
+     @brief print out the values in the flux array
+    '''
     def display_flux(self):
         print self._flux
 
+    '''
+     @brief print the values in the materials array
+    '''
     def display_materials(self):
         print self._cell_materials
 
+    '''
+     @brief return flux array
+    '''
     def get_flux(self):
         return self._flux
     
+    '''
+     @brief returns the coordinate for the maximum location in the cell
+    '''
     def get_cell_max(self, position, direction=[0,0,0]):
         cell_number = self.get_cell(position, direction)
         maxes = dict()
@@ -79,6 +97,9 @@ class Mesh():
                     self._delta_axes[axis] + self._boundary_mins[axis])})
         return maxes
 
+    '''
+     @brief returns the coordinate for the minimum location in the cell
+    '''
     def get_cell_min(self, position, direction=[0,0,0]):
         cell_number = self.get_cell(position, direction)
         mins = dict()
@@ -87,14 +108,23 @@ class Mesh():
                     + self._boundary_mins[axis])})
         return mins
 
+    '''
+     @brief returns the material of a given cell
+    '''
     def get_material(self, cell_number):
         return self._cell_materials[ \
                 cell_number[0]][cell_number[1]][cell_number[2]]
 
-    # fill cells with a certain material.
-    # Locations should be a 3x2 array with the maxes and mins of the area to
-    # be filled in each dimension
-    def fill_material(self, material_type, locations):
+    '''
+     @brief fill cells with a certain material
+     @param locations should be a 3x2 array with the maxes and mins of the
+            area to be filled in each dimension
+    '''
+    def fill_material(self, material_type, locations): 
+        for i, axis in enumerate(['x', 'y', 'z']):
+            if locations[i][0] == self._boundary_mins[axis] + \
+                    self._delta_axes[axis] * self._axis_sizes[axis]:
+                        locations[i][0] -= .000001
         smallest_cell = self.get_cell( \
                 [locations[0][0], locations[1][0], locations[2][0]])
         largest_cell = self.get_cell( \
