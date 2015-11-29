@@ -17,28 +17,37 @@ import mesh
 import plotter
 import numpy as np
 
-test_bounds =  boundaries.Boundaries(-10.0, 10.0, -10.0, 10.0, -1.00, 10.0)
-
-test_mesh = mesh.Mesh(test_bounds, 1, 1, 1, default_material='water')
-
 # create test materials
 fuel_material = material.Material(sigma_t=2.0, sigma_s=1.0,
         nu=2.4, sigma_f=.5)
-water_material = material.Material(sigma_t=2.0, sigma_s=1.0,
+water = material.Material(sigma_t=2.0, sigma_s=1.0,
         nu=2.4, sigma_f=0.0)
-test_materials = {'fuel': fuel_material, 'water': water_material}
+
+test_bounds =  boundaries.Boundaries(-10.0, 10.0, -10.0, 10.0, -10.00, 10.0)
+
+test_mesh = mesh.Mesh(test_bounds, 1.0, 1.0, 1.0, default_material=None)
 
 # fill mesh with some fuel
-test_mesh.fill_material('fuel', [[-6.0, -5.0],[-6.0,-5.0],[-10.0,9.0]])
-test_mesh.fill_material('fuel', [[-6.0, -5.0],[-3.0,-2.0],[-10.0,9.0]])
-test_mesh.fill_material('fuel', [[-6.0, -5.0],[0.0,1.0],[-10.0,9.0]])
-test_mesh.fill_material('fuel', [[5.0, 6.0],[-6.0,-5.0],[-10.0,9.0]])
-test_mesh.fill_material('fuel', [[5.0, 6.0],[-3.0,-2.0],[-10.0,9.0]])
-test_mesh.fill_material('fuel', [[5.0, 6.0],[0.0,-1.0],[-10.0,9.0]])
+test_mesh.fill_material(fuel_material, [[-6.0, -5.0],[-6.0,-5.0],[-10.0,10.0]])
+test_mesh.fill_material(fuel_material, [[-6.0, -5.0],[-3.0,-2.0],[-10.0,10.0]])
+test_mesh.fill_material(fuel_material, [[-6.0, -5.0],[0.0,1.0],[-10.0,10.0]])
+test_mesh.fill_material(fuel_material, [[5.0, 6.0],[-6.0,-5.0],[-10.0,10.0]])
+test_mesh.fill_material(fuel_material, [[5.0, 6.0],[-3.0,-2.0],[-10.0,10.0]])
+test_mesh.fill_material(fuel_material, [[5.0, 6.0],[0.0,1.0],[-10.0,10.0]])
+
+# fill the rest of the mesh with water
+test_mesh.fill_material(water, [[-10.0, 10.0],[-10.0, -6.0],[-10.0,10.0]])
+test_mesh.fill_material(water, [[-10.0, 10.0],[-5.0, -3.0],[-10.0,10.0]])
+test_mesh.fill_material(water, [[-10.0, 10.0],[-2.0, 0.0],[-10.0,10.0]])
+test_mesh.fill_material(water, [[-10.0, 10.0],[1.0, 10.0],[-10.0,10.0]])
+
+test_mesh.fill_material(water, [[-10.0, -6.0],[-10.0, 10.0],[-10.0,10.0]])
+test_mesh.fill_material(water, [[-5.0, 5.0],[-10.0, 10.0],[-10.0,10.0]])
+test_mesh.fill_material(water, [[6.0, 10.0],[-10.0, 10.0],[-10.0,10.0]])
 
 # run simulation
 monte_carlo.generate_neutron_histories(n_histories=10000, 
-        materials = test_materials, bounds=test_bounds, mesh=test_mesh,
+        bounds=test_bounds, mesh=test_mesh,
         num_batches=3)
 
 # display plot of neutron flux

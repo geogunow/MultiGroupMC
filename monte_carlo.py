@@ -73,7 +73,7 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
         
         # sample neutron distance to collision
         neutron_distance = sample_distance( \
-                materials[mesh.get_material(neutron.get_cell())])
+                mesh.get_material(neutron.get_cell()))
     
         # track neutron until collision or leakage
         while neutron_distance > 0:
@@ -162,7 +162,7 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
             
         # check interaction
         if neutron.alive:
-            mat = materials[mesh.get_material(neutron.get_cell())]
+            mat = mesh.get_material(neutron.get_cell())
             neutron_interaction = sample_interaction(mat)
 
             # scattering event
@@ -186,12 +186,12 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
                 tallies['absorptions'].add(1)
                 
                 # sample for fission event
-                mat = materials[mesh.get_material(neutron.get_cell())]
+                mat = mesh.get_material(neutron.get_cell())
                 if sample_fission(mat) == 1:
                     
                     # sample number of neutrons
                     for j in xrange(sample_num_fission( \
-                            materials[mesh.get_material(neutron.get_cell())])):
+                            mesh.get_material(neutron.get_cell()))):
                         fission_banks['new'].add(neutron.get_position_vector())
                         tallies['fissions'].add(1)
                 # end neutron history

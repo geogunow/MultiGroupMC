@@ -15,7 +15,7 @@ import copy
 '''
 class Mesh():
     def __init__(self, bounds, delta_x = 0, delta_y=0, delta_z=0,
-            default_material='water'):
+            default_material=None):
         self._delta_axes = {'x': delta_x, 'y': delta_y, 'z': delta_z}
         self._boundary_mins = {'x': bounds.get_surface_coord('x', 'min'),
                 'y': bounds.get_surface_coord('y', 'min'),
@@ -121,15 +121,19 @@ class Mesh():
             area to be filled in each dimension
     '''
     def fill_material(self, material_type, locations): 
+        
+        # nudge the upper limit down if it equals the geometry's upper limit
         for i, axis in enumerate(['x', 'y', 'z']):
-            if locations[i][0] == self._boundary_mins[axis] + \
-                    self._delta_axes[axis] * self._axis_sizes[axis]:
-                        locations[i][0] -= .000001
+            locations[i][1] -= self._delta_axes[axis]/10
+        
+        # put the smallest and largest cell values along each axis in a list
         smallest_cell = self.get_cell( \
                 [locations[0][0], locations[1][0], locations[2][0]])
         largest_cell = self.get_cell( \
                 [locations[0][1], locations[1][1], locations[2][1]])
+        
+        # fill the cells with material_type
         for i in range(smallest_cell[0], largest_cell[0]+1):
-            for j in range(smallest_cell[1], largest_cell[1]):
+            for j in range(smallest_cell[1], largest_cell[1]+1):
                 for k in range(smallest_cell[2], largest_cell[2]+1):
                     self._cell_materials[i][j][k] = material_type
