@@ -31,8 +31,15 @@ class Boundaries():
             for side in ['min', 'max']:
                 self._surfaces[surface][side]['type'] = 0 
 
+    '''
+     @brief returns the coordinate of the maximum or minimum boundary for a
+            given axis
+    '''
     def get_surface_coord(self, axis, side):
         return self._surfaces[axis][side]['coord']
 
+    '''
+     @brief returns the material type for a given boundary
+    '''
     def get_surface_type(self, axis, side):
         return self._surfaces[axis][side]['type']

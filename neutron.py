@@ -38,47 +38,90 @@ class Neutron():
     def alive(self):
         return self._alive
 
+    '''
+     @brief move a neutron a given distance along its direction of travel
+    '''
     def move(self, distance):
         self._xyz += self._direction * distance 
 
-    def reflect(self, surface):
-        self._direction[self.association[surface]] *= -1
+    '''
+     @brief reverse the direction of travel along a given axis
+    '''
+    def reflect(self, axis):
+        self._direction[self.association[axis]] *= -1
 
+    '''
+     @brief set the neutron's direction of travel given its angle in sphereical
+            coordinates
+    '''
     def set_direction(self, theta, phi):
         self._direction = np.array([sin(theta)*cos(phi), sin(theta)*sin(phi),
             cos(theta)])
 
+    '''
+     @brief set the neuton's position
+    '''
     def set_position(self, var, value):
         self._xyz[self.association[var]] = value
     
+    '''
+     @brief set the neutron's cell
+    '''
     def set_cell(self, cell_number):
         self._cell = cell_number
 
+    '''
+     @brief kill the neutron
+    '''
     def kill(self):
         self._alive = False
 
+    '''
+     @brief return the cell of the neutron
+    '''
     def get_cell(self):
         return self._cell
     
+    '''
+     @brief return the position of the neutron along a given axis
+    '''
     def get_position(self, var):
         return self._xyz[self.association[var]]
 
+    '''
+     @brief return the position of the neutron in all three dimensions
+    '''
     def get_position_vector(self):
         return copy(self._xyz)
     
+    '''
+     @brief return the neutron's direction of travel along a given axis
+    '''
     def get_direction(self, var):
         return self._direction[self.association[var]]
         
+    '''
+     @brief return the neutron's direction of travel in all three dimensions
+    '''
     def get_direction_vector(self):
         return copy(self._direction)
 
+    '''
+     @brief return the neutron's distance from the origin
+    '''
     def get_distance_from_origin(self):
         return sqrt(self.x**2 + self.y**2 + self.z**2)
 
+    '''
+     @brief return the neutron's distance from a given coordinate
+    '''
     def get_distance(self, coord):
         return sqrt((self.x - coord[0])**2 + (self.y - coord[1])**2 + \
                 (self.z - coord[2])**2)
 
+    '''
+     @brief return's data about the neutron
+    '''
     def __repr__(self):
         string = "<Neutron at position " + str(self._xyz) + " traveling in " \
                 + "direction " + str(self._direction) + ">"
