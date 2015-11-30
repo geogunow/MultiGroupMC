@@ -117,3 +117,44 @@ def sample_fission_site(fission_bank):
         exit()
         point = [0,0,0]
     return point
+
+
+'''
+ @brief     Samples an initial neutron energy group after fission
+ @param     chi the neutron emission spectrum from fission
+ @return    the group number of the emitted neutron
+'''
+def sample_neutron_energy_group(chi):
+    
+    # sample random number 
+    r = random.random()
+
+    # find which group the random number is in
+    chi_sum = 0
+    for g, chi_g in enumerate(chi):
+        chi_sum += chi_g
+        if r < chi_sum:
+            return g
+
+    return len(chi) - 1
+
+
+'''
+ @brief     Samples the neutron energy group after a scattering event
+ @param     g the neutron energy group before scattering
+ @param     scattering_matrix the scattering cross section matrix
+ @return    the neutron group after scattering
+'''
+def sample_scattered_group(g, scattering_matrix):
+    
+    # sample random number 
+    r = random.random() * sum(scattering_matrix[g])
+
+    # find which group the random number is in
+    scatter_sum = 0
+    for gp, scatter_gp in enumerate(scattering_matrix[g]):
+        scatter_sum += scatter_gp
+        if r < scatter_sum:
+            return gp
+
+    return len(scattering_matrix) - 1
