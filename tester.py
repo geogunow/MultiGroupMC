@@ -61,10 +61,11 @@ test_mesh.fill_material(water, [[6.0, 10.0],[-10.0, 10.0],[-10.0,10.0]])
 # run simulation
 monte_carlo.generate_neutron_histories(n_histories=10000, 
         bounds=test_bounds, mesh=test_mesh,
-        num_batches=4, chi=test_chi)
+        num_batches=2, chi=test_chi)
 
 # display plot of neutron flux
 index = 2
 flux_to_plot = test_mesh.get_flux()
 for i in range(test_num_groups):
-    plotter.plot_heat_map(flux_to_plot[i], index, repeat = 5)
+    plotter.plot_heat_map(flux_to_plot[i], index, repeat = 5,
+            title = ('Group ' + str(i+1)))
