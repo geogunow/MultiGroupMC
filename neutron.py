@@ -14,11 +14,11 @@ from copy import deepcopy as copy
  @brief Contains neutron position and direction information
 '''
 class Neutron():
-    def __init__(self, position, theta, phi):
+    def __init__(self, position, theta, phi, group):
         
         self._xyz = np.array(copy(position))
         self._alive = True
-        
+        self._group = group
         self.set_direction(theta, phi)
         self.association = {'x': 0, 'y':1, 'z':2}
 
@@ -38,6 +38,9 @@ class Neutron():
     def alive(self):
         return self._alive
 
+    @property
+    def group(self):
+        return self._group
     '''
      @brief move a neutron a given distance along its direction of travel
     '''
@@ -127,3 +130,8 @@ class Neutron():
                 + "direction " + str(self._direction) + ">"
         return string
 
+    '''
+     @brief set the neutron's energy group
+    '''
+    def set_group(self, new_group):
+        self._group = new_group

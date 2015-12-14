@@ -25,10 +25,6 @@ class Material:
         # fission cross-section
         self._sigma_f = sigma_f
 
-        # absorption cross-section
-        self._sigma_a = sigma_t - sigma_s
-
-
     # functions to allow access to the values stored in Material
     @property
     def sigma_t(self):

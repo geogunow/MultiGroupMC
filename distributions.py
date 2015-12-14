@@ -51,8 +51,8 @@ def sample_incorrect_polar_angle():
  @param     mat a Material object that contains information about the material
  @return    A randomly sampled distance in [0, infinity)
 '''
-def sample_distance(mat):
-    return -log(random.random()) / mat.sigma_t
+def sample_distance(mat, group):
+    return -log(random.random()) / mat.sigma_t[group]
 
 '''
  @brief     Function that samples the interaction type (0 = scattering,
@@ -63,8 +63,8 @@ def sample_distance(mat):
             about the material            
  @return    An interaction type (0 = scattering, 1 = absorption)
 '''
-def sample_interaction(mat):
-    return int(random.random() < mat.sigma_s / mat.sigma_t)
+def sample_interaction(mat, g, new_g):
+    return int(random.random() < mat.sigma_s[g][new_g] / mat.sigma_t[g])
 
 '''
  @brief     Function that samples a random location within a bounding box.
@@ -90,8 +90,11 @@ def sample_location(bounds):
  @param     mat a Material object that contains information about the material
  @return    An interaction type (0 = capture, 1 = fission)
 '''
-def sample_fission(mat):
-    return int(random.random() < mat.sigma_f / mat.sigma_a)
+def sample_fission(mat, g, new_g):
+
+    # I'm not sure if I'm using the right item in sigma_s
+    return int(random.random() < mat.sigma_f[g] \
+            / (mat.sigma_t[g]-mat.sigma_s[g][new_g]))
 
 '''
  @brief     Samples the nunber of neutrons produced from a fission event

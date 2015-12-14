@@ -43,7 +43,7 @@ import mesh
  @param     mesh a Mesh object containing information about the mesh
 '''
 def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
-        mesh, batch):
+        mesh, batch, chi):
 
     TINY_MOVE = 1e-10
     
@@ -59,7 +59,8 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
     neutron_lost = False
     theta = sample_polar_angle()
     phi = sample_azimuthal_angle()
-    neutron = Neutron(neutron_starting_point, theta, phi)
+    group = sample_neutron_energy_group(chi)
+    neutron = Neutron(neutron_starting_point, theta, phi, group)
 
     # get mesh cell
     cell = mesh.get_cell(neutron.get_position_vector(),
@@ -73,7 +74,7 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
         
         # sample neutron distance to collision
         neutron_distance = sample_distance( \
-                mesh.get_material(neutron.get_cell()))
+                mesh.get_material(neutron.get_cell()), neutron.group)
     
         # track neutron until collision or leakage
         while neutron_distance > 0:
@@ -158,12 +159,18 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
             neutron_distance -= tempd
 
             # add distance to cell flux
-            mesh.flux_add(cell, tempd)
+            mesh.flux_add(neutron.group, cell, tempd)
             
         # check interaction
         if neutron.alive:
             mat = mesh.get_material(neutron.get_cell())
-            neutron_interaction = sample_interaction(mat)
+
+            # samaple what group the neutron will scatter to
+            new_group = sample_scattered_group(group, mat.sigma_s)
+
+            # sample what the interaction will be
+            neutron_interaction = sample_interaction(mat,
+                    neutron.group, new_group)
 
             # scattering event
             if neutron_interaction == 0:
@@ -172,6 +179,9 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
                 theta = sample_polar_angle()
                 phi = sample_azimuthal_angle()
 
+                # set new group
+                neutron.set_group(new_group)
+
                 # set direction
                 neutron.set_direction(theta, phi)
 
@@ -179,6 +189,7 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
                 cell = mesh.get_cell(neutron.get_position_vector(),
                         neutron.get_direction_vector())
                 neutron.set_cell(cell)
+
             # absorption event
             else:
 
@@ -187,7 +198,7 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
                 
                 # sample for fission event
                 mat = mesh.get_material(neutron.get_cell())
-                if sample_fission(mat) == 1:
+                if sample_fission(mat, neutron.group, new_group) == 1:
                     
                     # sample number of neutrons
                     for j in xrange(sample_num_fission( \
@@ -214,7 +225,7 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
  @param     num_batches the number of batches to be tested
 '''
 def generate_neutron_histories(n_histories=0, materials=0, bounds=0,
-        mesh=0, num_batches=0):
+        mesh=0, num_batches=0, chi = [0,0,0]):
     
     crow_distances = tally.Tally()
     num_crow_distances = tally.Tally()
@@ -249,7 +260,9 @@ def generate_neutron_histories(n_histories=0, materials=0, bounds=0,
         # simulate the neutron behavior
         for i in xrange(n_histories):
             transport_neutron(materials, bounds, tallies, fission_banks,
-                    first_round, mesh, batch)
+                    first_round, mesh, batch, chi)
+
+        # give results
         print 'For batch ', batch + 1, ' k = ', \
                 tallies['fissions'].count/(tallies['leaks'].count + \
                 tallies['absorptions'].count)
