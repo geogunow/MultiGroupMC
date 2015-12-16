@@ -14,8 +14,8 @@ import copy
         core
 '''
 class Mesh():
-    def __init__(self, bounds, delta_x = 0, delta_y=0, delta_z=0,
-            default_material=None, num_groups=0):
+    def __init__(self, bounds, delta_x, delta_y, delta_z, num_groups,
+            default_material=None):
         self._delta_axes = {'x': delta_x, 'y': delta_y, 'z': delta_z}
         self._boundary_mins = {'x': bounds.get_surface_coord('x', 'min'),
                 'y': bounds.get_surface_coord('y', 'min'),
@@ -61,7 +61,7 @@ class Mesh():
      @brief add the distance a neutron has traveled within the cell to the flux
             array
     '''
-    def flux_add(self, group, cell, distance):
+    def flux_add(self, cell, distance, group):
         self._flux[group][cell[0]][cell[1]][cell[2]] += distance
     
     '''

@@ -24,21 +24,19 @@ test_chi = [.6, .3, .1]
 # create cross sections
 test_num_groups = 3
 test_sigma_s = [[.8,1.0,1.2],[.7,.9,1.4],[.9,1.0,1.1]]
-test_sigma_t = list()
-for i in range(len(test_sigma_s)):
-    test_sigma_t.append(sum(test_sigma_s[i]))
+test_sigma_t = [4.0, 4.0, 4.0]
 test_sigma_f = [.4,.3,.2]
 
 # create test materials
 fuel_material = material.Material(sigma_t= test_sigma_t, sigma_s=test_sigma_s,
-        nu=2.4, sigma_f= test_sigma_f)
+        nu=2.4, sigma_f= test_sigma_f, chi = test_chi)
 water = material.Material(sigma_t= test_sigma_t, sigma_s=test_sigma_s,
-        nu=2.4, sigma_f=[0.0, 0.0, 0.0])
+        nu=2.4, sigma_f=[0.0, 0.0, 0.0], chi = test_chi)
 
 test_bounds =  boundaries.Boundaries(-10.0, 10.0, -10.0, 10.0, -10.00, 10.0)
 
-test_mesh = mesh.Mesh(test_bounds, 1.0, 1.0, 1.0, default_material=None,
-        num_groups = test_num_groups)
+test_mesh = mesh.Mesh(test_bounds, 1.0, 1.0, 1.0, num_groups = test_num_groups,
+        default_material=None)
 
 # fill mesh with some fuel
 test_mesh.fill_material(fuel_material, [[-6.0, -5.0],[-6.0,-5.0],[-10.0,10.0]])
@@ -61,7 +59,7 @@ test_mesh.fill_material(water, [[6.0, 10.0],[-10.0, 10.0],[-10.0,10.0]])
 # run simulation
 monte_carlo.generate_neutron_histories(n_histories=10000, 
         bounds=test_bounds, mesh=test_mesh,
-        num_batches=2, chi=test_chi)
+        num_batches=2)
 
 # display plot of neutron flux
 index = 2

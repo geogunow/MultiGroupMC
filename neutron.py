@@ -14,11 +14,10 @@ from copy import deepcopy as copy
  @brief Contains neutron position and direction information
 '''
 class Neutron():
-    def __init__(self, position, theta, phi, group):
+    def __init__(self, position, theta, phi):
         
         self._xyz = np.array(copy(position))
         self._alive = True
-        self._group = group
         self.set_direction(theta, phi)
         self.association = {'x': 0, 'y':1, 'z':2}
 
