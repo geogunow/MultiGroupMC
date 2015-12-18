@@ -68,7 +68,7 @@ def transport_neutron(bounds, tallies, fission_banks, first_round,
     neutron.set_cell(cell)
     
     # set neutron group
-    cell_mat = mesh.get_material(neutron.get_cell())
+    cell_mat = mesh.get_material(cell)
     group = sample_neutron_energy_group(cell_mat.chi)
     neutron.set_group(group)
     axes = ['x','y', 'z']
@@ -170,8 +170,7 @@ def transport_neutron(bounds, tallies, fission_banks, first_round,
             mat = mesh.get_material(neutron.get_cell())
 
             # sample what the interaction will be
-            neutron_interaction = sample_interaction(mat,
-                    neutron.group)
+            neutron_interaction = sample_interaction(mat, neutron.group)
 
             # scattering event
             if neutron_interaction == 0:
@@ -228,8 +227,7 @@ def transport_neutron(bounds, tallies, fission_banks, first_round,
  @param     mesh a Mesh object containing information about the mesh
  @param     num_batches the number of batches to be tested
 '''
-def generate_neutron_histories(n_histories, bounds,
-        mesh, num_batches):
+def generate_neutron_histories(n_histories, bounds, mesh, num_batches):
     
     crow_distances = tally.Tally()
     num_crow_distances = tally.Tally()
