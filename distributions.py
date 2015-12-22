@@ -51,8 +51,8 @@ def sample_incorrect_polar_angle():
  @param     mat a Material object that contains information about the material
  @return    A randomly sampled distance in [0, infinity)
 '''
-def sample_distance(mat):
-    return -log(random.random()) / mat.sigma_t
+def sample_distance(mat, group):
+    return -log(random.random()) / mat.sigma_t[group]
 
 '''
  @brief     Function that samples the interaction type (0 = scattering,
@@ -63,8 +63,8 @@ def sample_distance(mat):
             about the material            
  @return    An interaction type (0 = scattering, 1 = absorption)
 '''
-def sample_interaction(mat):
-    return int(random.random() < mat.sigma_s / mat.sigma_t)
+def sample_interaction(mat, g):
+    return int(random.random() < sum(mat.sigma_s[g]) / mat.sigma_t[g])
 
 '''
  @brief     Function that samples a random location within a bounding box.
@@ -90,8 +90,8 @@ def sample_location(bounds):
  @param     mat a Material object that contains information about the material
  @return    An interaction type (0 = capture, 1 = fission)
 '''
-def sample_fission(mat):
-    return int(random.random() < mat.sigma_f / mat.sigma_a)
+def sample_fission(mat, g):
+    return int(random.random() < mat.sigma_f[g] / mat.sigma_a[g])
 
 '''
  @brief     Samples the nunber of neutrons produced from a fission event
@@ -118,7 +118,6 @@ def sample_fission_site(fission_bank):
         point = [0,0,0]
     return point
 
-
 '''
  @brief     Samples an initial neutron energy group after fission
  @param     chi the neutron emission spectrum from fission
@@ -138,14 +137,13 @@ def sample_neutron_energy_group(chi):
 
     return len(chi) - 1
 
-
 '''
  @brief     Samples the neutron energy group after a scattering event
  @param     g the neutron energy group before scattering
  @param     scattering_matrix the scattering cross section matrix
  @return    the neutron group after scattering
 '''
-def sample_scattered_group(g, scattering_matrix):
+def sample_scattered_group(scattering_matrix, g):
     
     # sample random number 
     r = random.random() * sum(scattering_matrix[g])

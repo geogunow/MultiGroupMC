@@ -41,8 +41,9 @@ import mesh
  @param     first_round a boolean telling whenther or not this is the first
             batch to be tested
  @param     mesh a Mesh object containing information about the mesh
+ @param     batch the batch number of the neutron
 '''
-def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
+def transport_neutron(bounds, tallies, fission_banks, first_round,
         mesh, batch):
 
     TINY_MOVE = 1e-10
@@ -65,7 +66,11 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
     cell = mesh.get_cell(neutron.get_position_vector(),
             neutron.get_direction_vector())
     neutron.set_cell(cell)
-
+    
+    # set neutron group
+    cell_mat = mesh.get_material(cell)
+    group = sample_neutron_energy_group(cell_mat.chi)
+    neutron.set_group(group)
     axes = ['x','y', 'z']
     
     # follow neutron while alive
@@ -73,7 +78,7 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
         
         # sample neutron distance to collision
         neutron_distance = sample_distance( \
-                mesh.get_material(neutron.get_cell()))
+                mesh.get_material(neutron.get_cell()), neutron.group)
     
         # track neutron until collision or leakage
         while neutron_distance > 0:
@@ -158,12 +163,14 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
             neutron_distance -= tempd
 
             # add distance to cell flux
-            mesh.flux_add(cell, tempd)
+            mesh.flux_add(cell, tempd, neutron.group)
             
         # check interaction
         if neutron.alive:
             mat = mesh.get_material(neutron.get_cell())
-            neutron_interaction = sample_interaction(mat)
+
+            # sample what the interaction will be
+            neutron_interaction = sample_interaction(mat, neutron.group)
 
             # scattering event
             if neutron_interaction == 0:
@@ -172,6 +179,12 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
                 theta = sample_polar_angle()
                 phi = sample_azimuthal_angle()
 
+                # sample what group the neutron will scatter to
+                new_group = sample_scattered_group(mat.sigma_s, group)
+
+                # set new group
+                neutron.set_group(new_group)
+
                 # set direction
                 neutron.set_direction(theta, phi)
 
@@ -179,6 +192,7 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
                 cell = mesh.get_cell(neutron.get_position_vector(),
                         neutron.get_direction_vector())
                 neutron.set_cell(cell)
+
             # absorption event
             else:
 
@@ -187,7 +201,7 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
                 
                 # sample for fission event
                 mat = mesh.get_material(neutron.get_cell())
-                if sample_fission(mat) == 1:
+                if sample_fission(mat, neutron.group) == 1:
                     
                     # sample number of neutrons
                     for j in xrange(sample_num_fission( \
@@ -213,8 +227,7 @@ def transport_neutron(materials, bounds, tallies, fission_banks, first_round,
  @param     mesh a Mesh object containing information about the mesh
  @param     num_batches the number of batches to be tested
 '''
-def generate_neutron_histories(n_histories=0, materials=0, bounds=0,
-        mesh=0, num_batches=0):
+def generate_neutron_histories(n_histories, bounds, mesh, num_batches):
     
     crow_distances = tally.Tally()
     num_crow_distances = tally.Tally()
@@ -248,8 +261,10 @@ def generate_neutron_histories(n_histories=0, materials=0, bounds=0,
 
         # simulate the neutron behavior
         for i in xrange(n_histories):
-            transport_neutron(materials, bounds, tallies, fission_banks,
+            transport_neutron(bounds, tallies, fission_banks,
                     first_round, mesh, batch)
+
+        # give results
         print 'For batch ', batch + 1, ' k = ', \
                 tallies['fissions'].count/(tallies['leaks'].count + \
                 tallies['absorptions'].count)

@@ -18,7 +18,6 @@ class Neutron():
         
         self._xyz = np.array(copy(position))
         self._alive = True
-        
         self.set_direction(theta, phi)
         self.association = {'x': 0, 'y':1, 'z':2}
 
@@ -38,6 +37,9 @@ class Neutron():
     def alive(self):
         return self._alive
 
+    @property
+    def group(self):
+        return self._group
     '''
      @brief move a neutron a given distance along its direction of travel
     '''
@@ -127,3 +129,8 @@ class Neutron():
                 + "direction " + str(self._direction) + ">"
         return string
 
+    '''
+     @brief set the neutron's energy group
+    '''
+    def set_group(self, new_group):
+        self._group = new_group
