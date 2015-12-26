@@ -14,7 +14,7 @@ import numpy as np
 class Tally():
     def __init__(self):
         self._count = 0
-    
+
     '''
      @brief add an amount to the tally
     '''
@@ -26,7 +26,7 @@ class Tally():
     '''
     def clear(self):
         self._count = 0
-    
+
     @property
     def count(self):
         return float(self._count)

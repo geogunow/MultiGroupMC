@@ -25,7 +25,7 @@ class Boundaries():
         self._surfaces['y']['max']['coord'] = y_max
         self._surfaces['z']['min']['coord'] = z_min
         self._surfaces['z']['max']['coord'] = z_max
-        
+
         # store boundary types (0 = vacuum, 1 = reflective)
         for surface in self._surfaces:
             for side in ['min', 'max']:

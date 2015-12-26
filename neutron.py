@@ -15,7 +15,7 @@ from copy import deepcopy as copy
 '''
 class Neutron():
     def __init__(self, position, theta, phi):
-        
+
         self._xyz = np.array(copy(position))
         self._alive = True
         self.set_direction(theta, phi)
@@ -40,6 +40,7 @@ class Neutron():
     @property
     def group(self):
         return self._group
+
     '''
      @brief move a neutron a given distance along its direction of travel
     '''
@@ -65,7 +66,7 @@ class Neutron():
     '''
     def set_position(self, var, value):
         self._xyz[self.association[var]] = value
-    
+
     '''
      @brief set the neutron's cell
     '''
@@ -83,7 +84,7 @@ class Neutron():
     '''
     def get_cell(self):
         return self._cell
-    
+
     '''
      @brief return the position of the neutron along a given axis
     '''
@@ -95,13 +96,13 @@ class Neutron():
     '''
     def get_position_vector(self):
         return copy(self._xyz)
-    
+
     '''
      @brief return the neutron's direction of travel along a given axis
     '''
     def get_direction(self, var):
         return self._direction[self.association[var]]
-        
+
     '''
      @brief return the neutron's direction of travel in all three dimensions
     '''

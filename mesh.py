@@ -6,7 +6,7 @@
 '''
 
 import numpy as np
-import copy
+from copy import deepcopy as copy
 
 '''
  @class Mesh mesh.py "mesh.py"
@@ -20,7 +20,7 @@ class Mesh():
         self._boundary_mins = {'x': bounds.get_surface_coord('x', 'min'),
                 'y': bounds.get_surface_coord('y', 'min'),
                 'z': bounds.get_surface_coord('z', 'min')}
-        
+
         # create flux array
         self._axis_sizes = {'x': 0, 'y': 0, 'z': 0}
         for i, axis in enumerate(['x', 'y', 'z']):
@@ -31,7 +31,6 @@ class Mesh():
         self._flux = np.zeros((num_groups, self._axis_sizes['x'],
             self._axis_sizes['y'], self._axis_sizes['z']))
 
-        
 
         # create material array
         self._cell_materials = [[[default_material \
@@ -45,25 +44,26 @@ class Mesh():
     def get_cell(self, position, direction=[0,0,0]):
         cell_num_vector = list()
         for num, axis in enumerate(['x', 'y', 'z']):
-            cell_num = int(round((position[num]-self._boundary_mins[axis]) \
-                    / self._delta_axes[axis], 7))
+            cell_num = int((position[num]-self._boundary_mins[axis]) \
+                    / self._delta_axes[axis])
 
             # correct error if neutron is on upper boundary of cell
-            if position[num] == (self._boundary_mins[axis] \
-                    + cell_num*self._delta_axes[axis]) \
-                    and direction[num] < 0:
-                        cell_num -=1
+            move_cell = position[num] == self._boundary_mins[axis] + cell_num \
+                    * self._delta_axes[axis] and direction[num] < 0
+            if cell_num == self._axis_sizes[axis] or move_cell:
+                cell_num -= 1
 
             cell_num_vector.append(cell_num)
+
         return cell_num_vector
-    
+
     '''
      @brief add the distance a neutron has traveled within the cell to the flux
             array
     '''
     def flux_add(self, cell, distance, group):
         self._flux[group][cell[0]][cell[1]][cell[2]] += distance
-    
+
     '''
      @brief clear the flux
     '''
@@ -87,12 +87,11 @@ class Mesh():
     '''
     def get_flux(self):
         return self._flux
-    
+
     '''
      @brief returns the coordinate for the maximum location in the cell
     '''
-    def get_cell_max(self, position, direction=[0,0,0]):
-        cell_number = self.get_cell(position, direction)
+    def get_cell_max(self, cell_number):
         maxes = dict()
         for i, axis in enumerate(['x', 'y', 'z']):
             maxes.update({axis:((cell_number[i] + 1) * \
@@ -102,8 +101,7 @@ class Mesh():
     '''
      @brief returns the coordinate for the minimum location in the cell
     '''
-    def get_cell_min(self, position, direction=[0,0,0]):
-        cell_number = self.get_cell(position, direction)
+    def get_cell_min(self, cell_number):
         mins = dict()
         for i, axis in enumerate(['x', 'y', 'z']):
             mins.update({axis:(cell_number[i] * self._delta_axes[axis] \
@@ -122,18 +120,19 @@ class Mesh():
      @param locations should be a 3x2 array with the maxes and mins of the
             area to be filled in each dimension
     '''
-    def fill_material(self, material_type, locations): 
-        
+    def fill_material(self, material_type, bounds): 
+
         # nudge the upper limit down if it equals the geometry's upper limit
+        locations = copy(bounds)
         for i, axis in enumerate(['x', 'y', 'z']):
             locations[i][1] -= self._delta_axes[axis]/10
-        
+
         # put the smallest and largest cell values along each axis in a list
         smallest_cell = self.get_cell( \
                 [locations[0][0], locations[1][0], locations[2][0]])
         largest_cell = self.get_cell( \
                 [locations[0][1], locations[1][1], locations[2][1]])
-        
+
         # fill the cells with material_type
         for i in range(smallest_cell[0], largest_cell[0]+1):
             for j in range(smallest_cell[1], largest_cell[1]+1):

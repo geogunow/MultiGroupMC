@@ -12,10 +12,10 @@ import numpy as np
  @brief Contains a list of locations where fission events occured
 '''
 class Fission():
-    
+
     def __init__(self):
         self._fission_locations = list()
-    
+
     '''
      @brief clears the fission sites
     '''
@@ -34,7 +34,7 @@ class Fission():
         item = self._fission_locations[0]
         self._fission_locations.pop(0)
         return item
- 
+
     '''
      @brief adds a location to the fission_locations list
      @param location a numpy array of the location to be added
