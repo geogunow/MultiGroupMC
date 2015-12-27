@@ -12,8 +12,8 @@ from copy import deepcopy as copy
 import random
 from math import *
 import numpy as np
-random.seed(0)
 import fission
+random.seed(0)
 
 '''
  @brief     Function that randomly samples an azimuthal angle

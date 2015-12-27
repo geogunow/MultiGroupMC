@@ -34,8 +34,7 @@ def plot_heat_map(flux_data, index, repeat = 100, title=''):
 
     img = flux_data
     lum_img = img[:, :, index]
-    
-    
+
     nx = len(lum_img)
     ny = len(lum_img[0])
 

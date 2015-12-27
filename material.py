@@ -12,7 +12,7 @@
 '''
 class Material:
     def __init__(self, sigma_t, sigma_s, nu, sigma_f, chi):
-        
+
         # total cross-section
         self._sigma_t = sigma_t
 
@@ -24,10 +24,10 @@ class Material:
 
         # fission cross-section
         self._sigma_f = sigma_f
-        
+
         # chi
         self._chi = chi
-        
+
         # absorption cross-section
         self._sigma_a = list()
         for i in range(len(sigma_t)):
@@ -41,7 +41,7 @@ class Material:
     @property
     def sigma_s(self):
         return self._sigma_s
-   
+
     @property
     def nu(self):
         return self._nu

@@ -57,9 +57,8 @@ test_mesh.fill_material(water, [[-5.0, 5.0],[-10.0, 10.0],[-10.0,10.0]])
 test_mesh.fill_material(water, [[6.0, 10.0],[-10.0, 10.0],[-10.0,10.0]])
 
 # run simulation
-monte_carlo.generate_neutron_histories(n_histories=10000, 
-        bounds=test_bounds, mesh=test_mesh,
-        num_batches=2)
+monte_carlo.generate_neutron_histories(n_histories=10**6,
+        bounds=test_bounds, mesh=test_mesh, num_batches=2)
 
 # display plot of neutron flux
 index = 2
