@@ -8,6 +8,7 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include <iostream>
 #include "material.h"
 #include "boundaries.h"
 
@@ -39,9 +40,9 @@ public:
     void fluxAdd(int *cell, double distance, int group);
     void fluxClear();
     double**** getFlux();
-    double* getCellMax(int *cell_number);
-    double *getCellMin(int *cell_number);
-    Material getMaterial(int *cell_number);
+    double* getCellMax(int cell_number [3]);
+    double *getCellMin(int cell_number [3]);
+    Material getMaterial(int cell_number [3]);
     void fillMaterials(Material material_type, double material_bounds[3][2]);
 
 };

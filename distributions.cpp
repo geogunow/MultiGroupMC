@@ -47,7 +47,7 @@ int sampleInteraction(Material mat, int group) {
 
 */
 double* sampleLocation(Boundaries bounds) {
-    double *_dist_location;
+    double* _dist_location = new double [3];
     for (int i=0; i<3; ++i) {
         /** is this the correct way to sample a rondom location? */
         _dist_location[i] = bounds.getSurfaceCoord(i, 0) +

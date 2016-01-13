@@ -19,6 +19,7 @@ source += distributions.cpp
 source += tally.cpp
 source += neutron.cpp
 source += mesh.cpp
+source += monte_carlo.cpp
 #=============================================================================
 #
 #=============================================================================

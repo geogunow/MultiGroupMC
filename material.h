@@ -14,18 +14,21 @@
 class Material {
 private:
     double *_sigma_t;
-    double **_sigma_s;
+
+    //What type should _sigma_s be?
+    double _sigma_s [][2];
     double _nu;
     double *_sigma_f;
     double *_chi;
-    double _sigma_a [NUM_GROUPS];
+    double *_sigma_a;
     double _s_sum;
 
 public:
-    
-    Material(double *sigma_t, 
-            double **sigma_s, double nu, 
-            double *sigma_f, double *chi);
+   
+    Material();
+    Material(double sigma_t[NUM_GROUPS], 
+            double sigma_s[][NUM_GROUPS], double nu, 
+            double sigma_f[NUM_GROUPS], double chi[NUM_GROUPS]);
     virtual ~Material();
     
     double* getSigmaT();

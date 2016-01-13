@@ -2,9 +2,12 @@
 
 #include "material.h"
 
-Material::Material(double *sigma_t, 
-        double **sigma_s, double nu, 
-        double *sigma_f, double *chi) {
+/** default constructor */
+Material::Material() {}
+
+Material::Material(double sigma_t[NUM_GROUPS], 
+        double sigma_s[][NUM_GROUPS], double nu, 
+        double sigma_f[NUM_GROUPS], double chi[NUM_GROUPS]) {
 
     /** store variables */
     _sigma_t = sigma_t;
@@ -20,8 +23,8 @@ Material::Material(double *sigma_t,
             _s_sum += _sigma_s[i][j];
         }
        _sigma_a[i] =  _sigma_t[i] - _s_sum;
-
     }
+    
 }
 
 /** not sure if the destructor needs to do anything */
