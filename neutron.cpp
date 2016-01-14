@@ -7,7 +7,7 @@
 
 #include "neutron.h"
 
-Neutron::Neutron(double *position, double theta, double phi) {
+Neutron::Neutron(std::vector <double> &position, double theta, double phi) {
     _xyz = position;
     _neutron_alive = true;
 
@@ -53,6 +53,7 @@ void Neutron::reflect(int axis) {
 }
 
 void Neutron::setDirection(double theta, double phi) {
+    _neutron_direction.resize(3);
     _neutron_direction[0] = sin(theta)*cos(phi);
     _neutron_direction[1] = sin(theta)*sin(phi);
     _neutron_direction[2] = cos(theta);
@@ -62,7 +63,7 @@ void Neutron::setPosition(int axis, double value) {
     _xyz[axis] = value;
 }
 
-void Neutron::setCell(int *cell_number) {
+void Neutron::setCell(std::vector <int> &cell_number) {
     _neutron_cell = cell_number;
 }
 
@@ -70,7 +71,7 @@ void Neutron::kill() {
     _neutron_alive = false;
 }
 
-int* Neutron::getCell() {
+std::vector <int> Neutron::getCell() {
     return _neutron_cell;
 }
 
@@ -78,7 +79,7 @@ double Neutron::getPosition(int axis) {
     return _xyz[axis];
 }
 
-double* Neutron::getPositionVector() {
+std::vector <double> Neutron::getPositionVector() {
     return _xyz;
 }
 
@@ -86,11 +87,11 @@ double Neutron::getDirection(int axis) {
     return _neutron_direction[axis];
 }
 
-double* Neutron::getDirectionVector() {
+std::vector <double> Neutron::getDirectionVector() {
     return _neutron_direction;
 }
 
-double Neutron::getDistance(double *coord) {
+double Neutron::getDistance(std::vector <double> &coord) {
     return sqrt(pow(x()-coord[0], 2.0)
             + pow(y()-coord[1], 2.0)
             + pow(z()-coord[2], 2.0));
@@ -99,3 +100,6 @@ double Neutron::getDistance(double *coord) {
 void Neutron::setGroup(int new_group) {
     _neutron_group = new_group;
 }
+
+
+

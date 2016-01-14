@@ -8,6 +8,7 @@
 #ifndef NEUTRON_H
 #define NEUTRON_H
 
+#include <vector>
 #include <cmath>
 #include <stdio.h>
 #include <math.h>
@@ -15,36 +16,32 @@
 class Neutron {
 private:
     bool _neutron_alive;
-    double* _xyz;
     int _neutron_group;
-    double _neutron_direction [3];
-    int* _neutron_cell;
-
+    std::vector <double> _xyz, _neutron_direction;
+    std::vector <int> _neutron_cell;
 
 public:
-    Neutron(double *position, double theta, double phi);
-    ~Neutron();
+    Neutron(std::vector <double> &position, double theta, double phi);
+    virtual ~Neutron();
 
-    double x();
-    double y();
-    double z();
+    double x(), 
+        y(), 
+        z(),
+        getPosition(int axis),
+        getDirection(int axis),
+        getDistance(std::vector <double> &coord);
     bool alive();
     int getGroup();
-    void move(double distance);
-    void reflect(int axis);
-    void setDirection(double theta, double phi);
-    void setPosition(int axis, double value);
-    void setCell(int *cell_number);
-    void kill();
-    int* getCell();
-    double getPosition(int axis);
-    double* getPositionVector();
-    double getDirection(int axis);
-    double* getDirectionVector();
-    double getDistance(double *coord);
-    void setGroup(int new_group);
-
-
+    void move(double distance),
+        reflect(int axis),
+        setDirection(double theta, double phi),
+        setPosition(int axis, double value),
+        setCell(std::vector <int> &cell_number),
+        setGroup(int new_group),
+        kill();
+    std::vector <int> getCell();
+    std::vector <double> getPositionVector(),
+        getDirectionVector();
 };
 
 #endif

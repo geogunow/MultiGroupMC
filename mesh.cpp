@@ -11,55 +11,49 @@
  @brief constructor for Mesh class
 */
 Mesh::Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
-        Material _default_material) {
+        Material default_material) {
     
     /** save deltas */
-    _delta_axes[0] = delta_x;
-    _delta_axes[1] = delta_y;
-    _delta_axes[2] = delta_z;
+    _delta_axes.push_back(delta_x);
+    _delta_axes.push_back(delta_y);
+    _delta_axes.push_back(delta_z);
 
     /** save boundary mins */
     for (int i=0; i<3; ++i) {
-        _boundary_mins[i]=  bounds.getSurfaceCoord(i, 0);
+        _boundary_mins.push_back(bounds.getSurfaceCoord(i, 0));
     }
 
     /** save axis sizes */
     for (int i=0; i<3; ++i) {
-        _axis_sizes[i] = (int)((bounds.getSurfaceCoord(i, 1)
-                    - _boundary_mins[i])/_delta_axes[i]);
+        _axis_sizes.push_back((int)((bounds.getSurfaceCoord(i, 1)
+                    - _boundary_mins[i])/_delta_axes[i]));
     }
-
-    /** creat flux array */
-    double _flux[NUM_GROUPS][_axis_sizes[0]][_axis_sizes[1]][_axis_sizes[2]];
-   
-    // set flux = 0 
+    
+    /** resize _flux and set all its elements = 0 */
+    _flux.resize(NUM_GROUPS);
     for (int i=0; i<NUM_GROUPS; ++i) {
+        _flux[i].resize(_axis_sizes[0]);
         for (int j=0; j<_axis_sizes[0]; ++j) {
+            _flux[i][j].resize(_axis_sizes[1]);
             for (int k=0; k<_axis_sizes[1]; ++k) {
-                for (int ii=0; ii<_axis_sizes[2]; ++ii) {
-                    std::cout << i << " " << j << " " << k << " " << ii << std::endl;
-                    _flux[i][j][k][ii] = 0.0;
-                    std::cout << "flux value: " << _flux[i][j][k][ii];
+                for (int l=0; l<_axis_sizes[2]; ++l) {
+                    _flux[i][j][k].push_back(0.0);
                 }
             }
         }
     }
 
-    
-    /** creat materials array */
-    
-    Material _cell_materials[_axis_sizes[0]][_axis_sizes[1]][_axis_sizes[2]];
+    /** create materials array */
+    _cell_materials.resize(_axis_sizes[0]);
     for (int i=0; i<_axis_sizes[0]; ++i) {
+        _cell_materials[i].resize(_axis_sizes[1]);
         for (int j=0; j<_axis_sizes[1]; ++j) {
             for (int k=0; k<_axis_sizes[2]; ++k) {
-                _cell_materials[i][j][k] = _default_material;
-    
-             }
+                _cell_materials[i][j].push_back(default_material);
+            }
         }
     }
-
 }
-
 
 /**
  @brief deconstructor for Mesh class
@@ -70,14 +64,11 @@ Mesh::~Mesh() {}
  @brief get the cell containing a neutron at a given location witha given
         direction of travel
 */
-int * Mesh::getCell(double position[3], double direction[3]) {
-
-/** debugging */
-
+std::vector <int> Mesh::getCell(std::vector <double>& position,
+        std::vector <double>& direction) {
 
     for (int i=0; i<3; ++i) {
         _cell_num = (int)((position[i] - _boundary_mins[i])/_delta_axes[i]);
-        std::cout << "working "  << _delta_axes[i] << std::endl;
 
         /** correct error if neutron is on upper boundary of cell */
         _move_cell = position[i] == _boundary_mins[i] + _cell_num
@@ -86,13 +77,9 @@ int * Mesh::getCell(double position[3], double direction[3]) {
             _cell_num -= 1;
         }
         
-        _cell_num_vector[i] = _cell_num;
+        _cell_num_vector.push_back(_cell_num);
     }
 
-    std::cout << "cell:" << std::endl;
-    for (int i=0; i<3; ++i) {
-        std::cout << _cell_num_vector[i] << std::endl;
-    }
     return _cell_num_vector;
 }
 
@@ -100,7 +87,7 @@ int * Mesh::getCell(double position[3], double direction[3]) {
  @brief add the distance a neutron has traveled within the cell to the flux
         array
 */
-void Mesh::fluxAdd(int *cell, double distance, int group) {
+void Mesh::fluxAdd(std::vector <int> &cell, double distance, int group) {
     _flux[group][cell[0]][cell[1]][cell[2]] += distance;
 }
 
@@ -109,16 +96,11 @@ void Mesh::fluxAdd(int *cell, double distance, int group) {
 */
 void Mesh::fluxClear() {
 
-    /** this might not work */
-    std::cout << "clearing flux" << std::endl;
     for (int i=0; i<NUM_GROUPS; ++i) {
         for (int j=0; j<_axis_sizes[0]; ++j) {
             for (int k=0; k<_axis_sizes[1]; ++k) {
-                for (int ii=0; ii<_axis_sizes[2]; ++ii) {
-                    std::cout << i << " " << j << " " << k << " " << ii << std::endl;
-                    //_flux[i][j][k][ii] = 0.0;
-                    std::cout << "flux value: " << _flux[0][0][0][0];
-                    std::cout << "flux value: " << _flux[i][j][k][ii];
+                for (int l=0; l<_axis_sizes[2]; ++l) {
+                    _flux[i][j][k].push_back(0.0);
                 }
             }
         }
@@ -128,7 +110,8 @@ void Mesh::fluxClear() {
 /**
  @brief return the flux array
 */
-double**** Mesh::getFlux() {
+std::vector <std::vector <std::vector <std::vector <double> > > >
+        Mesh::getFlux() {
 
     /** _flux might have to be public for this to work */
     return _flux;
@@ -137,7 +120,7 @@ double**** Mesh::getFlux() {
 /**
  @brief returns the coordinate for the maximum in the cell
 */
-double* Mesh::getCellMax(int cell_number [3]) {
+std::vector <double> Mesh::getCellMax(std::vector <int> &cell_number) {
     
     /** maxes might have to be public as well */
     for (int i=0; i<3; ++i) {
@@ -149,7 +132,7 @@ double* Mesh::getCellMax(int cell_number [3]) {
 /**
  @brief returns the coordinate for the minimum in the cell
 */
-double* Mesh::getCellMin(int cell_number [3]) {
+std::vector <double> Mesh::getCellMin(std::vector <int> &cell_number) {
 
     /** mins might have to be public */
     for (int i=0; i<3; ++i) {
@@ -161,7 +144,7 @@ double* Mesh::getCellMin(int cell_number [3]) {
 /**
  @brief returns the material of a given cell
 */
-Material Mesh::getMaterial(int cell_number [3]) {
+Material Mesh::getMaterial(std::vector <int> &cell_number) {
     return _cell_materials[cell_number[0]][cell_number[1]][cell_number[2]];
 }
 
@@ -170,11 +153,14 @@ Material Mesh::getMaterial(int cell_number [3]) {
  @param locations should b be a 3x2 array with the maxes and mins of the area
         to be filled in each direction
 */
-void Mesh::fillMaterials(Material material_type, double material_bounds[3][2]) {
+void Mesh::fillMaterials(Material material_type,
+        std::vector <std::vector <double> > &material_bounds) {
     
-   
     /** copy the value of material_bounds to locations and nudge the upper
-     limit down so it is contained within the highest cell */
+    limit down so it is contained within the highest cell */
+    _min_locations.resize(3);
+    _max_locations.resize(3);
+    _default_direction.resize(3);
     for (int i=0; i<3; ++i) {
         _min_locations[i] = material_bounds[i][0];
         _max_locations[i] = material_bounds[i][1] - _delta_axes[i]/10;

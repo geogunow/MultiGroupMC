@@ -13,22 +13,19 @@
 class Fission {
 private:
 
-    // the 50 place needs to be expandable
-    std::vector<double*> _fission_locations;
-    double *item;
+    std::vector<std::vector <double> > _fission_locations;
+    std::vector <double> _item;
 
 public:
     
     Fission();
     virtual ~Fission();
     
-    void clear();
+    void clear(),
+        add(std::vector <double> &location);
     int length();
-    void add(double location[3]);
-
-    /** these should actually return cartesian coordinates */
-    double* location(int num);
-    double* next();
+    std::vector <double> location(int num),
+        next();
 
 };
 

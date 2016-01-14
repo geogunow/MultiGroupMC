@@ -9,41 +9,36 @@
 #define MESH_H
 
 #include <iostream>
+#include <vector>
 #include "material.h"
 #include "boundaries.h"
 
 class Mesh {
 private:
-    double _delta_axes [3];
-    double _boundary_mins [3];
-    int _axis_sizes [3];
-    double ****_flux;
-    Material ***_cell_materials;
-    int _cell_num_vector [3];
+    std::vector <double> _delta_axes, _boundary_mins, _maxes, _mins,
+        _min_locations, _max_locations, _default_direction;
+    std::vector <int> _axis_sizes, _cell_num_vector,
+        _smallest_cell, _largest_cell;
+    std::vector <std::vector <std::vector <std::vector <double> > > > _flux;
+    std::vector <std::vector <std::vector <Material> > > _cell_materials;
     int _cell_num;
     bool _move_cell;
-    double *_maxes;
-    double *_mins;
-    double _min_locations [3];
-    double _max_locations [3];
-    int *_smallest_cell;
-    int *_largest_cell;
-    double _default_direction [3];
-
 
 public:
     Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
-            Material _default_material);
+            Material default_material);
     virtual ~Mesh();
 
-    int * getCell(double position[3], double direction[3]);
-    void fluxAdd(int *cell, double distance, int group);
+    std::vector <int> getCell(std::vector <double>& position,
+            std::vector <double>& direction);
+    void fluxAdd(std::vector <int> &cell, double distance, int group);
     void fluxClear();
-    double**** getFlux();
-    double* getCellMax(int cell_number [3]);
-    double *getCellMin(int cell_number [3]);
-    Material getMaterial(int cell_number [3]);
-    void fillMaterials(Material material_type, double material_bounds[3][2]);
+    std::vector <std::vector <std::vector <std::vector <double> > > > getFlux();
+    std::vector <double> getCellMax(std::vector <int> &cell_number);
+    std::vector <double> getCellMin(std::vector <int> &cell_number);
+    Material getMaterial(std::vector <int> &cell_number);
+    void fillMaterials(Material material_type,
+            std::vector <std::vector <double> > &material_bounds);
 
 };
 

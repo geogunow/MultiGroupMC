@@ -1,4 +1,3 @@
-
 /** 
  @file      material.h
  @brief     contains the material class
@@ -9,35 +8,35 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
+#include <iostream>
+#include <vector>
 #include "global_constants.h"
 
 class Material {
 private:
-    double *_sigma_t;
-
-    //What type should _sigma_s be?
-    double _sigma_s [][2];
+    std::vector <double> _sigma_t;
+    std::vector <std::vector <double> > _sigma_s;
     double _nu;
-    double *_sigma_f;
-    double *_chi;
-    double *_sigma_a;
+    std::vector <double> _sigma_f;
+    std::vector <double> _chi;
+    std::vector <double> _sigma_a;
     double _s_sum;
 
 public:
    
     Material();
-    Material(double sigma_t[NUM_GROUPS], 
-            double sigma_s[][NUM_GROUPS], double nu, 
-            double sigma_f[NUM_GROUPS], double chi[NUM_GROUPS]);
+    Material(std::vector <double> &sigma_t, 
+            std::vector <std::vector <double> > &sigma_s, double nu, 
+            std::vector <double> &sigma_f, std::vector <double> &chi);
     virtual ~Material();
     
-    double* getSigmaT();
-    double** getSigmaS();
+    std::vector <double> getSigmaT(),
+        getSigmaF(),
+        getChi(),
+        getSigmaA();
+    std::vector <std::vector <double> > getSigmaS();
     double getNu();
-    double* getSigmaF();
-    double* getChi();
-    double* getSigmaA();
+
 };
 
 #endif
-

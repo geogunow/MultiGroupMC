@@ -1,13 +1,11 @@
-#include <iostream>
-
 #include "material.h"
 
 /** default constructor */
 Material::Material() {}
 
-Material::Material(double sigma_t[NUM_GROUPS], 
-        double sigma_s[][NUM_GROUPS], double nu, 
-        double sigma_f[NUM_GROUPS], double chi[NUM_GROUPS]) {
+Material::Material(std::vector <double> &sigma_t, 
+        std::vector <std::vector <double> > &sigma_s, double nu, 
+        std::vector <double> &sigma_f, std::vector <double> &chi) {
 
     /** store variables */
     _sigma_t = sigma_t;
@@ -22,19 +20,19 @@ Material::Material(double sigma_t[NUM_GROUPS],
         for (int j=0; j < NUM_GROUPS; ++j) {
             _s_sum += _sigma_s[i][j];
         }
-       _sigma_a[i] =  _sigma_t[i] - _s_sum;
+       _sigma_a.push_back(_sigma_t[i] - _s_sum);
     }
-    
+   
 }
 
 /** not sure if the destructor needs to do anything */
 Material::~Material() {}
 
-double* Material::getSigmaT() {
+std::vector <double> Material::getSigmaT() {
     return _sigma_t;
 }
 
-double** Material::getSigmaS()  {
+std::vector <std::vector <double> > Material::getSigmaS()  {
     return _sigma_s;
 }
 
@@ -42,14 +40,14 @@ double Material::getNu() {
     return _nu;
 }
 
-double* Material::getSigmaF() {
+std::vector <double> Material::getSigmaF() {
     return _sigma_f;
 }
 
-double* Material::getChi() {
+std::vector <double> Material::getChi() {
     return _chi;
 }
 
-double* Material::getSigmaA() {
+std::vector <double> Material::getSigmaA() {
     return _sigma_a;
 }

@@ -46,13 +46,16 @@ int sampleInteraction(Material mat, int group) {
 /**
 
 */
-double* sampleLocation(Boundaries bounds) {
-    double* _dist_location = new double [3];
+std::vector <double> sampleLocation(Boundaries bounds) {
+    
+    //std::vector <double> _dist_location = new std::vector <double>;
+    std::vector <double> _dist_location;
     for (int i=0; i<3; ++i) {
+       
         /** is this the correct way to sample a rondom location? */
-        _dist_location[i] = bounds.getSurfaceCoord(i, 0) +
+        _dist_location.push_back(bounds.getSurfaceCoord(i, 0) +
             bounds.getSurfaceCoord(i, 1) - bounds.getSurfaceCoord(i, 0)
-            * random(1.0);
+            * random(1.0));
     }
     return _dist_location;
     //
@@ -74,7 +77,7 @@ int sampleNumFission(Material mat) {
 /**
 
 */
-double* sampleFissionSite(Fission fission_bank) {
+std::vector <double> sampleFissionSite(Fission fission_bank) {
     int index = rand() % fission_bank.length();
     return fission_bank.location(index);
 }
@@ -82,7 +85,7 @@ double* sampleFissionSite(Fission fission_bank) {
 /**
 
 */
-int sampleNeutronEnergyGroup(double *chi) {
+int sampleNeutronEnergyGroup(std::vector <double> chi) {
     double r = random(1.0);
     double chi_sum = 0.0;
     for (int g=0; g<NUM_GROUPS; ++g) {
