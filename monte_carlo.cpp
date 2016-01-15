@@ -124,12 +124,12 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     neutron.setGroup(group);
     
     /** follow neutron while it's alive */
-    while (neutron.alive()) {
+/*    while (neutron.alive()) {
         cell = neutron.getCell();
         cell_mat = mesh.getMaterial(cell);
         group = neutron.getGroup();
         neutron_distance = sampleDistance(cell_mat, group);
-
+*/
         /** track neutron until collision or leakage */
 /*        while (neutron_distance > 0) {
             cell = mesh.getCell(neutron.getPositionVector(),
@@ -140,6 +140,6 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
         /** get cell boundaries */
         
 
-   }
+//   }
 
 }
