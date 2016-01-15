@@ -103,7 +103,7 @@ int main() {
     fuel_limits[2][1] = 2.0;
     test_mesh.fillMaterials(fuel, fuel_limits);
     
-    generateNeutronHistories(1000, test_boundary, test_mesh, 10);
+    generateNeutronHistories(1000, test_boundary, test_mesh, 1);
 
     return 0;
 }

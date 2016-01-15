@@ -29,6 +29,7 @@ Material::Material(std::vector <double> &sigma_t,
 Material::~Material() {}
 
 std::vector <double> Material::getSigmaT() {
+    std::cout << "sigma T " << _sigma_t.size() << std::endl;
     return _sigma_t;
 }
 

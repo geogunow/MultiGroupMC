@@ -31,7 +31,8 @@ double samplePolarAngle() {
 
 */
 double sampleDistance(Material mat, int group) {
-    return -log(random(1.0)) / mat.getSigmaT()[group];
+    //std::vector <double> _temp_sigma_t = mat.getSigmaT();
+    return -log(random(1.0)) / 1.0;//_temp_sigma_t[group];
 }
 
 /**
