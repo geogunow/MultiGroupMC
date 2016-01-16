@@ -13,6 +13,7 @@
 #include <time.h>
 #include <math.h>
 #include <stdlib.h>
+#include <algorithm>
 
 #include "global_constants.h"
 #include "fission.h"

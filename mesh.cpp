@@ -123,6 +123,7 @@ std::vector <std::vector <std::vector <std::vector <double> > > >
 std::vector <double> Mesh::getCellMax(std::vector <int> &cell_number) {
     
     /** maxes might have to be public as well */
+    _maxes.resize(3);
     for (int i=0; i<3; ++i) {
         _maxes[i] = (cell_number[i] + 1) * _delta_axes[i] + _boundary_mins[i];
     }
@@ -135,6 +136,7 @@ std::vector <double> Mesh::getCellMax(std::vector <int> &cell_number) {
 std::vector <double> Mesh::getCellMin(std::vector <int> &cell_number) {
 
     /** mins might have to be public */
+    _mins.resize(3);
     for (int i=0; i<3; ++i) {
         _mins[i] = (cell_number[i]) * _delta_axes[i] + _boundary_mins[i];
     }

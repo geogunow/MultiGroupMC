@@ -27,7 +27,8 @@ int sampleInteraction(Material mat, int group),
     sampleFission(Material mat, int group),
     sampleNumFission(Material mat),
     sampleNeutronEnergyGroup(std::vector <double> chi),
-    sampleScatteredGroup(double **scattering_matrix, int group);
+    sampleScatteredGroup(std::vector <std::vector <double> > &scattering_matrix,
+            int group);
 std::vector <double> sampleLocation(Boundaries bounds),
     sampleFissionSite(Fission fission_bank);
 

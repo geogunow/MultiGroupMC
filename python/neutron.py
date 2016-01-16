@@ -88,7 +88,7 @@ class Neutron():
     '''
      @brief return the position of the neutron along a given axis
     '''
-   def get_position(self, var):
+    def get_position(self, var):
         return self._xyz[self.association[var]]
 
     '''

@@ -31,8 +31,9 @@ double samplePolarAngle() {
 
 */
 double sampleDistance(Material mat, int group) {
-    //std::vector <double> _temp_sigma_t = mat.getSigmaT();
-    return -log(random(1.0)) / 1.0;//_temp_sigma_t[group];
+    std::vector <double> _temp_sigma_t;
+    _temp_sigma_t = mat.getSigmaT();
+    return -log(random(1.0)) / _temp_sigma_t[group];
 }
 
 /**
@@ -49,7 +50,6 @@ int sampleInteraction(Material mat, int group) {
 */
 std::vector <double> sampleLocation(Boundaries bounds) {
     
-    //std::vector <double> _dist_location = new std::vector <double>;
     std::vector <double> _dist_location;
     for (int i=0; i<3; ++i) {
        
@@ -59,7 +59,6 @@ std::vector <double> sampleLocation(Boundaries bounds) {
             * random(1.0));
     }
     return _dist_location;
-    //
 }
 
 /**
@@ -101,7 +100,8 @@ int sampleNeutronEnergyGroup(std::vector <double> chi) {
 /**
 
 */
-int sampleScatteredGroup(double **scattering_matrix, int group) {
+int sampleScatteredGroup(std::vector <std::vector <double> > &scattering_matrix,
+        int group) {
     double r = random(1.0) * NUM_GROUPS;
     double scatter_sum = 0.0;
     for (int g=0; g<NUM_GROUPS; ++g) {

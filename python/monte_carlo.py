@@ -76,6 +76,7 @@ def transport_neutron(bounds, tallies, fission_banks, first_round,
     # follow neutron while alive
     while neutron.alive:
 
+        print "check 1"
         # sample neutron distance to collision
         neutron_distance = sample_distance( \
                 mesh.get_material(neutron.get_cell()), neutron.group)
@@ -88,19 +89,16 @@ def transport_neutron(bounds, tallies, fission_banks, first_round,
             neutron.set_cell(cell)
 
             # correction in the case that the neutron was nudged out of bounds
-            '''
             for axis in axes:
                 min_bound = bounds.get_surface_coord(axis, 'min')
                 max_bound = bounds.get_surface_coord(axis, 'max')
                 neutron_coord = neutron.get_position(axis)
                 if neutron_coord < min_bound:
                     neutron.set_position(axis, min_bound)
-                    neutron.get_cell(
                 if neutron_coord > max_bound:
                     neutron.set_position(axis, max_bound)
-            '''
 
-            # get cell boundari1es
+            # get cell boundaries
             cell_boundaries = { \
                     'min': mesh.get_cell_min(cell),
                     'max': mesh.get_cell_max(cell)}

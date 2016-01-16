@@ -1,5 +1,3 @@
-
-
 #include <iostream>
 #include <vector>
 #include <time.h>
@@ -21,12 +19,12 @@ int main() {
 
     /** create geometry */
     Boundaries test_boundary;
-    test_boundary.setSurfaceCoord(0, 0, -1.0);
-    test_boundary.setSurfaceCoord(0, 1, 1.0);
-    test_boundary.setSurfaceCoord(1, 0, -1.0);
-    test_boundary.setSurfaceCoord(1, 1, 1.0);
-    test_boundary.setSurfaceCoord(2, 0, -1.0);
-    test_boundary.setSurfaceCoord(2, 1, 1.0);
+    test_boundary.setSurfaceCoord(0, 0, -2.0);
+    test_boundary.setSurfaceCoord(0, 1, 2.0);
+    test_boundary.setSurfaceCoord(1, 0, -2.0);
+    test_boundary.setSurfaceCoord(1, 1, 2.0);
+    test_boundary.setSurfaceCoord(2, 0, -2.0);
+    test_boundary.setSurfaceCoord(2, 1, 2.0);
 
     /** fuel cross sections */
     static const double a_fuel_sigma_t [NUM_GROUPS] = {2.0/9.0, 5.0/6.0};

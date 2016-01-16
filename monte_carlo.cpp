@@ -89,18 +89,21 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     
     /** declare variables */
     const double TINY_MOVE = 1e-10;
-    std::vector <double> neutron_starting_point;
-    std::vector <int> cell;
+    std::vector <double> neutron_starting_point, neutron_position,
+        neutron_direction, cell_mins, cell_maxes;
+    std::vector <std::vector <double> > cell_boundaries, distance_to_cell_edge,
+        temp_sigma_s;
+    std::vector <int> cell, cell_lim_bound, box_lim_bound;
     bool neutron_lost = false;
-    double theta, phi, neutron_distance;
+    double theta, phi, neutron_distance, tempd, r, bound_val, crow_distance;
     Material cell_mat;
-    int group;
+    int group, new_group, neutron_interaction;
 
     /** get neutron starting poinit */
     if (first_round) {
         neutron_starting_point = sampleLocation(bounds);
     }
-    else {
+    else{
         neutron_starting_point = sampleFissionSite(fission_banks[OLD]);
     }
  
@@ -111,7 +114,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
      
     /** get mesh cell */
      
-    std::vector <double> neutron_direction = neutron.getDirectionVector();
+    neutron_direction = neutron.getDirectionVector();
 
     cell = mesh.getCell(neutron_starting_point,
             neutron_direction);
@@ -124,22 +127,207 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     neutron.setGroup(group);
     
     /** follow neutron while it's alive */
-/*    while (neutron.alive()) {
+    while (neutron.alive()) {
+        std::cout << "check 1\n";
         cell = neutron.getCell();
         cell_mat = mesh.getMaterial(cell);
         group = neutron.getGroup();
         neutron_distance = sampleDistance(cell_mat, group);
-*/
-        /** track neutron until collision or leakage */
-/*        while (neutron_distance > 0) {
-            cell = mesh.getCell(neutron.getPositionVector(),
-                    neutron.getDirectionVector());
-            neutron.setCell(cell);
-        }
-*/
-        /** get cell boundaries */
-        
 
-//   }
+        /** track neutron until collision or leakage */
+        while (neutron_distance > 0) {
+            neutron_position = neutron.getPositionVector();
+            neutron_direction = neutron.getDirectionVector();
+            cell = mesh.getCell(neutron_position,
+                    neutron_direction);
+            neutron.setCell(cell);
+
+            /* correction in the case that the neutron
+               was nudged out of bounds */
+            double min_bound, max_bound, neutron_coord;
+            for (int i=0; i<3; ++i) {
+                std::cout << "checkpoint 2\n";
+                min_bound = bounds.getSurfaceCoord(i, 0);
+                max_bound = bounds.getSurfaceCoord(i, 1);
+                neutron_coord = neutron.getPosition(i);
+                if (neutron_coord < min_bound) {
+                    neutron.setPosition(i, min_bound);
+                }
+                if (neutron_coord > max_bound) {
+                    neutron.setPosition(i, max_bound);
+                }
+            }
+
+            /** get cell boundaries */
+// this will need changing probably
+            cell_mins = mesh.getCellMin(cell);
+            cell_maxes = mesh.getCellMax(cell);
+            cell_boundaries.push_back(cell_mins);
+            cell_boundaries.push_back(cell_maxes);
+
+            /** calculate distances to cell boundaries */
+            distance_to_cell_edge.resize(3);
+            for (int axis=0; axis<3; ++axis) {
+                distance_to_cell_edge[axis].resize(2);
+                for (int side=0; side<2; ++side) {
+                    distance_to_cell_edge[axis][side] =
+                        cell_boundaries[side][axis] - neutron.getPosition(axis);
+                }
+            }
+
+            /** r is variable that contains the distance
+                along the direction vector to the boundary being tested. */
+            /** tempd contains the current smallest r */
+            tempd = neutron_distance;
+
+            /** test each boundary */
+            for (int axis=0; axis<3; ++axis) {
+                for (int side=0; side<2; ++side) {
+                    r = distance_to_cell_edge[axis][side]
+                        / neutron.getDirection(axis);
+                    if (r >0 & r < tempd) {
+                        tempd = r;
+                        cell_lim_bound.clear();
+                        cell_lim_bound.push_back(axis*2+side);
+                    }
+                    else if (r == tempd) {
+                        cell_lim_bound.push_back(axis*2+side);
+                    }
+                }
+            }
+
+            /** move neutron */
+            neutron.move(tempd);
+
+            /** determine boundary status */
+            for (int sur_side=0; sur_side <5; ++sur_side) {
+                /** if sur_side is in cell_lim_bound */
+                if (std::find(cell_lim_bound.begin(), cell_lim_bound.end(),sur_side)
+                        != cell_lim_bound.end()) {
+                    if (cell_boundaries[sur_side%2][sur_side/2] ==
+                            bounds.getSurfaceCoord(sur_side/2, sur_side%2)) {
+                            box_lim_bound.push_back(sur_side);
+                    }
+                }
+            }
+
+            /** cehck boundary conditions on all hit surfaces */
+            for (int sur_side=0; sur_side <5; ++sur_side) {
+                /** if sur_side is in box_lim_bound */
+                if (std::find(box_lim_bound.begin(),
+                            box_lim_bound.end(),sur_side)
+                        != box_lim_bound.end()) {
+                    
+                    /** if the neutron is reflected */
+                    if (bounds.getSurfaceType(sur_side / 2, sur_side % 2) == 1) {
+                        neutron.reflect(sur_side / 2);
+                        
+                        /** place neutron on boundary to eliminate 
+                            roundoff error */
+                        bound_val = bounds.getSurfaceCoord(sur_side/2,
+                          sur_side%2);
+                        neutron.setPosition(sur_side / 2, bound_val);
+                    }
+
+                    /** if the neutron escapes */
+                    if (bounds.getSurfaceType(sur_side / 2,
+                      sur_side % 2) == 0) {
+                        neutron.kill();
+                        neutron_distance = tempd;
+                        tallies[LEAKS].add(1);
+                    }
+                }
+            }
+        
+            /** shorten neutron distance to collision */
+            neutron_distance -= tempd;
+
+            /** add distance to cell flux */
+        
+            group = neutron.getGroup();
+            mesh.fluxAdd(cell, tempd, group);
+        }
+
+        /** check interaction */
+        if (neutron.alive()) {
+            cell = neutron.getCell();
+            cell_mat = mesh.getMaterial(cell);
+            group = neutron.getGroup();
+
+            /** sample what the interaction will be */
+            neutron_interaction = sampleInteraction(cell_mat, group);
+
+            /**scattering event */
+            if (neutron_interaction ==0) {
+
+                /** sample scattered direction */
+                theta = samplePolarAngle();
+                phi = sampleAzimuthalAngle();
+
+                /** sample new energy group */
+                temp_sigma_s = cell_mat.getSigmaS();
+                new_group = sampleScatteredGroup(temp_sigma_s, group);
+
+                /** set new group */
+                neutron.setGroup(new_group);
+
+                /** set new direction */
+                neutron.setDirection(theta, phi);
+
+                /** reassign cell location */
+                neutron_position = neutron.getPositionVector();
+                neutron_direction = neutron.getDirectionVector();
+                cell = mesh.getCell(neutron_position, neutron_direction);
+                neutron.setCell(cell);
+            }
+
+            /** absorption event */
+            else {
+
+                /** tally absorption */
+                tallies[ABSORPTIONS].add(1);
+
+                /** sample for fission event */
+                group = neutron.getGroup();
+                cell = neutron.getCell();
+                cell_mat = mesh.getMaterial(cell);
+                neutron_position = neutron.getPositionVector();
+                if (sampleFission(cell_mat, group) == 1) {
+
+                    /** sample number of neutrons */
+                    for (int i=0; i<sampleNumFission(cell_mat); ++i) {
+                        fission_banks[NEW].add(neutron_position);
+                        tallies[FISSIONS].add(1);
+                    }
+                }
+
+                neutron.kill();
+            }
+        }
+    }
+
+    /** tally crow distance */
+    crow_distance = neutron.getDistance(neutron_starting_point);
+    tallies[CROWS].add(crow_distance);
+    tallies[NUM_CROWS].add(1);
+
+
+            
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
 
 }
