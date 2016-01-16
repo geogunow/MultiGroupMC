@@ -6,7 +6,7 @@
 '''
 
 import numpy as np
-from copy import deepcopy as copy
+import copy
 
 '''
  @class Mesh mesh.py "mesh.py"
@@ -44,15 +44,14 @@ class Mesh():
     def get_cell(self, position, direction=[0,0,0]):
         cell_num_vector = list()
         for num, axis in enumerate(['x', 'y', 'z']):
-            cell_num = int((position[num]-self._boundary_mins[axis]) \
-                    / self._delta_axes[axis])
+            cell_num = int(round((position[num]-self._boundary_mins[axis]) \
+                    / self._delta_axes[axis], 7))
 
             # correct error if neutron is on upper boundary of cell
-            move_cell = position[num] == self._boundary_mins[axis] + cell_num \
-                    * self._delta_axes[axis] and direction[num] < 0
-            if cell_num == self._axis_sizes[axis] or move_cell:
+            if position[num] == (self._boundary_mins[axis] \
+                    + cell_num*self._delta_axes[axis]) \
+                    and direction[num] < 0:
                 cell_num -= 1
-
             cell_num_vector.append(cell_num)
 
         return cell_num_vector
@@ -91,7 +90,8 @@ class Mesh():
     '''
      @brief returns the coordinate for the maximum location in the cell
     '''
-    def get_cell_max(self, cell_number):
+    def get_cell_max(self, position, direction=[0,0,0]):
+        cell_number = self.get_cell(position, direction)
         maxes = dict()
         for i, axis in enumerate(['x', 'y', 'z']):
             maxes.update({axis:((cell_number[i] + 1) * \
