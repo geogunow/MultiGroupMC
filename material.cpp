@@ -13,11 +13,14 @@ Material::Material(std::vector <double> &sigma_t,
     _nu = nu;
     _sigma_f = sigma_f;
     _chi = chi;
-    
+   
+    /** save number of groups */
+    _num_groups = sigma_t.size();
+
     /** sigma_a */
-    for (int i=0; i < NUM_GROUPS; ++i) {
+    for (int i=0; i < _num_groups; ++i) {
         _s_sum = 0.0;
-        for (int j=0; j < NUM_GROUPS; ++j) {
+        for (int j=0; j < _num_groups; ++j) {
             _s_sum += _sigma_s[i][j];
         }
        _sigma_a.push_back(_sigma_t[i] - _s_sum);

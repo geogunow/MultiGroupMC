@@ -14,7 +14,6 @@ headers = $(source:.cpp=.h)
 source += main.cpp
 source += fission.cpp
 source += material.cpp
-source += global_constants.h
 source += distributions.cpp
 source += tally.cpp
 source += neutron.cpp

@@ -15,18 +15,25 @@
 
 class Mesh {
 private:
-    std::vector <double> _delta_axes, _boundary_mins, _maxes, _mins,
-        _min_locations, _max_locations, _default_direction;
-    std::vector <int> _axis_sizes, _cell_num_vector,
-        _smallest_cell, _largest_cell;
+    std::vector <double> _delta_axes,
+        _boundary_mins,
+        _maxes, _mins,
+        _min_locations,
+        _max_locations,
+        _default_direction;
+    std::vector <int> _axis_sizes,
+        _cell_num_vector,
+        _smallest_cell,
+        _largest_cell;
     std::vector <std::vector <std::vector <std::vector <double> > > > _flux;
     std::vector <std::vector <std::vector <Material> > > _cell_materials;
-    int _cell_num;
+    int _cell_num,
+        _num_groups;
     bool _move_cell;
 
 public:
     Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
-            Material default_material);
+            Material default_material, int num_groups);
     virtual ~Mesh();
 
     std::vector <int> getCell(std::vector <double>& position,

@@ -17,7 +17,8 @@ class Neutron {
 private:
     bool _neutron_alive;
     int _neutron_group;
-    std::vector <double> _xyz, _neutron_direction;
+    std::vector <double> _xyz,
+        _neutron_direction;
     std::vector <int> _neutron_cell;
 
 public:

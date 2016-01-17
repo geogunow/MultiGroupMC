@@ -5,7 +5,6 @@
 #include <stdlib.h>
 
 #include "material.h"
-#include "global_constants.h"
 #include "fission.h"
 #include "boundaries.h"
 #include "distributions.h"
@@ -31,6 +30,8 @@ int main() {
     test_boundary.setSurfaceType(1, 1, REFLECTIVE);
     test_boundary.setSurfaceType(2, 0, REFLECTIVE);
     test_boundary.setSurfaceType(2, 1, REFLECTIVE);
+
+    const int NUM_GROUPS = 2;
 
     /** fuel cross sections */
     static const double a_fuel_sigma_t [NUM_GROUPS] = {2.0/9.0, 5.0/6.0};
@@ -90,7 +91,7 @@ int main() {
     Material water(water_sigma_t, water_sigma_s, nu, water_sigma_f, water_chi);
 
     /* create mesh */
-    Mesh test_mesh(test_boundary, 4.0/9.0, 4.0/9.0, 4.0/9.0, water);
+    Mesh test_mesh(test_boundary, 4.0/9.0, 4.0/9.0, 4.0/9.0, water, NUM_GROUPS);
 
     /** fill mesh with some fuel */ 
     std::vector <std::vector <double > > fuel_limits;

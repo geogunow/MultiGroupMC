@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <vector>
-#include "global_constants.h"
 
 class Material {
 private:
@@ -21,6 +20,7 @@ private:
     std::vector <double> _chi;
     std::vector <double> _sigma_a;
     double _s_sum;
+    int _num_groups;
 
 public:
    

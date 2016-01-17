@@ -15,7 +15,6 @@
 #include <stdlib.h>
 #include <algorithm>
 
-#include "global_constants.h"
 #include "fission.h"
 #include "distributions.h"
 #include "tally.h"

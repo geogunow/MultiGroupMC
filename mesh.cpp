@@ -11,12 +11,15 @@
  @brief constructor for Mesh class
 */
 Mesh::Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
-        Material default_material) {
+        Material default_material, int num_groups) {
     
     /** save deltas */
     _delta_axes.push_back(delta_x);
     _delta_axes.push_back(delta_y);
     _delta_axes.push_back(delta_z);
+
+    /** save number of groups */
+    _num_groups = num_groups;
 
     /** save boundary mins */
     for (int i=0; i<3; ++i) {
@@ -30,8 +33,8 @@ Mesh::Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
     }
     
     /** resize _flux and set all its elements = 0 */
-    _flux.resize(NUM_GROUPS);
-    for (int i=0; i<NUM_GROUPS; ++i) {
+    _flux.resize(_num_groups);
+    for (int i=0; i<_num_groups; ++i) {
         _flux[i].resize(_axis_sizes[0]);
         for (int j=0; j<_axis_sizes[0]; ++j) {
             _flux[i][j].resize(_axis_sizes[1]);
@@ -95,7 +98,7 @@ void Mesh::fluxAdd(std::vector <int> &cell, double distance, int group) {
 */
 void Mesh::fluxClear() {
 
-    for (int i=0; i<NUM_GROUPS; ++i) {
+    for (int i=0; i<_num_groups; ++i) {
         for (int j=0; j<_axis_sizes[0]; ++j) {
             for (int k=0; k<_axis_sizes[1]; ++k) {
                 for (int l=0; l<_axis_sizes[2]; ++l) {

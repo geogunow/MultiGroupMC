@@ -13,7 +13,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "global_constants.h"
 #include "material.h"
 #include "boundaries.h"
 #include "fission.h"

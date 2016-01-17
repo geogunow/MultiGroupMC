@@ -6,7 +6,6 @@
 */
 
 #include "monte_carlo.h"
-#include <iostream>
 
 /*
  @brief     Generates and transports neutron histories, calculates the mean
@@ -96,15 +95,28 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     
     /** declare variables */
     const double TINY_MOVE = 1e-10;
-    std::vector <double> neutron_starting_point, neutron_position,
-        neutron_direction, cell_mins, cell_maxes;
-    std::vector <std::vector <double> > cell_boundaries, distance_to_cell_edge,
+    std::vector <double> neutron_starting_point,
+        neutron_position,
+        neutron_direction,
+        cell_mins,
+        cell_maxes;
+    std::vector <std::vector <double> > distance_to_cell_edge,
         temp_sigma_s;
-    std::vector <int> cell, cell_lim_bound, box_lim_bound;
+    std::vector <int> cell,
+        cell_lim_bound,
+        box_lim_bound;
     bool neutron_lost = false;
-    double theta, phi, neutron_distance, tempd, r, bound_val, crow_distance;
+    double theta,
+           phi,
+           neutron_distance,
+           tempd,
+           r,
+           bound_val,
+           crow_distance;
     Material cell_mat;
-    int group, new_group, neutron_interaction;
+    int group,
+        new_group,
+        neutron_interaction;
 
     /** get neutron starting poinit */
     if (first_round) {
@@ -154,9 +166,6 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
             cell_mins = mesh.getCellMin(cell);
             
             cell_maxes = mesh.getCellMax(cell);
-            cell_boundaries.push_back(cell_mins);
-
-            cell_boundaries.push_back(cell_maxes);
 
             /** calculate distances to cell boundaries */
             distance_to_cell_edge.resize(3);
@@ -198,7 +207,9 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                 if (std::find(cell_lim_bound.begin(),
                             cell_lim_bound.end(),sur_side)
                         != cell_lim_bound.end()) {
-                    if (cell_boundaries[sur_side%2][sur_side/2] ==
+                    if (cell_mins[sur_side/2] ==
+                            bounds.getSurfaceCoord(sur_side/2, sur_side%2)
+                            | cell_maxes[sur_side/2] ==
                             bounds.getSurfaceCoord(sur_side/2, sur_side%2)) {
                             box_lim_bound.push_back(sur_side);
                     }
