@@ -66,10 +66,9 @@ Mesh::~Mesh() {}
 */
 std::vector <int> Mesh::getCell(std::vector <double>& position,
         std::vector <double>& direction) {
-
+    _cell_num_vector.clear();
     for (int i=0; i<3; ++i) {
         _cell_num = (int)((position[i] - _boundary_mins[i])/_delta_axes[i]);
-
         /** correct error if neutron is on upper boundary of cell */
         _move_cell = position[i] == _boundary_mins[i] + _cell_num
             * _delta_axes[i] & direction[i] <0;
@@ -110,7 +109,8 @@ void Mesh::fluxClear() {
 /**
  @brief return the flux array
 */
-std::vector <std::vector <std::vector <std::vector <double> > > >
+
+    std::vector <std::vector <std::vector <std::vector <double> > > > 
         Mesh::getFlux() {
 
     /** _flux might have to be public for this to work */
@@ -163,6 +163,7 @@ void Mesh::fillMaterials(Material material_type,
     _min_locations.resize(3);
     _max_locations.resize(3);
     _default_direction.resize(3);
+    
     for (int i=0; i<3; ++i) {
         _min_locations[i] = material_bounds[i][0];
         _max_locations[i] = material_bounds[i][1] - _delta_axes[i]/10;
@@ -174,11 +175,11 @@ void Mesh::fillMaterials(Material material_type,
 
     _smallest_cell = getCell(_min_locations, _default_direction);
     _largest_cell = getCell(_max_locations, _default_direction);
-
+    
     /** fill the cells with material_type */
-    for (int i=_smallest_cell[0]; i<_largest_cell[0]; ++i){
-        for (int j=_smallest_cell[1]; j<_largest_cell[1]; ++j){
-            for (int k=_smallest_cell[2]; k<_largest_cell[2]; ++i){
+    for (int i=_smallest_cell[0]; i<_largest_cell[0]; ++i) {
+        for (int j=_smallest_cell[1]; j<_largest_cell[1]; ++j) {
+            for (int k=_smallest_cell[2]; k<_largest_cell[2]; ++k) {
                 _cell_materials[i][j][k] = material_type;
             }
         }

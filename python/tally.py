@@ -22,7 +22,7 @@ class Tally():
         self._count += amt
 
     '''
-     @brief clear the tally
+     @brief cleara the tally
     '''
     def clear(self):
         self._count = 0

@@ -6,7 +6,7 @@
 '''
 
 import numpy as np
-import copy
+from copy import deepcopy as copy
 
 '''
  @class Mesh mesh.py "mesh.py"
@@ -44,14 +44,15 @@ class Mesh():
     def get_cell(self, position, direction=[0,0,0]):
         cell_num_vector = list()
         for num, axis in enumerate(['x', 'y', 'z']):
-            cell_num = int(round((position[num]-self._boundary_mins[axis]) \
-                    / self._delta_axes[axis], 7))
+            cell_num = int((position[num]-self._boundary_mins[axis]) \
+                    / self._delta_axes[axis])
 
             # correct error if neutron is on upper boundary of cell
-            if position[num] == (self._boundary_mins[axis] \
-                    + cell_num*self._delta_axes[axis]) \
-                    and direction[num] < 0:
+            move_cell = position[num] == self._boundary_mins[axis] + cell_num \
+                    * self._delta_axes[axis] and direction[num] < 0
+            if cell_num == self._axis_sizes[axis] or move_cell:
                 cell_num -= 1
+
             cell_num_vector.append(cell_num)
 
         return cell_num_vector
@@ -90,8 +91,7 @@ class Mesh():
     '''
      @brief returns the coordinate for the maximum location in the cell
     '''
-    def get_cell_max(self, position, direction=[0,0,0]):
-        cell_number = self.get_cell(position, direction)
+    def get_cell_max(self, cell_number):
         maxes = dict()
         for i, axis in enumerate(['x', 'y', 'z']):
             maxes.update({axis:((cell_number[i] + 1) * \
@@ -117,7 +117,7 @@ class Mesh():
 
     '''
      @brief fill cells with a certain material
-     @param bounds should be a 3x2 array with the maxes and mins of the
+     @param locations should be a 3x2 array with the maxes and mins of the
             area to be filled in each dimension
     '''
     def fill_material(self, material_type, bounds): 

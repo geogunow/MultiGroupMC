@@ -42,7 +42,7 @@ double sampleDistance(Material mat, int group) {
 int sampleInteraction(Material mat, int group) {
     
     double sum_sigma_s = mat.getSigmaT()[group]-mat.getSigmaA()[group];
-    return (int)(random(sum_sigma_s) / mat.getSigmaT()[group]);
+    return (int)(random(1) < (sum_sigma_s / mat.getSigmaT()[group]));
 }
 
 /**
@@ -65,12 +65,13 @@ std::vector <double> sampleLocation(Boundaries bounds) {
 
 */
 int sampleFission(Material mat, int group) {
-    return (int)(random(mat.getSigmaF()[group] / mat.getSigmaA()[group]));
+    return (int)(random(1.0) <
+            (mat.getSigmaF()[group] / mat.getSigmaA()[group]));
 }
 
 int sampleNumFission(Material mat) {
     int lower = (int)(mat.getNu());
-    int add = (int)(random(mat.getNu()-lower));
+    int add = (int)(random(1.0) < (mat.getNu()-lower));
     return lower + add;
 }
 

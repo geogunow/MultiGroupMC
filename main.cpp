@@ -25,6 +25,12 @@ int main() {
     test_boundary.setSurfaceCoord(1, 1, 2.0);
     test_boundary.setSurfaceCoord(2, 0, -2.0);
     test_boundary.setSurfaceCoord(2, 1, 2.0);
+    test_boundary.setSurfaceType(0, 0, REFLECTIVE);
+    test_boundary.setSurfaceType(0, 1, REFLECTIVE);
+    test_boundary.setSurfaceType(1, 0, REFLECTIVE);
+    test_boundary.setSurfaceType(1, 1, REFLECTIVE);
+    test_boundary.setSurfaceType(2, 0, REFLECTIVE);
+    test_boundary.setSurfaceType(2, 1, REFLECTIVE);
 
     /** fuel cross sections */
     static const double a_fuel_sigma_t [NUM_GROUPS] = {2.0/9.0, 5.0/6.0};
@@ -100,8 +106,23 @@ int main() {
     fuel_limits[2][0] = -2.0;
     fuel_limits[2][1] = 2.0;
     test_mesh.fillMaterials(fuel, fuel_limits);
+   
+/** 
+    std::vector <int> testing_cell;
+    std::vector <double> cell_mins;
+    cell_mins.resize(3);
+    testing_cell.push_back(6);
+    testing_cell.push_back(4);
+    testing_cell.push_back(2);
+    cell_mins = test_mesh.getCellMax(testing_cell);
+    std::cout << "cell mins ";
+    for (int i=0; i<3; i++) {
+        std::cout << cell_mins[i] << " ";
+    }
+   */
     
     generateNeutronHistories(1000, test_boundary, test_mesh, 10);
 
+    std::cout << std::endl;
     return 0;
 }

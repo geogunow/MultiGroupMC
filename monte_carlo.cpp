@@ -25,6 +25,8 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
     /** create arrays for tallies and fissions */
     std::vector <Tally> tallies;
     std::vector <Fission> fission_banks;
+    std::vector <double> add_location;
+    add_location.resize(3);
     tallies.resize(5);
     fission_banks.resize(2);
     
@@ -37,9 +39,10 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
 
         /** assign new fission locations to old fission locations */
         fission_banks[OLD].clear();
-        for (int i=0; i<fission_banks[OLD].length(); ++i) {
-            std::vector <double> _add_location = fission_banks[NEW].next();    
-            fission_banks[OLD].add(_add_location);
+        for (int i=0; i<fission_banks[NEW].length(); ++i) {
+            add_location = fission_banks[NEW].next(); 
+
+            fission_banks[OLD].add(add_location);
         }
         fission_banks[NEW].clear();
 
@@ -51,10 +54,14 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
         /** simulate neutron behavior */
         for (int i=0; i<n_histories; ++i) {
             transportNeutron(bounds, tallies, fission_banks, first_round,
-                    mesh, batch);
+                    mesh, batch, i);
         }
 
         /** give results */
+        std::cout << "For batch " << batch << ", k = "
+            << tallies[FISSIONS].getCount()/(tallies[LEAKS].getCount() +
+                    tallies[ABSORPTIONS].getCount()) << std::endl;
+        first_round = false;
     }
 
 }
@@ -85,7 +92,7 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
 */
 void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
         std::vector <Fission> &fission_banks, bool first_round, Mesh mesh,
-        int batch) {
+        int batch, int neutron_number) {
     
     /** declare variables */
     const double TINY_MOVE = 1e-10;
@@ -103,7 +110,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     if (first_round) {
         neutron_starting_point = sampleLocation(bounds);
     }
-    else{
+    else {
         neutron_starting_point = sampleFissionSite(fission_banks[OLD]);
     }
  
@@ -121,15 +128,15 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     neutron.setCell(cell);
 
     /** set neutron group */
-    std::cout <<batch << std::endl;
     cell_mat = mesh.getMaterial(cell);
     group = sampleNeutronEnergyGroup(cell_mat.getChi());
     neutron.setGroup(group);
     
     /** follow neutron while it's alive */
     while (neutron.alive()) {
-        std::cout << "check 1\n";
+
         cell = neutron.getCell();
+        
         cell_mat = mesh.getMaterial(cell);
         group = neutron.getGroup();
         neutron_distance = sampleDistance(cell_mat, group);
@@ -140,41 +147,27 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
             neutron_direction = neutron.getDirectionVector();
             cell = mesh.getCell(neutron_position,
                     neutron_direction);
+
             neutron.setCell(cell);
 
-            /* correction in the case that the neutron
-               was nudged out of bounds */
-            double min_bound, max_bound, neutron_coord;
-            for (int i=0; i<3; ++i) {
-                std::cout << "checkpoint 2\n";
-                min_bound = bounds.getSurfaceCoord(i, 0);
-                max_bound = bounds.getSurfaceCoord(i, 1);
-                neutron_coord = neutron.getPosition(i);
-                if (neutron_coord < min_bound) {
-                    neutron.setPosition(i, min_bound);
-                }
-                if (neutron_coord > max_bound) {
-                    neutron.setPosition(i, max_bound);
-                }
-            }
-
             /** get cell boundaries */
-// this will need changing probably
             cell_mins = mesh.getCellMin(cell);
+            
             cell_maxes = mesh.getCellMax(cell);
             cell_boundaries.push_back(cell_mins);
+
             cell_boundaries.push_back(cell_maxes);
 
             /** calculate distances to cell boundaries */
             distance_to_cell_edge.resize(3);
             for (int axis=0; axis<3; ++axis) {
                 distance_to_cell_edge[axis].resize(2);
-                for (int side=0; side<2; ++side) {
-                    distance_to_cell_edge[axis][side] =
-                        cell_boundaries[side][axis] - neutron.getPosition(axis);
-                }
+                distance_to_cell_edge[axis][0] =
+                    cell_mins[axis] - neutron.getPosition(axis);
+                distance_to_cell_edge[axis][1] =
+                    cell_maxes[axis] - neutron.getPosition(axis);
             }
-
+            
             /** r is variable that contains the distance
                 along the direction vector to the boundary being tested. */
             /** tempd contains the current smallest r */
@@ -202,7 +195,8 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
             /** determine boundary status */
             for (int sur_side=0; sur_side <5; ++sur_side) {
                 /** if sur_side is in cell_lim_bound */
-                if (std::find(cell_lim_bound.begin(), cell_lim_bound.end(),sur_side)
+                if (std::find(cell_lim_bound.begin(),
+                            cell_lim_bound.end(),sur_side)
                         != cell_lim_bound.end()) {
                     if (cell_boundaries[sur_side%2][sur_side/2] ==
                             bounds.getSurfaceCoord(sur_side/2, sur_side%2)) {
@@ -211,7 +205,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                 }
             }
 
-            /** cehck boundary conditions on all hit surfaces */
+            /** check boundary conditions on all hit surfaces */
             for (int sur_side=0; sur_side <5; ++sur_side) {
                 /** if sur_side is in box_lim_bound */
                 if (std::find(box_lim_bound.begin(),
@@ -219,7 +213,8 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                         != box_lim_bound.end()) {
                     
                     /** if the neutron is reflected */
-                    if (bounds.getSurfaceType(sur_side / 2, sur_side % 2) == 1) {
+                    if (bounds.getSurfaceType(sur_side / 2,
+                                sur_side % 2) == 1) {
                         neutron.reflect(sur_side / 2);
                         
                         /** place neutron on boundary to eliminate 
@@ -243,7 +238,6 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
             neutron_distance -= tempd;
 
             /** add distance to cell flux */
-        
             group = neutron.getGroup();
             mesh.fluxAdd(cell, tempd, group);
         }
@@ -300,7 +294,8 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                         tallies[FISSIONS].add(1);
                     }
                 }
-
+                
+                /** end neutron history */
                 neutron.kill();
             }
         }
@@ -310,24 +305,5 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     crow_distance = neutron.getDistance(neutron_starting_point);
     tallies[CROWS].add(crow_distance);
     tallies[NUM_CROWS].add(1);
-
-
-            
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
 
 }
