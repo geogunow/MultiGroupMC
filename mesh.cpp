@@ -56,6 +56,14 @@ Mesh::Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
             }
         }
     }
+    
+    // resize vectors
+    _maxes.resize(3);
+    _mins.resize(3);
+    _min_locations.resize(3);
+    _max_locations.resize(3);
+    _default_direction.resize(3);
+    
 }
 
 /**
@@ -66,6 +74,9 @@ Mesh::~Mesh() {}
 /**
  @brief get the cell containing a neutron at a given location witha given
         direction of travel
+ @param position a vector containing the location to find the cell of
+ @param direction the direction the nuetron is travelling
+ @return a vector denoting the cell of the location and direction
 */
 std::vector <int> Mesh::getCell(std::vector <double>& position,
         std::vector <double>& direction) {
@@ -88,6 +99,9 @@ std::vector <int> Mesh::getCell(std::vector <double>& position,
 /**
  @brief add the distance a neutron has traveled within the cell to the flux
         array
+ @param cell a vector containing a cell
+ @param distance a distance to be added to the cell flux
+ @param group a group to which this distance should be added
 */
 void Mesh::fluxAdd(std::vector <int> &cell, double distance, int group) {
     _flux[group][cell[0]][cell[1]][cell[2]] += distance;
@@ -111,9 +125,10 @@ void Mesh::fluxClear() {
 
 /**
  @brief return the flux array
+ @return returns the 4d flux vector
 */
 
-    std::vector <std::vector <std::vector <std::vector <double> > > > 
+std::vector <std::vector <std::vector <std::vector <double> > > > 
         Mesh::getFlux() {
 
     /** _flux might have to be public for this to work */
@@ -122,11 +137,12 @@ void Mesh::fluxClear() {
 
 /**
  @brief returns the coordinate for the maximum in the cell
+ @param cell_cell number vector containing the number of a cell to find the 
+        max of
+ @return a vector containing the maximum location of that cell in each dimension
 */
 std::vector <double> Mesh::getCellMax(std::vector <int> &cell_number) {
     
-    /** maxes might have to be public as well */
-    _maxes.resize(3);
     for (int i=0; i<3; ++i) {
         _maxes[i] = (cell_number[i] + 1) * _delta_axes[i] + _boundary_mins[i];
     }
@@ -135,11 +151,12 @@ std::vector <double> Mesh::getCellMax(std::vector <int> &cell_number) {
 
 /**
  @brief returns the coordinate for the minimum in the cell
+ @param cell_cell number vector containing the number of a cell to find the 
+        min of
+ @return a vector containing the minimum location of that cell in each dimension
 */
 std::vector <double> Mesh::getCellMin(std::vector <int> &cell_number) {
 
-    /** mins might have to be public */
-    _mins.resize(3);
     for (int i=0; i<3; ++i) {
         _mins[i] = (cell_number[i]) * _delta_axes[i] + _boundary_mins[i];
     }
@@ -148,6 +165,9 @@ std::vector <double> Mesh::getCellMin(std::vector <int> &cell_number) {
 
 /**
  @brief returns the material of a given cell
+ @param cell_number vector containing the number of a cell to find the 
+        material of
+ @return the material of the cell
 */
 Material Mesh::getMaterial(std::vector <int> &cell_number) {
     return _cell_materials[cell_number[0]][cell_number[1]][cell_number[2]];
@@ -155,18 +175,16 @@ Material Mesh::getMaterial(std::vector <int> &cell_number) {
 
 /**
  @brief fill cells with a certain material
- @param locations should b be a 3x2 array with the maxes and mins of the area
+ @param material_type a material to fill the mesh with
+ @param locations should b be a 3x2 vector with the maxes and mins of the area
         to be filled in each direction
+
 */
 void Mesh::fillMaterials(Material material_type,
         std::vector <std::vector <double> > &material_bounds) {
     
     /** copy the value of material_bounds to locations and nudge the upper
     limit down so it is contained within the highest cell */
-    _min_locations.resize(3);
-    _max_locations.resize(3);
-    _default_direction.resize(3);
-    
     for (int i=0; i<3; ++i) {
         _min_locations[i] = material_bounds[i][0];
         _max_locations[i] = material_bounds[i][1] - _delta_axes[i]/10;

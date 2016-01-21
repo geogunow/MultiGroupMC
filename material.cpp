@@ -1,8 +1,23 @@
+/** 
+ @file      materialcpp
+ @brief     contains functions for the Material class
+ @author    Luke Eure
+ @date      January 9 2016
+*/
 #include "material.h"
 
 /** default constructor */
 Material::Material() {}
 
+/**
+ @brief constructor for Material class
+ @param sigma_t a vector constaining the total cross section
+ @param sigma_s a 2d vector containing the scattering cross section 
+ @param nu a double containing the average number of neutrons produced 
+        per fission
+ @param sigma_f a vector containing the fission cross section
+ @param chi a vector the initial energy distribution of neutrons
+*/
 Material::Material(std::vector <double> &sigma_t, 
         std::vector <std::vector <double> > &sigma_s, double nu, 
         std::vector <double> &sigma_f, std::vector <double> &chi) {
@@ -27,30 +42,55 @@ Material::Material(std::vector <double> &sigma_t,
     }
    
 }
-
-/** not sure if the destructor needs to do anything */
+/**
+ @brief deconstructor
+*/
 Material::~Material() {}
 
+/**
+ @brief returns sigma_t
+ @return sigma_t
+*/
 std::vector <double> Material::getSigmaT() {
     return _sigma_t;
 }
 
+/**
+ @brief returns sigma_s
+ @return sigma_s
+*/
 std::vector <std::vector <double> > Material::getSigmaS()  {
     return _sigma_s;
 }
 
+/**
+ @brief returns nu
+ @return nu
+*/
 double Material::getNu() {
     return _nu;
 }
 
+/**
+ @brief returns sigma_f
+ @return sigma_f
+*/
 std::vector <double> Material::getSigmaF() {
     return _sigma_f;
 }
 
+/**
+ @brief returns chi
+ @return chi
+*/
 std::vector <double> Material::getChi() {
     return _chi;
 }
 
+/**
+ @brief returns sigma_a
+ @return sigma_a
+*/
 std::vector <double> Material::getSigmaA() {
     return _sigma_a;
 }

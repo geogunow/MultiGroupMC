@@ -53,7 +53,7 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
         /** simulate neutron behavior */
         for (int i=0; i<n_histories; ++i) {
             transportNeutron(bounds, tallies, fission_banks, first_round,
-                    mesh, batch, i);
+                    mesh);
         }
 
         /** give results */
@@ -62,6 +62,9 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
                     tallies[ABSORPTIONS].getCount()) << std::endl;
         first_round = false;
     }
+    double mean_crow_distance = tallies[CROWS].getCount()
+        / tallies[NUM_CROWS].getCount();
+    std::cout << "Mean crow fly distance = " << mean_crow_distance;
 
 }
 
@@ -87,11 +90,9 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
  @param     first_round a boolean telling whenther or not this is the first
             batch to be tested
  @param     mesh a Mesh object containing information about the mesh
- @param     batch the batch number of the neutron
 */
 void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
-        std::vector <Fission> &fission_banks, bool first_round, Mesh mesh,
-        int batch, int neutron_number) {
+        std::vector <Fission> &fission_banks, bool first_round, Mesh mesh) {
     
     /** declare variables */
     const double TINY_MOVE = 1e-10;
@@ -125,14 +126,13 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     else {
         neutron_starting_point = sampleFissionSite(fission_banks[OLD]);
     }
- 
+
     /** initialize neutron */
     theta = samplePolarAngle();
     phi = sampleAzimuthalAngle();
     Neutron neutron(neutron_starting_point, theta, phi);
      
     /** get mesh cell */
-     
     neutron_direction = neutron.getDirectionVector();
 
     cell = mesh.getCell(neutron_starting_point,
@@ -143,7 +143,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     cell_mat = mesh.getMaterial(cell);
     group = sampleNeutronEnergyGroup(cell_mat.getChi());
     neutron.setGroup(group);
-    
+  
     /** follow neutron while it's alive */
     while (neutron.alive()) {
 
@@ -176,7 +176,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                 distance_to_cell_edge[axis][1] =
                     cell_maxes[axis] - neutron.getPosition(axis);
             }
-            
+
             /** r is variable that contains the distance
                 along the direction vector to the boundary being tested. */
             /** tempd contains the current smallest r */
@@ -203,7 +203,8 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
 
             /** determine boundary status */
             for (int sur_side=0; sur_side <5; ++sur_side) {
-                /** if sur_side is in cell_lim_bound */
+
+            /** if sur_side is in cell_lim_bound */
                 if (std::find(cell_lim_bound.begin(),
                             cell_lim_bound.end(),sur_side)
                         != cell_lim_bound.end()) {
@@ -218,16 +219,17 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
 
             /** check boundary conditions on all hit surfaces */
             for (int sur_side=0; sur_side <5; ++sur_side) {
+  
                 /** if sur_side is in box_lim_bound */
                 if (std::find(box_lim_bound.begin(),
                             box_lim_bound.end(),sur_side)
                         != box_lim_bound.end()) {
-                    
+
                     /** if the neutron is reflected */
                     if (bounds.getSurfaceType(sur_side / 2,
                                 sur_side % 2) == 1) {
                         neutron.reflect(sur_side / 2);
-                        
+ 
                         /** place neutron on boundary to eliminate 
                             roundoff error */
                         bound_val = bounds.getSurfaceCoord(sur_side/2,
@@ -293,7 +295,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                 tallies[ABSORPTIONS].add(1);
 
                 /** sample for fission event */
-                group = neutron.getGroup();
+               group = neutron.getGroup();
                 cell = neutron.getCell();
                 cell_mat = mesh.getMaterial(cell);
                 neutron_position = neutron.getPositionVector();
@@ -305,7 +307,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                         tallies[FISSIONS].add(1);
                     }
                 }
-                
+              
                 /** end neutron history */
                 neutron.kill();
             }

@@ -10,6 +10,8 @@
 
 /**
   @brief    Returns a random number between 0 and a give valule
+  @param    num a double containing the maximum value of the range
+  @return   a double in the range (0, num)
 
 */
 double random(double num) {
@@ -43,6 +45,7 @@ double samplePolarAngle() {
  @details   A distance of travel is sampled in [0, infinity) assuming an
             exponential distibution of the form sigma_t * exp(-sigma_t * d).
  @param     mat a Material object that contains information about the material
+ @param     group an int denoting the energy group of the neutron
  @return    A randomly sampled distance in [0, infinity)
 */
 double sampleDistance(Material mat, int group) {
@@ -63,8 +66,8 @@ double sampleDistance(Material mat, int group) {
 */
 int sampleInteraction(Material mat, int group) {
     
-    double sum_sigma_s = mat.getSigmaT()[group]-mat.getSigmaA()[group];
-    return (int)(random(1) < (sum_sigma_s / mat.getSigmaT()[group]));
+    return (int)(random(1.0) < (mat.getSigmaA()[group] /
+                mat.getSigmaT()[group]));
 }
 
 /**

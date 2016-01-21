@@ -24,65 +24,61 @@ int main() {
     test_boundary.setSurfaceCoord(1, 1, 2.0);
     test_boundary.setSurfaceCoord(2, 0, -2.0);
     test_boundary.setSurfaceCoord(2, 1, 2.0);
-    test_boundary.setSurfaceType(0, 0, REFLECTIVE);
-    test_boundary.setSurfaceType(0, 1, REFLECTIVE);
-    test_boundary.setSurfaceType(1, 0, REFLECTIVE);
-    test_boundary.setSurfaceType(1, 1, REFLECTIVE);
-    test_boundary.setSurfaceType(2, 0, REFLECTIVE);
-    test_boundary.setSurfaceType(2, 1, REFLECTIVE);
+    test_boundary.setSurfaceType(0, 0, VACUUM);
+    test_boundary.setSurfaceType(0, 1, VACUUM);
+    test_boundary.setSurfaceType(1, 0, VACUUM);
+    test_boundary.setSurfaceType(1, 1, VACUUM);
+    test_boundary.setSurfaceType(2, 0, VACUUM);
+    test_boundary.setSurfaceType(2, 1, VACUUM);
 
-    const int NUM_GROUPS = 2;
+    const int num_groups = 2;
 
     /** fuel cross sections */
-    static const double a_fuel_sigma_t [NUM_GROUPS] = {2.0/9.0, 5.0/6.0};
-    static const double a_fuel_sigma_f [NUM_GROUPS] = {1.0/480.0, 1.0/16.0};
-    static const double a_fuel_chi [NUM_GROUPS] = {1.0,0.0};
-    std::vector <double> fuel_sigma_t (a_fuel_sigma_t,
-            a_fuel_sigma_t + sizeof(a_fuel_sigma_t)
-            / sizeof(a_fuel_sigma_t[0]));
-    std::vector <double> fuel_sigma_f (a_fuel_sigma_f,
-            a_fuel_sigma_f + sizeof(a_fuel_sigma_f)
-            / sizeof(a_fuel_sigma_f[0]));
-    std::vector <double> fuel_chi (a_fuel_chi,
-            a_fuel_chi + sizeof(a_fuel_chi)
-            / sizeof(a_fuel_chi[0]));
-    
+    std::vector <double> fuel_sigma_f;
+    fuel_sigma_f.push_back(1.0/480.0);
+    fuel_sigma_f.push_back(1.0/16.0);
+    std::vector <double> fuel_chi;
+    fuel_chi.push_back(1.0);
+    fuel_chi.push_back(0.0);
+    std::vector <double> fuel_sigma_t;
+    fuel_sigma_t.push_back(2.0/9.0);
+    fuel_sigma_t.push_back(5.0/6.0);
+
     /** fuel sigma_s */
-    std::vector <std::vector <double> > fuel_sigma_s;
-    std::vector <double> s_row1;
-    std::vector <double> s_row2;
-    s_row1.push_back(71.0/360.0);
-    s_row1.push_back(.02);
-    s_row2.push_back(0.0);
-    s_row2.push_back(11.0/15.0);
-    fuel_sigma_s.push_back(s_row1);
-    fuel_sigma_s.push_back(s_row2);
+    static const double a_fuel_sigma_s [num_groups*num_groups] =
+    { 71.0/360.0,   .02,
+        0.0,        11.0/15.0 };
+    std::vector <std::vector <double> > fuel_sigma_s (num_groups, 
+            (std::vector <double> (num_groups)));
+    for (int g=0; g<num_groups; ++g) {
+        for (int gp=0; gp<num_groups; ++gp) {
+            fuel_sigma_s[g][gp] = a_fuel_sigma_s[g*num_groups+gp];
+        }
+    }
 
     /** water cross sections */
-    static const double a_water_sigma_t [NUM_GROUPS] = {2.0/9.0, 5.0/3.0};
-    static const double a_water_sigma_f [NUM_GROUPS] = {0.0, 0.0};
-    static const double a_water_chi [NUM_GROUPS] = {0.0,0.0};
-    std::vector <double> water_sigma_t (a_water_sigma_t,
-            a_water_sigma_t + sizeof(a_water_sigma_t)
-            / sizeof(a_water_sigma_t[0]));
-    std::vector <double> water_sigma_f (a_water_sigma_f,
-            a_water_sigma_f + sizeof(a_water_sigma_f)
-            / sizeof(a_water_sigma_f[0]));
-    std::vector <double> water_chi (a_water_chi,
-            a_water_chi + sizeof(a_water_chi)
-            / sizeof(a_water_chi[0]));
+    std::vector <double> water_sigma_f;
+    water_sigma_f.push_back(0.0);
+    water_sigma_f.push_back(0.0);
+    std::vector <double> water_chi;
+    water_chi.push_back(0.0);
+    water_chi.push_back(0.0);
+    std::vector <double> water_sigma_t;
+    water_sigma_t.push_back(2.0/9.0);
+    water_sigma_t.push_back(5.0/3.0);
     
     /** water sigma_s */
-    std::vector <std::vector <double> > water_sigma_s;
-    std::vector <double> w_s_row1;
-    std::vector <double> w_s_row2;
-    w_s_row1.push_back(71.0/360.0);
-    w_s_row1.push_back(.025);
-    w_s_row2.push_back(0.0);
-    w_s_row2.push_back(47.0/30.0);
-    water_sigma_s.push_back(w_s_row1);
-    water_sigma_s.push_back(w_s_row2);
-    
+    static const double a_water_sigma_s [num_groups*num_groups] =
+    { 71.0/360.0,   .025,
+        0.0,        47.0/30.0 };
+    std::vector <std::vector <double> > water_sigma_s (num_groups, 
+            (std::vector <double> (num_groups)));
+    for (int g=0; g<num_groups; ++g) {
+        for (int gp=0; gp<num_groups; ++gp) {
+            water_sigma_s[g][gp] = a_water_sigma_s[g*num_groups+gp];
+        }
+    }
+
     /** nu */
     double nu = 2.4;
     
@@ -91,7 +87,32 @@ int main() {
     Material water(water_sigma_t, water_sigma_s, nu, water_sigma_f, water_chi);
 
     /* create mesh */
-    Mesh test_mesh(test_boundary, 4.0/9.0, 4.0/9.0, 4.0/9.0, water, NUM_GROUPS);
+    Mesh test_mesh(test_boundary, 4.0/9.0, 4.0/9.0, 4.0/9.0, water, num_groups);
+
+    /** fill mesh with some water */
+    std::vector <std::vector <double > > water_limits;
+    water_limits.resize(3);
+    for (int i=0; i<3; ++i) {
+        water_limits[i].resize(2);
+    }
+    water_limits[0][0] = -2.0;
+    water_limits[0][1] = 2.0;
+    water_limits[1][0] = -2.0;
+    water_limits[1][1] = -2.0/3.0;
+    water_limits[2][0] = -2.0;
+    water_limits[2][1] = 2.0;
+    test_mesh.fillMaterials(water, water_limits);
+    water_limits[1][0] = 2.0/3.0;
+    water_limits[1][1] = 2.0;
+    test_mesh.fillMaterials(water, water_limits);
+    water_limits[0][0] = -2.0;
+    water_limits[0][1] = -2.0/3.0;
+    water_limits[1][0] = -2.0/3.0;
+    water_limits[1][1] = 2.0/3.0;
+    test_mesh.fillMaterials(water, water_limits);
+    water_limits[0][0] = 2.0/3.0;
+    water_limits[0][1] = 2.0;
+    test_mesh.fillMaterials(water, water_limits);
 
     /** fill mesh with some fuel */ 
     std::vector <std::vector <double > > fuel_limits;
@@ -122,8 +143,24 @@ int main() {
     }
    */
     
-    generateNeutronHistories(1000, test_boundary, test_mesh, 10);
+    generateNeutronHistories(10000, test_boundary, test_mesh, 5);
 
     std::cout << std::endl;
     return 0;
 }
+
+/**
+
+notes:
+
+ add @param to function descriptions
+ 
+testing:
+    1 energry group, homogenous materials, reflective boundaries:
+    k = nu*sigma_f/sigma_a;
+
+    2 group:
+    k = [nu*sigma_f1 + nu*sigma_f2(sigmaS(1-2)/sigma_a2) ]/ sigma_a1
+
+
+*/
