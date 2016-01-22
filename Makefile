@@ -12,6 +12,7 @@ obj = $(source:.cpp=.o)
 
 headers = $(source:.cpp=.h)
 source += main.cpp
+#source+= k_tester.cpp
 source += fission.cpp
 source += material.cpp
 source += distributions.cpp

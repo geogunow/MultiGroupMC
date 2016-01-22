@@ -16,11 +16,8 @@
 Neutron::Neutron(std::vector <double> &position, double theta, double phi) {
     _xyz = position;
     _neutron_alive = true;
-
     _neutron_direction.resize(3);
-
     setDirection(theta, phi);
-    
 }
 
 /**
