@@ -75,7 +75,7 @@ int main() {
     }
    */
     
-    generateNeutronHistories(10000, test_boundary, test_mesh, 5);
+    generateNeutronHistories(10000, test_boundary, test_mesh, 10);
 
     std::cout << "\nk_tester has run " << std::endl;
     return 0;

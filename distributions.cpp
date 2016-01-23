@@ -79,7 +79,6 @@ int sampleInteraction(Material mat, int group) {
  @return    _dist_location a vector that contains the coordinates of a point
 */
 std::vector <double> sampleLocation(Boundaries bounds) {
-    
     std::vector <double> _dist_location;
     for (int i=0; i<3; ++i) {
        

@@ -243,6 +243,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                         neutron.kill();
                         neutron_distance = tempd;
                         tallies[LEAKS].add(1);
+                        std::cout << "leak!\n";
                     }
                 }
             }
@@ -295,7 +296,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                 tallies[ABSORPTIONS].add(1);
 
                 /** sample for fission event */
-               group = neutron.getGroup();
+                group = neutron.getGroup();
                 cell = neutron.getCell();
                 cell_mat = mesh.getMaterial(cell);
                 neutron_position = neutron.getPositionVector();
