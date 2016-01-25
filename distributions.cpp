@@ -9,13 +9,11 @@
 #include "distributions.h"
 
 /**
-  @brief    Returns a random number between 0 and a give valule
-  @param    num a double containing the maximum value of the range
-  @return   a double in the range (0, num)
-
+  @brief    Returns a uniform random number between 0 and 1
+  @return   a double in the range (0, 1)
 */
-double random(double num) {
-    return (rand() % (int)(num * 100000000) / 100000000.0);
+double urand() {
+    return (double) rand() / (double) RAND_MAX;
 }
 
 /**
@@ -24,7 +22,7 @@ double random(double num) {
   @return   A randomly sampled angle in [0, 2pi] 
 */
 double sampleAzimuthalAngle() {
-    return 2 * M_PI*random(1.0);
+    return 2 * M_PI*urand();
 }
 
 /**
@@ -34,7 +32,7 @@ double sampleAzimuthalAngle() {
  @return    A randomly sampled polar angle in [0, pi]
 */
 double samplePolarAngle() {
-    double cos_theta = 2*random(1.0) - 1.0;
+    double cos_theta = 2*urand() - 1.0;
     return acos(cos_theta);
 
 }
@@ -51,7 +49,7 @@ double samplePolarAngle() {
 double sampleDistance(Material mat, int group) {
     std::vector <double> _temp_sigma_t;
     _temp_sigma_t = mat.getSigmaT();
-    return -log(random(1.0)) / _temp_sigma_t[group];
+    return -log(urand()) / _temp_sigma_t[group];
 }
 
 /**
@@ -66,7 +64,7 @@ double sampleDistance(Material mat, int group) {
 */
 int sampleInteraction(Material mat, int group) {
     
-    return (int)(random(1.0) < (mat.getSigmaA()[group] /
+    return (int)(urand() < (mat.getSigmaA()[group] /
                 mat.getSigmaT()[group]));
 }
 
@@ -85,7 +83,7 @@ std::vector <double> sampleLocation(Boundaries bounds) {
         /** is this the correct way to sample a rondom location? */
         _dist_location.push_back(bounds.getSurfaceCoord(i, 0) +
             bounds.getSurfaceCoord(i, 1) - bounds.getSurfaceCoord(i, 0)
-            * random(1.0));
+            * urand());
     }
     return _dist_location;
 }
@@ -100,7 +98,7 @@ std::vector <double> sampleLocation(Boundaries bounds) {
  @return    An interaction type (0 = capture, 1 = fission)
 */
 int sampleFission(Material mat, int group) {
-    return (int)(random(1.0) <
+    return (int)(urand() <
             (mat.getSigmaF()[group] / mat.getSigmaA()[group]));
 }
 
@@ -111,7 +109,7 @@ int sampleFission(Material mat, int group) {
 */
 int sampleNumFission(Material mat) {
     int lower = (int)(mat.getNu());
-    int add = (int)(random(1.0) < (mat.getNu()-lower));
+    int add = (int)(urand() < (mat.getNu()-lower));
     return lower + add;
 }
 
@@ -131,7 +129,7 @@ std::vector <double> sampleFissionSite(Fission fission_bank) {
  @return    the group number of the emitted neutron
 */
 int sampleNeutronEnergyGroup(std::vector <double> chi) {
-    double r = random(1.0);
+    double r = urand();
     double chi_sum = 0.0;
     for (int g=0; g<chi.size(); ++g) {
         chi_sum += chi[g];
@@ -150,8 +148,15 @@ int sampleNeutronEnergyGroup(std::vector <double> chi) {
 */
 int sampleScatteredGroup(std::vector <std::vector <double> > &scattering_matrix,
         int group) {
+
+    /* Get the total scattering cross-section from this group */
     int num_groups = scattering_matrix.size();
-    double r = random(1.0) * num_groups;
+    double scattering_total = 0;
+    for (int g=0; g < num_groups; ++g)
+        scattering_total += scattering_matrix[group][g];
+
+    /* Sample the outgoing scattered energy group */
+    double r = urand() * scattering_total;
     double scatter_sum = 0.0;
     for (int g=0; g<num_groups; ++g) {
         scatter_sum += scattering_matrix[group][g];
@@ -159,5 +164,7 @@ int sampleScatteredGroup(std::vector <std::vector <double> > &scattering_matrix,
             return g;
         }
     }
+
+    /* Return the last group if no group has been found yet */
     return num_groups - 1;
 }
