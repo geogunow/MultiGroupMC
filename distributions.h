@@ -17,18 +17,18 @@
 #include "boundaries.h"
 #include "fission.h"
 
-/** fucntion declarations */
-double random(double num),
-    sampleAzimuthalAngle(),
-    samplePolarAngle(),
-    sampleDistance(Material mat, int group);
-int sampleInteraction(Material mat, int group),
-    sampleFission(Material mat, int group),
-    sampleNumFission(Material mat),
-    sampleNeutronEnergyGroup(std::vector <double> chi),
-    sampleScatteredGroup(std::vector <std::vector <double> > &scattering_matrix,
-            int group);
-std::vector <double> sampleLocation(Boundaries bounds),
-    sampleFissionSite(Fission fission_bank);
+/** function declarations */
+double urand();
+double sampleAzimuthalAngle();
+double samplePolarAngle();
+double sampleDistance(Material mat, int group);
+int sampleInteraction(Material mat, int group);
+int sampleFission(Material mat, int group);
+int sampleNumFission(Material mat);
+int sampleNeutronEnergyGroup(std::vector <double> chi);
+int sampleScatteredGroup(std::vector <std::vector <double> > &scattering_matrix,
+                         int group);
+std::vector <double> sampleLocation(Boundaries bounds);
+std::vector <double> sampleFissionSite(Fission fission_bank);
 
 #endif
