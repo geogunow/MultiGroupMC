@@ -21,11 +21,11 @@ public:
     Fission();
     virtual ~Fission();
     
-    void clear(),
-        add(std::vector <double> &location);
+    void clear();
+    void add(std::vector <double> &location);
     int length();
-    std::vector <double> location(int num),
-        next();
+    std::vector <double> location(int num);
+    std::vector <double> next();
 
 };
 

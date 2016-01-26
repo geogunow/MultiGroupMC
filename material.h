@@ -30,10 +30,10 @@ public:
             std::vector <double> &sigma_f, std::vector <double> &chi);
     virtual ~Material();
     
-    std::vector <double> getSigmaT(),
-        getSigmaF(),
-        getChi(),
-        getSigmaA();
+    std::vector <double> getSigmaT();
+    std::vector <double> getSigmaF();
+    std::vector <double> getChi();
+    std::vector <double> getSigmaA();
     std::vector <std::vector <double> > getSigmaS();
     double getNu();
 

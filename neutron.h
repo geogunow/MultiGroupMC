@@ -17,32 +17,32 @@ class Neutron {
 private:
     bool _neutron_alive;
     int _neutron_group;
-    std::vector <double> _xyz,
-        _neutron_direction;
+    std::vector <double> _xyz;
+    std::vector <double> _neutron_direction;
     std::vector <int> _neutron_cell;
 
 public:
     Neutron(std::vector <double> &position, double theta, double phi);
     virtual ~Neutron();
 
-    double x(), 
-        y(), 
-        z(),
-        getPosition(int axis),
-        getDirection(int axis),
-        getDistance(std::vector <double> &coord);
+    double x(); 
+    double y(); 
+    double z();
+    double getPosition(int axis);
+    double getDirection(int axis);
+    double getDistance(std::vector <double> &coord);
     bool alive();
     int getGroup();
-    void move(double distance),
-        reflect(int axis),
-        setDirection(double theta, double phi),
-        setPosition(int axis, double value),
-        setCell(std::vector <int> &cell_number),
-        setGroup(int new_group),
-        kill();
+    void move(double distance);
+    void reflect(int axis);
+    void setDirection(double theta, double phi);
+    void setPosition(int axis, double value);
+    void setCell(std::vector <int> &cell_number);
+    void setGroup(int new_group);
+    void kill();
     std::vector <int> getCell();
-    std::vector <double> getPositionVector(),
-        getDirectionVector();
+    std::vector <double> getPositionVector();
+    std::vector <double> getDirectionVector();
 };
 
 #endif

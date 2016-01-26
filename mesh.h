@@ -15,20 +15,21 @@
 
 class Mesh {
 private:
-    std::vector <double> _delta_axes,
-        _boundary_mins,
-        _maxes, _mins,
-        _min_locations,
-        _max_locations,
-        _default_direction;
-    std::vector <int> _axis_sizes,
-        _cell_num_vector,
-        _smallest_cell,
-        _largest_cell;
+    std::vector <double> _delta_axes;
+    std::vector <double> _boundary_mins;
+    std::vector <double> _maxes;
+    std::vector <double> _mins;
+    std::vector <double> _min_locations;
+    std::vector <double> _max_locations;
+    std::vector <double> _default_direction;
+    std::vector <int> _axis_sizes;
+    std::vector <int> _cell_num_vector;
+    std::vector <int> _smallest_cell;
+    std::vector <int> _largest_cell;
     std::vector <std::vector <std::vector <std::vector <double> > > > _flux;
     std::vector <std::vector <std::vector <Material> > > _cell_materials;
-    int _cell_num,
-        _num_groups;
+    int _cell_num;
+    int _num_groups;
     bool _move_cell;
 
 public:
