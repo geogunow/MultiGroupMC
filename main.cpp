@@ -144,7 +144,7 @@ int main() {
     }
    */
     
-    generateNeutronHistories(1000000, test_boundary, test_mesh, 1);
+    generateNeutronHistories(10000, test_boundary, test_mesh, 1);
 
     std::cout << std::endl;
     return 0;

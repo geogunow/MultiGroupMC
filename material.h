@@ -14,11 +14,11 @@
 class Material {
 private:
     std::vector <double> _sigma_t;
-    std::vector <std::vector <double> > _sigma_s;
-    double _nu;
     std::vector <double> _sigma_f;
     std::vector <double> _chi;
     std::vector <double> _sigma_a;
+    std::vector <std::vector <double> > _sigma_s;
+    double _nu;
     double _s_sum;
     int _num_groups;
 
@@ -30,10 +30,10 @@ public:
             std::vector <double> &sigma_f, std::vector <double> &chi);
     virtual ~Material();
     
-    std::vector <double> getSigmaT(),
-        getSigmaF(),
-        getChi(),
-        getSigmaA();
+    std::vector <double> getSigmaT();
+    std::vector <double> getSigmaF();
+    std::vector <double> getChi();
+    std::vector <double> getSigmaA();
     std::vector <std::vector <double> > getSigmaS();
     double getNu();
 
