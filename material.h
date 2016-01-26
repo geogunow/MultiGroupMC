@@ -14,11 +14,11 @@
 class Material {
 private:
     std::vector <double> _sigma_t;
-    std::vector <std::vector <double> > _sigma_s;
-    double _nu;
     std::vector <double> _sigma_f;
     std::vector <double> _chi;
     std::vector <double> _sigma_a;
+    std::vector <std::vector <double> > _sigma_s;
+    double _nu;
     double _s_sum;
     int _num_groups;
 

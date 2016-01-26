@@ -14,6 +14,8 @@
 
 int main() {
 
+    std::cout << "k_tester\n";
+
     srand(time(NULL));
 
     /** create geometry */
@@ -75,7 +77,7 @@ int main() {
     }
    */
     
-    generateNeutronHistories(100, test_boundary, test_mesh, 1);
+    generateNeutronHistories(1000000, test_boundary, test_mesh, 1);
 
     std::cout << "\nk_tester has run " << std::endl;
     return 0;

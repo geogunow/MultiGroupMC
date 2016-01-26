@@ -37,16 +37,16 @@ public:
             Material default_material, int num_groups);
     virtual ~Mesh();
 
-    std::vector <int> getCell(std::vector <double>& position,
-            std::vector <double>& direction);
     void fluxAdd(std::vector <int> &cell, double distance, int group);
     void fluxClear();
-    std::vector <std::vector <std::vector <std::vector <double> > > > getFlux();
-    std::vector <double> getCellMax(std::vector <int> &cell_number);
-    std::vector <double> getCellMin(std::vector <int> &cell_number);
-    Material getMaterial(std::vector <int> &cell_number);
     void fillMaterials(Material material_type,
             std::vector <std::vector <double> > &material_bounds);
+    std::vector <int> getCell(std::vector <double>& position,
+            std::vector <double>& direction);
+    std::vector <double> getCellMax(std::vector <int> &cell_number);
+    std::vector <double> getCellMin(std::vector <int> &cell_number);
+    std::vector <std::vector <std::vector <std::vector <double> > > > getFlux();
+    Material getMaterial(std::vector <int> &cell_number);
 
 };
 
