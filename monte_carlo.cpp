@@ -20,6 +20,9 @@
 */
 void generateNeutronHistories(int n_histories, Boundaries bounds,
         Mesh mesh, int num_batches) {
+
+    // debugging
+    std::cout << "start montecarlo\n";
     
     /** create arrays for tallies and fissions */
     std::vector <Tally> tallies;
