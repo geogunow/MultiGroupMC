@@ -55,7 +55,7 @@ std::vector <double> Fission::location(int num) {
  @return the first location in the fission list
 */
 std::vector <double> Fission::next() {
-    _item =_fission_locations[0];
+    _item = _fission_locations[0];
     _fission_locations.erase(_fission_locations.begin());
     return _item;
 }

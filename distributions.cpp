@@ -64,8 +64,8 @@ double sampleDistance(Material mat, int group) {
 */
 int sampleInteraction(Material mat, int group) {
     
-    return (int)(urand() < (mat.getSigmaA()[group] /
-                mat.getSigmaT()[group]));
+    return (int)(urand() < mat.getSigmaA()[group] /
+                mat.getSigmaT()[group]);
 }
 
 /**
@@ -78,12 +78,13 @@ int sampleInteraction(Material mat, int group) {
 */
 std::vector <double> sampleLocation(Boundaries bounds) {
     std::vector <double> _dist_location;
-    for (int i=0; i<3; ++i) {
-       
-        /** is this the correct way to sample a rondom location? */
-        _dist_location.push_back(bounds.getSurfaceCoord(i, 0) +
-            bounds.getSurfaceCoord(i, 1) - bounds.getSurfaceCoord(i, 0)
-            * urand());
+    double width;
+    double coord;
+    for (int axis=0; axis<3; ++axis) {
+        width = bounds.getSurfaceCoord(axis, 1)
+            - bounds.getSurfaceCoord(axis, 0);
+        coord = bounds.getSurfaceCoord(axis, 0) + width * urand();
+        _dist_location.push_back(coord);
     }
     return _dist_location;
 }
@@ -98,8 +99,8 @@ std::vector <double> sampleLocation(Boundaries bounds) {
  @return    An interaction type (0 = capture, 1 = fission)
 */
 int sampleFission(Material mat, int group) {
-    return (int)(urand() <
-            (mat.getSigmaF()[group] / mat.getSigmaA()[group]));
+    int fission = urand() < mat.getSigmaF()[group] / mat.getSigmaA()[group];
+    return fission;
 }
 
 /**
@@ -108,8 +109,8 @@ int sampleFission(Material mat, int group) {
  @return    number of neutrons emitted from the sampled fission event
 */
 int sampleNumFission(Material mat) {
-    int lower = (int)(mat.getNu());
-    int add = (int)(urand() < (mat.getNu()-lower));
+    int lower = (int)mat.getNu();
+    int add = (int)(urand() < mat.getNu()-lower);
     return lower + add;
 }
 
@@ -118,9 +119,9 @@ int sampleNumFission(Material mat) {
  @param     fission_bank a Fission object containing neutron locations
  @return    sampled neutron location
 */
-std::vector <double> sampleFissionSite(Fission fission_bank) {
-    int index = rand() % fission_bank.length();
-    return fission_bank.location(index);
+std::vector <double> sampleFissionSite(Fission* fission_bank) {
+    int index = rand() % fission_bank->length();
+    return fission_bank->location(index);
 }
 
 /**

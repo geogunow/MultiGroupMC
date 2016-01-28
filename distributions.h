@@ -17,6 +17,8 @@
 #include "boundaries.h"
 #include "fission.h"
 
+enum min_max {MIN, MAX};
+
 /** function declarations */
 double urand();
 double sampleAzimuthalAngle();
@@ -29,6 +31,6 @@ int sampleNeutronEnergyGroup(std::vector <double> chi);
 int sampleScatteredGroup(std::vector <std::vector <double> > &scattering_matrix,
                          int group);
 std::vector <double> sampleLocation(Boundaries bounds);
-std::vector <double> sampleFissionSite(Fission fission_bank);
+std::vector <double> sampleFissionSite(Fission* fission_bank);
 
 #endif

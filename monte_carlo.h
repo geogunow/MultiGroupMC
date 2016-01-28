@@ -28,6 +28,7 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
         Mesh mesh, int num_batches);
 
 void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
-        std::vector <Fission> &fission_banks, bool first_round, Mesh mesh);
+        bool first_round, Mesh mesh,
+        Fission *old_fission_bank, Fission *new_fission_bank);
 
 #endif

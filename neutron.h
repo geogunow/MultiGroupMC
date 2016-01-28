@@ -12,6 +12,7 @@
 #include <cmath>
 #include <stdio.h>
 #include <math.h>
+#include <iostream>
 
 class Neutron {
 private:

@@ -18,7 +18,7 @@ int main() {
 
     srand(time(NULL));
 
-    /** create geometry */
+    // create geometry
     Boundaries test_boundary;
     test_boundary.setSurfaceCoord(0, 0, -2.0);
     test_boundary.setSurfaceCoord(0, 1, 2.0);
@@ -35,7 +35,7 @@ int main() {
 
     const int num_groups = 1;
 
-    /** fuel cross sections */
+    // fuel cross sections
     std::vector <double> fuel_sigma_f;
     fuel_sigma_f.push_back(1.0/16.0);
     std::vector <double> fuel_chi;
@@ -43,7 +43,7 @@ int main() {
     std::vector <double> fuel_sigma_t;
     fuel_sigma_t.push_back(5.0/6.0);
 
-    /** fuel sigma_s */
+    // fuel sigma_s 
     static const double a_fuel_sigma_s [num_groups*num_groups] =
         { 11.0/15.0 };
     std::vector <std::vector <double> > fuel_sigma_s (num_groups, 
@@ -54,36 +54,18 @@ int main() {
         }
     }
 
-    /** nu */
+    // nu 
     double nu = 2.4;
     
-    /** create materials */
+    // create materials
     Material fuel(fuel_sigma_t, fuel_sigma_s, nu, fuel_sigma_f, fuel_chi);
 
-    /* create mesh */
+    // create mesh 
     Mesh test_mesh(test_boundary, 4.0/9.0, 4.0/9.0, 4.0/9.0, fuel, num_groups);
 
-/**
-    std::vector <int> testing_cell;
-    std::vector <double> cell_mins;
-    cell_mins.resize(3);
-    testing_cell.push_back(6);
-    testing_cell.push_back(4);
-    testing_cell.push_back(2);
-    cell_mins = test_mesh.getCellMax(testing_cell);
-    std::cout << "cell mins ";
-    for (int i=0; i<3; i++) {
-        std::cout << cell_mins[i] << " ";
-    }
-   */
-    
-    generateNeutronHistories(1000000, test_boundary, test_mesh, 1);
+    generateNeutronHistories(1000, test_boundary, test_mesh, 1);
 
     std::cout << "\nk_tester has run " << std::endl;
+
     return 0;
 }
-
-/**
-    2 group:
-    k = [nu*sigma_f1 + nu*sigma_f2(sigmaS(1-2)/sigma_a2) ]/ sigma_a1
-*/
