@@ -20,6 +20,9 @@
 */
 void generateNeutronHistories(int n_histories, Boundaries bounds,
         Mesh mesh, int num_batches) {
+
+    // debugging
+    std::cout << "start montecarlo\n";
     
     // create arrays for tallies and fissions
     std::vector <Tally> tallies(5);
@@ -323,5 +326,4 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     crow_distance = neutron.getDistance(neutron_starting_point);
     tallies[CROWS].add(crow_distance);
     tallies[NUM_CROWS].add(1);
-
 }

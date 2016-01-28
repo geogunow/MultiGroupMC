@@ -65,7 +65,6 @@ int main() {
     // create mesh
     Mesh test_mesh(test_boundary, 4.0/9.0, 4.0/9.0, 4.0/9.0, fuel, num_groups);
 
-    
     generateNeutronHistories(1000, test_boundary, test_mesh, 10);
 
     std::cout << std::endl;
