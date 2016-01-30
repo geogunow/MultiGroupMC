@@ -86,11 +86,14 @@ std::vector <int> Mesh::getCell(std::vector <double>& position,
         _cell_num = (int)((position[i] - _boundary_mins[i])/_delta_axes[i]);
         
         // correct error if neutron is on upper boundary of cell
-        _move_cell = position[i] == _boundary_mins[i] + _cell_num
-            * _delta_axes[i] & direction[i] <0;
+        // the rounding is neaded because decimal accuracy gets off
+        _move_cell = (roundf(position[i]*1e5)/1e5 
+            == roundf((_boundary_mins[i] + _cell_num
+            * _delta_axes[i]) *1e5)/1e5 & direction[i] <0);
         if (_cell_num == _axis_sizes[i] | _move_cell) {
             _cell_num -= 1;
         }
+        std::cout << _move_cell << std::endl;
         
         _cell_num_vector.push_back(_cell_num);
     }
@@ -118,7 +121,7 @@ void Mesh::fluxClear() {
         for (int j=0; j<_axis_sizes[0]; ++j) {
             for (int k=0; k<_axis_sizes[1]; ++k) {
                 for (int l=0; l<_axis_sizes[2]; ++l) {
-                    _flux[i][j][k].push_back(0.0);
+                    _flux[i][j][k][l] = 0.0;
                 }
             }
         }

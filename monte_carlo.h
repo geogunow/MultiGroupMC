@@ -25,10 +25,10 @@ enum tally_names {CROWS, NUM_CROWS, LEAKS, ABSORPTIONS, FISSIONS};
 enum fission_bank_names {OLD, NEW};
 
 void generateNeutronHistories(int n_histories, Boundaries bounds,
-        Mesh mesh, int num_batches);
+        Mesh &mesh, int num_batches);
 
 void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
-        bool first_round, Mesh mesh,
+        bool first_round, Mesh &mesh,
         Fission *old_fission_bank, Fission *new_fission_bank);
 
 #endif

@@ -48,7 +48,7 @@ int Neutron::getGroup() {
 */
 void Neutron::move(double distance) {
     for (int i=0; i<3; ++i) {
-        _xyz[i] = _neutron_direction[i]*distance;
+        _xyz[i] += _neutron_direction[i]*distance;
     }
 }
 

@@ -1,4 +1,4 @@
-/** 
+/**
  @file      mesh.h
  @brief     contains Mesh class
  @author    Luke Eure
@@ -12,6 +12,7 @@
 #include <vector>
 #include "material.h"
 #include "boundaries.h"
+#include <math.h>
 
 class Mesh {
 private:

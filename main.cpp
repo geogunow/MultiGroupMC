@@ -11,6 +11,7 @@
 #include "tally.h"
 #include "mesh.h"
 #include "monte_carlo.h"
+#include "plotter.h"
 
 int main() {
 
@@ -64,9 +65,32 @@ int main() {
 
     // create mesh
     Mesh test_mesh(test_boundary, 4.0/9.0, 4.0/9.0, 4.0/9.0, fuel, num_groups);
+    
+    // debugging
+    std::vector <double> position;
+    position.push_back(.678);
+    position.push_back(.976);
+    position.push_back(1.111111111111111);  // With 16 decimal places, the cell
+                                            // is 6 6 7. With less than 16, the
+                                            // cell is 6 6 6.
+    std::vector <double> direction;
+    direction.push_back(.226);
+    direction.push_back(-.116);
+    direction.push_back(.967);
+    std::vector <int> cell;
+    cell = test_mesh.getCell(position, direction);
+    std::cout << "testing cell: " << cell[0] << " " << cell[1]
+        << " " << cell[2] << std::endl;
 
-    generateNeutronHistories(1000, test_boundary, test_mesh, 10);
+/*    
+    // get neutron histories
+    generateNeutronHistories(4, test_boundary, test_mesh, 1);
+
+    // plot neutron flux
+    std::vector <std::vector <std::vector <std::vector <double> > > > flux =
+        test_mesh.getFlux();
+    plotFlux(flux);
 
     std::cout << std::endl;
-    return 0;
+*/    return 0;
 }
