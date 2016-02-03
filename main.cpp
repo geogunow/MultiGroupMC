@@ -112,14 +112,15 @@ int main() {
     test_mesh.fillMaterials(fuel, fuel_limits);
 
     // get neutron histories
-    generateNeutronHistories(100000, test_boundary, test_mesh, 10);
-
-    
+    generateNeutronHistories(10000, test_boundary, test_mesh, 10);
 
     // plot neutron flux
     std::vector <std::vector <std::vector <std::vector <double> > > > flux =
         test_mesh.getFlux();
     plotFlux(flux);
+
+    // run python script to get flux plots
+    system("python flux_parser.py");
 
     std::cout << std::endl;
     return 0;

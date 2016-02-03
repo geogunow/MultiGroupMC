@@ -201,9 +201,9 @@ void Mesh::fillMaterials(Material material_type,
     _largest_cell = getCell(_max_locations, _default_direction);
     
     // fill the cells with material_type
-    for (int i=_smallest_cell[0]; i<_largest_cell[0]; ++i) {
-        for (int j=_smallest_cell[1]; j<_largest_cell[1]; ++j) {
-            for (int k=_smallest_cell[2]; k<_largest_cell[2]; ++k) {
+    for (int i=_smallest_cell[0]; i<=_largest_cell[0]; ++i) {
+        for (int j=_smallest_cell[1]; j<=_largest_cell[1]; ++j) {
+            for (int k=_smallest_cell[2]; k<=_largest_cell[2]; ++k) {
                 _cell_materials[i][j][k] = material_type;
             }
         }

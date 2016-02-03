@@ -23,7 +23,6 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
 
     // create arrays for tallies and fissions
     std::vector <Tally> tallies(5);
-    std::vector <double> add_location(3);
 
     Fission* old_fission_bank = new Fission;
     Fission* new_fission_bank =  new Fission;

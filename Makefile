@@ -1,4 +1,4 @@
-program = monte_carlo
+    program = monte_carlo
 
 source = \
 boundaries.cpp
@@ -16,6 +16,7 @@ source += neutron.cpp
 source += mesh.cpp
 source += monte_carlo.cpp
 source += plotter.cpp
+
 
 CC = g++
 
