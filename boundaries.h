@@ -1,3 +1,9 @@
+/* 
+ @file      boundaries.h
+ @brief     contains the boundaries class
+ @author    Luke Eure
+ @date      January 6 2016
+*/
 
 #ifndef BOUNDARIES_H
 #define BOUNDARIES_H
@@ -9,12 +15,13 @@ enum BoundaryType {
 };
 
 class Boundaries {
+
 private:
     int _surface_coords[6];
     int _surface_type[6];
     bool _surface_init[6];
-public:
 
+public:
     Boundaries();
     virtual ~Boundaries();
 

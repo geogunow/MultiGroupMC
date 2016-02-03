@@ -1,4 +1,4 @@
-/** 
+/* 
  @file      material.h
  @brief     contains the material class
  @author    Luke Eure

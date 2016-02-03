@@ -1,3 +1,10 @@
+/* 
+ @file      boundaries.cpp
+ @brief     contains functions for the Boundaries class
+ @author    Luke Eure
+ @date      January 9 2016
+*/
+
 #include "boundaries.h"
 
 Boundaries::Boundaries() {

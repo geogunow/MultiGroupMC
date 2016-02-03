@@ -72,7 +72,7 @@ Mesh::Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
 */
 Mesh::~Mesh() {}
 
-/**
+/*
  @brief get the cell containing a neutron at a given location witha given
         direction of travel
  @param position a vector containing the location to find the cell of
@@ -93,15 +93,16 @@ std::vector <int> Mesh::getCell(std::vector <double>& position,
         if (_cell_num == _axis_sizes[i] | _move_cell) {
             _cell_num -= 1;
         }
-        std::cout << _move_cell << std::endl;
-        
+        if (_cell_num == -1 ) {
+            _cell_num =0 ;
+        }
         _cell_num_vector.push_back(_cell_num);
     }
 
     return _cell_num_vector;
 }
 
-/**
+/*
  @brief add the distance a neutron has traveled within the cell to the flux
         array
  @param cell a vector containing a cell
@@ -179,21 +180,20 @@ Material Mesh::getMaterial(std::vector <int> &cell_number) {
 /*
  @brief fill cells with a certain material
  @param material_type a material to fill the mesh with
- @param locations should b be a 3x2 vector with the maxes and mins of the area
+ @param locations should be a 3x2 vector with the maxes and mins of the area
         to be filled in each direction
-
 */
 void Mesh::fillMaterials(Material material_type,
         std::vector <std::vector <double> > &material_bounds) {
     
-    /* copy the value of material_bounds to locations and nudge the upper
-    limit down so it is contained within the highest cell */
+    // copy the value of material_bounds to locations and nudge the upper
+    // limit down so it is contained within the highest cell
     for (int i=0; i<3; ++i) {
         _min_locations[i] = material_bounds[i][0];
         _max_locations[i] = material_bounds[i][1] - _delta_axes[i]/10;
     
-        /* put the smallest and largest cell values along each
-            axis in a list */
+        // put the smallest and largest cell values along each
+        // axis in a list
         _default_direction[i] = 0.0;
     }
 
@@ -208,4 +208,25 @@ void Mesh::fillMaterials(Material material_type,
             }
         }
     }
+}
+
+/*
+ @brief returns a boolean denoting whether or not a given position is within
+        the geometry
+ @param position a cartesian coordinate denoting a position in the geometry
+*/
+bool Mesh::positionInBounds(std::vector <double> &position) {
+    for (int axis=0; axis<3; ++axis) {
+        double _boundary_max = _boundary_mins[axis]
+            + _delta_axes[axis] * _axis_sizes[axis];
+
+        // check the boundaries
+        if (position[axis] < _boundary_mins[axis]
+                | position[axis] > _boundary_max) {
+            return false;
+        }
+    }
+
+    return true;
+
 }

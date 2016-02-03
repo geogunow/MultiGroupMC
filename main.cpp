@@ -1,3 +1,10 @@
+/* 
+ @file      main.cpp
+ @brief     creates geometry and materials to run a Monte Carlo simulation
+ @author    Luke Eure
+ @date      January 9 2016
+*/
+
 #include <iostream>
 #include <vector>
 #include <time.h>
@@ -25,12 +32,12 @@ int main() {
     test_boundary.setSurfaceCoord(1, 1, 2.0);
     test_boundary.setSurfaceCoord(2, 0, -2.0);
     test_boundary.setSurfaceCoord(2, 1, 2.0);
-    test_boundary.setSurfaceType(0, 0, REFLECTIVE);
-    test_boundary.setSurfaceType(0, 1, REFLECTIVE);
-    test_boundary.setSurfaceType(1, 0, REFLECTIVE);
-    test_boundary.setSurfaceType(1, 1, REFLECTIVE);
-    test_boundary.setSurfaceType(2, 0, REFLECTIVE);
-    test_boundary.setSurfaceType(2, 1, REFLECTIVE);
+    test_boundary.setSurfaceType(0, 0, VACUUM);
+    test_boundary.setSurfaceType(0, 1, VACUUM);
+    test_boundary.setSurfaceType(1, 0, VACUUM);
+    test_boundary.setSurfaceType(1, 1, VACUUM);
+    test_boundary.setSurfaceType(2, 0, VACUUM);
+    test_boundary.setSurfaceType(2, 1, VACUUM);
 
     const int num_groups = 2;
 
@@ -57,34 +64,57 @@ int main() {
         }
     }
 
+    // water cross sections
+    std::vector <double> water_sigma_f;
+    water_sigma_f.push_back(0.0);
+    water_sigma_f.push_back(0.0);
+    std::vector <double> water_chi;
+    water_chi.push_back(0.0);
+    water_chi.push_back(0.0);
+    std::vector <double> water_sigma_t;
+    water_sigma_t.push_back(2.0/9.0);
+    water_sigma_t.push_back(5.0/3.0);
+
+    // water sigma_s
+    static const double a_water_sigma_s [num_groups*num_groups] =
+    { 71.0/360.0,   .025,
+        0.0,        47.0/30.0 };
+    std::vector <std::vector <double> > water_sigma_s (num_groups, 
+            (std::vector <double> (num_groups)));
+    for (int g=0; g<num_groups; ++g) {
+        for (int gp=0; gp<num_groups; ++gp) {
+            water_sigma_s[g][gp] = a_water_sigma_s[g*num_groups+gp];
+        }
+    }
+
     // nu
     double nu = 2.4;
     
     // create materials
     Material fuel(fuel_sigma_t, fuel_sigma_s, nu, fuel_sigma_f, fuel_chi);
+    Material water(water_sigma_t, water_sigma_s, nu, water_sigma_f, water_chi);
 
     // create mesh
-    Mesh test_mesh(test_boundary, 4.0/9.0, 4.0/9.0, 4.0/9.0, fuel, num_groups);
-    
-    // debugging
-    std::vector <double> position;
-    position.push_back(.678);
-    position.push_back(.976);
-    position.push_back(1.111111111111111);  // With 16 decimal places, the cell
-                                            // is 6 6 7. With less than 16, the
-                                            // cell is 6 6 6.
-    std::vector <double> direction;
-    direction.push_back(.226);
-    direction.push_back(-.116);
-    direction.push_back(.967);
-    std::vector <int> cell;
-    cell = test_mesh.getCell(position, direction);
-    std::cout << "testing cell: " << cell[0] << " " << cell[1]
-        << " " << cell[2] << std::endl;
+    Mesh test_mesh(test_boundary, 4.0/9.0, 4.0/9.0, 4.0/9.0, water, num_groups);
 
-/*    
+    // fill mesh with some material
+    static const double a_fuel_limits [6] =
+    { -2.0/3.0,     2.0/3.0,
+      -2.0/3.0,     2.0/3.0,
+      -2.0,         2.0 };
+    std::vector <std::vector <double> > fuel_limits (3,
+            (std::vector <double> (2)));
+    for (int i=0; i<3; ++i) {
+        for (int j=0; j<2; ++j) {
+            fuel_limits[i][j] = a_fuel_limits[i*2+j];
+        }
+    }
+    test_mesh.fillMaterials(fuel, fuel_limits);
+
     // get neutron histories
-    generateNeutronHistories(4, test_boundary, test_mesh, 1);
+    generateNeutronHistories(100000, test_boundary, test_mesh, 10);
+
+    
 
     // plot neutron flux
     std::vector <std::vector <std::vector <std::vector <double> > > > flux =
@@ -92,5 +122,5 @@ int main() {
     plotFlux(flux);
 
     std::cout << std::endl;
-*/    return 0;
+    return 0;
 }

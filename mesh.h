@@ -1,4 +1,4 @@
-/**
+/*
  @file      mesh.h
  @brief     contains Mesh class
  @author    Luke Eure
@@ -42,13 +42,13 @@ public:
     void fluxClear();
     void fillMaterials(Material material_type,
             std::vector <std::vector <double> > &material_bounds);
+    bool positionInBounds(std::vector <double> &position);
     std::vector <int> getCell(std::vector <double>& position,
             std::vector <double>& direction);
     std::vector <double> getCellMax(std::vector <int> &cell_number);
     std::vector <double> getCellMin(std::vector <int> &cell_number);
     std::vector <std::vector <std::vector <std::vector <double> > > > getFlux();
     Material getMaterial(std::vector <int> &cell_number);
-
 };
 
 #endif

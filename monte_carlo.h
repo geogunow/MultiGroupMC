@@ -1,4 +1,4 @@
-/** 
+/* 
  @file      monte_carlo.h
  @brief     header file for monte_carlo.cpp
  @author    Luke Eure

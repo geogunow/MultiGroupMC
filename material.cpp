@@ -1,4 +1,4 @@
-/** 
+/* 
  @file      materialcpp
  @brief     contains functions for the Material class
  @author    Luke Eure
@@ -6,10 +6,10 @@
 */
 #include "material.h"
 
-/** default constructor */
+/* default constructor */
 Material::Material() {}
 
-/**
+/*
  @brief constructor for Material class
  @param sigma_t a vector constaining the total cross section
  @param sigma_s a 2d vector containing the scattering cross section 
@@ -22,17 +22,17 @@ Material::Material(std::vector <double> &sigma_t,
         std::vector <std::vector <double> > &sigma_s, double nu, 
         std::vector <double> &sigma_f, std::vector <double> &chi) {
 
-    /** store variables */
+    /* store variables */
     _sigma_t = sigma_t;
     _sigma_s = sigma_s;
     _nu = nu;
     _sigma_f = sigma_f;
     _chi = chi;
    
-    /** save number of groups */
+    /* save number of groups */
     _num_groups = sigma_t.size();
 
-    /** sigma_a */
+    /* sigma_a */
     for (int i=0; i < _num_groups; ++i) {
         _s_sum = 0.0;
         for (int j=0; j < _num_groups; ++j) {
@@ -42,12 +42,12 @@ Material::Material(std::vector <double> &sigma_t,
     }
    
 }
-/**
+/*
  @brief deconstructor
 */
 Material::~Material() {}
 
-/**
+/*
  @brief returns sigma_t
  @return sigma_t
 */
@@ -55,7 +55,7 @@ std::vector <double> Material::getSigmaT() {
     return _sigma_t;
 }
 
-/**
+/*
  @brief returns sigma_s
  @return sigma_s
 */
@@ -63,7 +63,7 @@ std::vector <std::vector <double> > Material::getSigmaS()  {
     return _sigma_s;
 }
 
-/**
+/*
  @brief returns nu
  @return nu
 */
@@ -71,7 +71,7 @@ double Material::getNu() {
     return _nu;
 }
 
-/**
+/*
  @brief returns sigma_f
  @return sigma_f
 */
@@ -79,7 +79,7 @@ std::vector <double> Material::getSigmaF() {
     return _sigma_f;
 }
 
-/**
+/*
  @brief returns chi
  @return chi
 */
@@ -87,7 +87,7 @@ std::vector <double> Material::getChi() {
     return _chi;
 }
 
-/**
+/*
  @brief returns sigma_a
  @return sigma_a
 */

@@ -1,4 +1,4 @@
-/**
+/*
  @file      distributions.cpp
  @brief     Functions for sampling monte carlo distributions
  @details   This file contains functions to be used in a Monte Carlo simulation
@@ -8,7 +8,7 @@
 */
 #include "distributions.h"
 
-/**
+/*
   @brief    Returns a uniform random number between 0 and 1
   @return   a double in the range (0, 1)
 */
@@ -16,7 +16,7 @@ double urand() {
     return (double) rand() / (double) RAND_MAX;
 }
 
-/**
+/*
   @brief    Function that randomly samples an azimuthal angle                   
   @details  An azimuthal angle is uniformally sampled in [0, 2 pi]              
   @return   A randomly sampled angle in [0, 2pi] 
@@ -25,7 +25,7 @@ double sampleAzimuthalAngle() {
     return 2 * M_PI*urand();
 }
 
-/**
+/*
  @brief     Function that randomly samples a polar angle
  @details   The cosine of the polar angle is uniformally sampled in [-1, 1]
             and then transformed to the polar angle with an inverse cosine
@@ -37,7 +37,7 @@ double samplePolarAngle() {
 
 }
 
-/**
+/*
  @brief     Function that samples the distance of travel based on a total
             cross-section.
  @details   A distance of travel is sampled in [0, infinity) assuming an
@@ -52,7 +52,7 @@ double sampleDistance(Material mat, int group) {
     return -log(urand()) / _temp_sigma_t[group];
 }
 
-/**
+/*
  @brief     Function that samples the interaction type (0 = scattering,
             1 = absorption)
  @details   Based on cross-sections, the interaction is sampled as scattering
@@ -68,7 +68,7 @@ int sampleInteraction(Material mat, int group) {
                 mat.getSigmaT()[group]);
 }
 
-/**
+/*
  @brief     Function that samples a random location within a bounding box.
  @details   A point is randomly and uniformally sampled in the bounding box 
             provided in the input.
@@ -89,7 +89,7 @@ std::vector <double> sampleLocation(Boundaries bounds) {
     return _dist_location;
 }
 
-/**
+/*
  @brief     Function that samples the interaction type given an absorption
             (0 = capture, 1 = fission)
  @details   Based on cross-sections, the interaction is sampled as capture
@@ -103,7 +103,7 @@ int sampleFission(Material mat, int group) {
     return fission;
 }
 
-/**
+/*
  @brief     Samples the nunber of neutrons produced from a fission event
  @param     mat a Material object that contains information about the material
  @return    number of neutrons emitted from the sampled fission event
@@ -114,7 +114,7 @@ int sampleNumFission(Material mat) {
     return lower + add;
 }
 
-/**
+/*
  @brief     Samples a neutron position in the fission bank
  @param     fission_bank a Fission object containing neutron locations
  @return    sampled neutron location
@@ -124,7 +124,7 @@ std::vector <double> sampleFissionSite(Fission* fission_bank) {
     return fission_bank->location(index);
 }
 
-/**
+/*
  @brief     Samples an initial neutron energy group after fission
  @param     chi the neutron emission spectrum from fission
  @return    the group number of the emitted neutron
@@ -141,7 +141,7 @@ int sampleNeutronEnergyGroup(std::vector <double> chi) {
     return chi.size() - 1;
 }
 
-/**
+/*
  @brief     Samples the neutron energy group after a scattering event
  @param     scattering_matrix the scattering cross section matrix
  @param     group the neutron energy group before scattering
@@ -150,13 +150,13 @@ int sampleNeutronEnergyGroup(std::vector <double> chi) {
 int sampleScatteredGroup(std::vector <std::vector <double> > &scattering_matrix,
         int group) {
 
-    /* Get the total scattering cross-section from this group */
+    // Get the total scattering cross-section from this group
     int num_groups = scattering_matrix.size();
     double scattering_total = 0;
     for (int g=0; g < num_groups; ++g)
         scattering_total += scattering_matrix[group][g];
 
-    /* Sample the outgoing scattered energy group */
+    // Sample the outgoing scattered energy group
     double r = urand() * scattering_total;
     double scatter_sum = 0.0;
     for (int g=0; g<num_groups; ++g) {
@@ -166,6 +166,6 @@ int sampleScatteredGroup(std::vector <std::vector <double> > &scattering_matrix,
         }
     }
 
-    /* Return the last group if no group has been found yet */
+    // Return the last group if no group has been found yet 
     return num_groups - 1;
 }

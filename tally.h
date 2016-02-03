@@ -1,4 +1,4 @@
-/** 
+/* 
  @file      tally.h
  @brief     contains Tally class
  @author    Luke Eure

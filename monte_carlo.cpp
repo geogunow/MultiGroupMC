@@ -21,9 +21,6 @@
 void generateNeutronHistories(int n_histories, Boundaries bounds,
         Mesh &mesh, int num_batches) {
 
-    // debugging
-    std::cout << "start montecarlo\n";
-    
     // create arrays for tallies and fissions
     std::vector <Tally> tallies(5);
     std::vector <double> add_location(3);
@@ -140,9 +137,6 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
 
     cell = mesh.getCell(neutron_starting_point,
             neutron_direction);
-std::cout << "---------------------------------------------------------------";
-std::cout << " starting cell " << cell[0] << " "
-    << cell[1] << " " << cell[2] << std::endl;
     neutron.setCell(cell);
 
     // set neutron group
@@ -153,32 +147,28 @@ std::cout << " starting cell " << cell[0] << " "
     // follow neutron while it's alive
     while (neutron.alive()) {
 
-        cell = neutron.getCell();
-        
         cell_mat = mesh.getMaterial(cell);
         group = neutron.getGroup();
         neutron_distance = sampleDistance(cell_mat, group);
     
         // track neutron until collision or leakage
         while (neutron_distance > 0) {
-            neutron_position = neutron.getPositionVector();
             neutron_direction = neutron.getDirectionVector();
-            cell = mesh.getCell(neutron_position,
-                    neutron_direction);
-            std::cout << "cell pre-move: " << cell[0] << " " << cell[1]
-               << " " << cell[2] << std::endl;
-std::cout << "position before move: " << neutron.getPositionVector()[0] << " "
-        << neutron.getPositionVector()[1] << " "
-        << neutron.getPositionVector()[2] << std::endl;
-std::cout << "direction before move: " << neutron.getDirectionVector()[0] << " "
-        << neutron.getDirectionVector()[1] << " "
-        << neutron.getDirectionVector()[2] << std::endl << std::endl;
+            neutron_position = neutron.getPositionVector();
+            cell = mesh.getCell(neutron_position, neutron_direction);
+
+            // nudge neutron
+            neutron.move(TINY_MOVE);
+            neutron_position = neutron.getPositionVector();
+            if (mesh.positionInBounds(neutron_position)) {
+                cell = mesh.getCell(neutron_position, neutron_direction);
+            }
+            neutron.move(-TINY_MOVE);
 
             neutron.setCell(cell);
 
             // get cell boundaries
             cell_mins = mesh.getCellMin(cell);
-            
             cell_maxes = mesh.getCellMax(cell);
 
             // calculate distances to cell boundaries
@@ -189,7 +179,6 @@ std::cout << "direction before move: " << neutron.getDirectionVector()[0] << " "
                     cell_mins[axis] - neutron.getPosition(axis);
                 distance_to_cell_edge[axis][1] =
                     cell_maxes[axis] - neutron.getPosition(axis);
-
             }
 
             // tempd contains the current smallest r
@@ -220,7 +209,7 @@ std::cout << "direction before move: " << neutron.getDirectionVector()[0] << " "
 
             // move neutron
             neutron.move(tempd);
-
+            
             // determine boundary status
             for (int sur_side=0; sur_side <6; ++sur_side) {
                 int axis = sur_side/2;
@@ -251,7 +240,7 @@ std::cout << "direction before move: " << neutron.getDirectionVector()[0] << " "
                     // if the neutron is reflected
                     if (bounds.getSurfaceType(axis, side) == 1) {
                         neutron.reflect(axis);
- 
+
                         // place neutron on boundary to eliminate 
                         //    roundoff error
                         bound_val = bounds.getSurfaceCoord(axis, side);
@@ -277,10 +266,7 @@ std::cout << "direction before move: " << neutron.getDirectionVector()[0] << " "
 
         // check interaction
         if (neutron.alive()) {
-            cell = neutron.getCell();
             
-std::cout << " interaction cell " << cell[0] << " "
-    << cell[1] << " " << cell[2] << std::endl;
             cell_mat = mesh.getMaterial(cell);
             group = neutron.getGroup();
 
@@ -303,12 +289,6 @@ std::cout << " interaction cell " << cell[0] << " "
 
                 // set new direction
                 neutron.setDirection(theta, phi);
-
-                // reassign cell location
-                cell = mesh.getCell(neutron_position, neutron_direction);
-                neutron.setCell(cell);
-std::cout << "cell " << cell[0] << " " << cell[1]
-    << " " << cell[2] << std::endl;
             }
 
             // absorption event
@@ -326,7 +306,6 @@ std::cout << "cell " << cell[0] << " " << cell[1]
 
                     // sample number of neutrons
                     for (int i=0; i<sampleNumFission(cell_mat); ++i) {
-                        //fission_banks[NEW].add(neutron_position);
                         new_fission_bank->add(neutron_position);
                         tallies[FISSIONS].add(1);
                     }
@@ -335,7 +314,6 @@ std::cout << "cell " << cell[0] << " " << cell[1]
                 // end neutron history
                 neutron.kill();
             }
-           
         }
     }
 

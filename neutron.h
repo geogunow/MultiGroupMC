@@ -1,4 +1,4 @@
-/** 
+/* 
  @file      neutron.h
  @brief     contains Neutron class
  @author    Luke Eure
@@ -25,7 +25,6 @@ private:
 public:
     Neutron(std::vector <double> &position, double theta, double phi);
     virtual ~Neutron();
-
     void move(double distance);
     void reflect(int axis);
     void setDirection(double theta, double phi);
@@ -33,6 +32,7 @@ public:
     void setCell(std::vector <int> &cell_number);
     void setGroup(int new_group);
     void kill();
+    void changeCell(int axis, int side);
     double x();
     double y();
     double z();

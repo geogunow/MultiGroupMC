@@ -1,4 +1,4 @@
-/** 
+/* 
  @file      fision.h
  @brief     contains the fission class
  @author    Luke Eure

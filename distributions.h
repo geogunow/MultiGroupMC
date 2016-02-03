@@ -1,4 +1,4 @@
-/** 
+/* 
  @file      distributions.h
  @brief     header file for distribution.cpp
  @author    Luke Eure
@@ -17,7 +17,7 @@
 #include "boundaries.h"
 #include "fission.h"
 
-/** enumerations use when talking about boundaries */
+// enumerations use when talking about boundaries
 enum min_max {MIN, MAX};
 
 // function declarations
