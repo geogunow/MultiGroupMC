@@ -112,7 +112,7 @@ int main() {
     test_mesh.fillMaterials(fuel, fuel_limits);
 
     // get neutron histories
-    generateNeutronHistories(1000000, test_boundary, test_mesh, 10);
+    generateNeutronHistories(1000000, test_boundary, test_mesh, 100);
 
     // plot neutron flux
     std::vector <std::vector <std::vector <std::vector <double> > > > flux =

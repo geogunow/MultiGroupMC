@@ -196,7 +196,6 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
             neutron.move(tempd);
             
             // add distance to cell flux
-            group = neutron.getGroup();
             mesh.fluxAdd(cell, tempd, group);
            
             // determine boundary status
@@ -266,9 +265,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
 
         // check interaction
         if (neutron.alive()) {
-
             cell_mat = mesh.getMaterial(cell);
-            group = neutron.getGroup();
 
             // sample what the interaction will be
             neutron_interaction = sampleInteraction(cell_mat, group);
