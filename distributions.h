@@ -17,7 +17,7 @@
 #include "boundaries.h"
 #include "fission.h"
 
-// enumerations use when talking about boundaries
+// enumerations used when talking about boundaries
 enum min_max {MIN, MAX};
 
 // function declarations

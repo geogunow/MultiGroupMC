@@ -48,14 +48,3 @@ void Fission::add(std::vector <double> &location) {
 std::vector <double> Fission::location(int num) {
     return _fission_locations[num];
 }
-
-/*
- @brief returns the first fission location then deletes that location from the
-        bank
- @return the first location in the fission list
-*/
-std::vector <double> Fission::next() {
-    _item = _fission_locations[0];
-    _fission_locations.erase(_fission_locations.begin());
-    return _item;
-}

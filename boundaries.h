@@ -17,8 +17,13 @@ enum BoundaryType {
 class Boundaries {
 
 private:
+    /** the maxes and mins along each axis of the geometry */
     int _surface_coords[6];
+
+    /** the types of each surface in the geometry */
     int _surface_type[6];
+
+    /** tells if each surface exists */
     bool _surface_init[6];
 
 public:

@@ -13,11 +13,10 @@
 class Fission {
 private:
 
+    /** locations of fission events */
     std::vector<std::vector <double> > _fission_locations;
-    std::vector <double> _item;
 
 public:
-    
     Fission();
     virtual ~Fission();
     
@@ -25,8 +24,6 @@ public:
     void add(std::vector <double> &location);
     int length();
     std::vector <double> location(int num);
-    std::vector <double> next();
-
 };
 
 #endif

@@ -10,12 +10,14 @@
 
 class Tally {
 private:
+
+    /** count stored in the tally */
     double _tally_count;
     
-public:
-    
+public:    
     Tally();
-    ~Tally();
+    virtual ~Tally();
+    
     void add(double amt);
     void clear();
     double getCount();

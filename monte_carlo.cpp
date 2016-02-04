@@ -122,7 +122,6 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
         neutron_starting_point = sampleLocation(bounds);
     }
     else {
-        //neutron_starting_point = sampleFissionSite(fission_banks[OLD]);
         neutron_starting_point = sampleFissionSite(old_fission_bank);
     }
 
@@ -133,16 +132,14 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
      
     // get mesh cell
     neutron_direction = neutron.getDirectionVector();
-
-    cell = mesh.getCell(neutron_starting_point,
-            neutron_direction);
+    cell = mesh.getCell(neutron_starting_point, neutron_direction);
     neutron.setCell(cell);
 
     // set neutron group
     cell_mat = mesh.getMaterial(cell);
     group = sampleNeutronEnergyGroup(cell_mat.getChi());
     neutron.setGroup(group);
-  
+    
     // follow neutron while it's alive
     while (neutron.alive()) {
 
@@ -152,19 +149,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     
         // track neutron until collision or leakage
         while (neutron_distance > 0) {
-            neutron_direction = neutron.getDirectionVector();
             neutron_position = neutron.getPositionVector();
-            cell = mesh.getCell(neutron_position, neutron_direction);
-
-            // nudge neutron
-            neutron.move(TINY_MOVE);
-            neutron_position = neutron.getPositionVector();
-            if (mesh.positionInBounds(neutron_position)) {
-                cell = mesh.getCell(neutron_position, neutron_direction);
-            }
-            neutron.move(-TINY_MOVE);
-
-            neutron.setCell(cell);
 
             // get cell boundaries
             cell_mins = mesh.getCellMin(cell);
@@ -209,6 +194,10 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
             // move neutron
             neutron.move(tempd);
             
+            // add distance to cell flux
+            group = neutron.getGroup();
+            mesh.fluxAdd(cell, tempd, group);
+           
             // determine boundary status
             for (int sur_side=0; sur_side <6; ++sur_side) {
                 int axis = sur_side/2;
@@ -254,28 +243,39 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                     }
                 }
             }
-        
+ 
             // shorten neutron distance to collision
             neutron_distance -= tempd;
 
-            // add distance to cell flux
-            group = neutron.getGroup();
-            mesh.fluxAdd(cell, tempd, group);
+            // get new neutron cell
+            if (neutron_distance != 0.0) {
+                neutron_direction = neutron.getDirectionVector();
+                cell = mesh.getCell(neutron_position, neutron_direction);
+
+                // nudge neutron
+                neutron.move(TINY_MOVE);
+                neutron_position = neutron.getPositionVector();
+                if (mesh.positionInBounds(neutron_position)) {
+                    cell = mesh.getCell(neutron_position, neutron_direction);
+                }
+                neutron.move(-TINY_MOVE);
+                neutron.setCell(cell);
+            }
         }
 
         // check interaction
         if (neutron.alive()) {
-            
+
             cell_mat = mesh.getMaterial(cell);
             group = neutron.getGroup();
 
             // sample what the interaction will be
             neutron_interaction = sampleInteraction(cell_mat, group);
-            
-            // scattering event 
+
+            // scattering event
             if (neutron_interaction ==0) {
 
-                // sample scattered direction 
+                // sample scattered direction
                 theta = samplePolarAngle();
                 phi = sampleAzimuthalAngle();
 
@@ -283,7 +283,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                 temp_sigma_s = cell_mat.getSigmaS();
                 new_group = sampleScatteredGroup(temp_sigma_s, group);
 
-                // set new group 
+                // set new group
                 neutron.setGroup(new_group);
 
                 // set new direction
@@ -309,7 +309,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                         tallies[FISSIONS].add(1);
                     }
                 }
-              
+
                 // end neutron history
                 neutron.kill();
             }

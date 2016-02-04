@@ -57,14 +57,13 @@ Mesh::Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
             }
         }
     }
-    
+
     // resize vectors
     _maxes.resize(3);
     _mins.resize(3);
     _min_locations.resize(3);
     _max_locations.resize(3);
     _default_direction.resize(3);
-    
 }
 
 /*
@@ -87,9 +86,8 @@ std::vector <int> Mesh::getCell(std::vector <double>& position,
         
         // correct error if neutron is on upper boundary of cell
         // the rounding is neaded because decimal accuracy gets off
-        _move_cell = (roundf(position[i]*1e5)/1e5 
-            == roundf((_boundary_mins[i] + _cell_num
-            * _delta_axes[i]) *1e5)/1e5 & direction[i] <0);
+        _move_cell = position[i] == _boundary_mins[i] + _cell_num
+            * _delta_axes[i] & direction[i] < 0;
         if (_cell_num == _axis_sizes[i] | _move_cell) {
             _cell_num -= 1;
         }
@@ -98,7 +96,6 @@ std::vector <int> Mesh::getCell(std::vector <double>& position,
         }
         _cell_num_vector.push_back(_cell_num);
     }
-
     return _cell_num_vector;
 }
 
@@ -117,7 +114,6 @@ void Mesh::fluxAdd(std::vector <int> &cell, double distance, int group) {
  @brief clear the flux
 */
 void Mesh::fluxClear() {
-
     for (int i=0; i<_num_groups; ++i) {
         for (int j=0; j<_axis_sizes[0]; ++j) {
             for (int k=0; k<_axis_sizes[1]; ++k) {
@@ -133,7 +129,6 @@ void Mesh::fluxClear() {
  @brief return the flux array
  @return returns the 4d flux vector
 */
-
 std::vector <std::vector <std::vector <std::vector <double> > > > 
         Mesh::getFlux() {
     return _flux;
@@ -146,7 +141,6 @@ std::vector <std::vector <std::vector <std::vector <double> > > >
  @return a vector containing the maximum location of that cell in each dimension
 */
 std::vector <double> Mesh::getCellMax(std::vector <int> &cell_number) {
-    
     for (int i=0; i<3; ++i) {
         _maxes[i] = (cell_number[i] + 1) * _delta_axes[i] + _boundary_mins[i];
     }
@@ -160,7 +154,6 @@ std::vector <double> Mesh::getCellMax(std::vector <int> &cell_number) {
  @return a vector containing the minimum location of that cell in each dimension
 */
 std::vector <double> Mesh::getCellMin(std::vector <int> &cell_number) {
-
     for (int i=0; i<3; ++i) {
         _mins[i] = (cell_number[i]) * _delta_axes[i] + _boundary_mins[i];
     }
@@ -226,7 +219,5 @@ bool Mesh::positionInBounds(std::vector <double> &position) {
             return false;
         }
     }
-
     return true;
-
 }
