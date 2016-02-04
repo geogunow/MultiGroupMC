@@ -80,7 +80,7 @@ public:
     std::vector <double> getCellMax(std::vector <int> &cell_number);
     std::vector <double> getCellMin(std::vector <int> &cell_number);
     std::vector <std::vector <std::vector <std::vector <double> > > > getFlux();
-    Material getMaterial(std::vector <int> &cell_number);
+    Material* getMaterial(std::vector <int> &cell_number);
 };
 
 #endif

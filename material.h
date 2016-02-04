@@ -39,7 +39,6 @@ private:
     int _num_groups;
 
 public:
-    Material();
     Material(std::vector <double> &sigma_t, 
             std::vector <std::vector <double> > &sigma_s, double nu, 
             std::vector <double> &sigma_f, std::vector <double> &chi);

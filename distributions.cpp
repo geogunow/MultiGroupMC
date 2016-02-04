@@ -46,9 +46,9 @@ double samplePolarAngle() {
  @param     group an int denoting the energy group of the neutron
  @return    A randomly sampled distance in [0, infinity)
 */
-double sampleDistance(Material mat, int group) {
+double sampleDistance(Material *mat, int group) {
     std::vector <double> _temp_sigma_t;
-    _temp_sigma_t = mat.getSigmaT();
+    _temp_sigma_t = mat->getSigmaT();
     return -log(urand()) / _temp_sigma_t[group];
 }
 
@@ -62,10 +62,10 @@ double sampleDistance(Material mat, int group) {
  @param     group an int denoting the energy group of the neutron 
  @return    An interaction type (0 = scattering, 1 = absorption)
 */
-int sampleInteraction(Material mat, int group) {
+int sampleInteraction(Material *mat, int group) {
     
-    return (int)(urand() < mat.getSigmaA()[group] /
-                mat.getSigmaT()[group]);
+    return (int)(urand() < mat->getSigmaA()[group] /
+                mat->getSigmaT()[group]);
 }
 
 /*
@@ -98,8 +98,8 @@ std::vector <double> sampleLocation(Boundaries bounds) {
  @param     group contains the energy group of the neutron
  @return    An interaction type (0 = capture, 1 = fission)
 */
-int sampleFission(Material mat, int group) {
-    int fission = urand() < mat.getSigmaF()[group] / mat.getSigmaA()[group];
+int sampleFission(Material *mat, int group) {
+    int fission = urand() < mat->getSigmaF()[group] / mat->getSigmaA()[group];
     return fission;
 }
 
@@ -108,9 +108,9 @@ int sampleFission(Material mat, int group) {
  @param     mat a Material object that contains information about the material
  @return    number of neutrons emitted from the sampled fission event
 */
-int sampleNumFission(Material mat) {
-    int lower = (int)mat.getNu();
-    int add = (int)(urand() < mat.getNu()-lower);
+int sampleNumFission(Material *mat) {
+    int lower = (int)mat->getNu();
+    int add = (int)(urand() < mat->getNu()-lower);
     return lower + add;
 }
 

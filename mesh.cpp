@@ -166,8 +166,10 @@ std::vector <double> Mesh::getCellMin(std::vector <int> &cell_number) {
         material of
  @return the material of the cell
 */
-Material Mesh::getMaterial(std::vector <int> &cell_number) {
-    return _cell_materials[cell_number[0]][cell_number[1]][cell_number[2]];
+Material* Mesh::getMaterial(std::vector <int> &cell_number) {
+    Material *mat = &_cell_materials
+        [cell_number[0]][cell_number[1]][cell_number[2]];
+    return mat;
 }
 
 /*

@@ -24,10 +24,10 @@ enum min_max {MIN, MAX};
 double urand();
 double sampleAzimuthalAngle();
 double samplePolarAngle();
-double sampleDistance(Material mat, int group);
-int sampleInteraction(Material mat, int group);
-int sampleFission(Material mat, int group);
-int sampleNumFission(Material mat);
+double sampleDistance(Material *mat, int group);
+int sampleInteraction(Material *mat, int group);
+int sampleFission(Material *mat, int group);
+int sampleNumFission(Material *mat);
 int sampleNeutronEnergyGroup(std::vector <double> chi);
 int sampleScatteredGroup(std::vector <std::vector <double> > &scattering_matrix,
                          int group);

@@ -115,7 +115,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     std::vector <int> cell_lim_bound;
     std::vector <int> box_lim_bound;
     bool neutron_lost = false;
-    Material cell_mat;
+    Material* cell_mat;
 
     // get neutron starting poinit
     if (first_round) {
@@ -137,7 +137,8 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
 
     // set neutron group
     cell_mat = mesh.getMaterial(cell);
-    group = sampleNeutronEnergyGroup(cell_mat.getChi());
+    //std::cout << "got here!\n";
+    group = sampleNeutronEnergyGroup(cell_mat->getChi());
     neutron.setGroup(group);
     
     // follow neutron while it's alive
@@ -280,7 +281,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                 phi = sampleAzimuthalAngle();
 
                 // sample new energy group
-                temp_sigma_s = cell_mat.getSigmaS();
+                temp_sigma_s = cell_mat->getSigmaS();
                 new_group = sampleScatteredGroup(temp_sigma_s, group);
 
                 // set new group
