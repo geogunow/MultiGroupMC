@@ -1,22 +1,18 @@
-    program = monte_carlo
-
-source = \
-boundaries.cpp
+program = monte_carlo
 
 obj = $(source:.cpp=.o)
 
 headers = $(source:.cpp=.h)
-source += main.cpp
-#source+= k_tester.cpp
-source += fission.cpp
-source += material.cpp
-source += distributions.cpp
-source += tally.cpp
-source += neutron.cpp
-source += mesh.cpp
-source += monte_carlo.cpp
-source += plotter.cpp
-
+source = Boundaries.cpp
+source += Main.cpp
+source += Fission.cpp
+source += Material.cpp
+source += Distributions.cpp
+source += Tally.cpp
+source += Neutron.cpp
+source += Mesh.cpp
+source += Monte_carlo.cpp
+source += Plotter.cpp
 
 CC = g++
 
@@ -34,4 +30,3 @@ edit:
 
 run:
 	./$(program)
-
