@@ -5,7 +5,6 @@ obj = $(source:.cpp=.o)
 headers = $(source:.cpp=.h)
 source = Boundaries.cpp
 source += Main.cpp
-source += Fission.cpp
 source += Material.cpp
 source += Distributions.cpp
 source += Tally.cpp
