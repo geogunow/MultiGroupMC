@@ -12,9 +12,7 @@
 #include <vector>
 
 // function declarations
-void plotFlux(std::vector <std::vector <std::vector <std::vector <double> > > >
-        &_flux);
-void plotFluxb(std::vector <std::vector <std::vector <std::vector <double> > > >
-        &_flux);
+void printFluxToFile(std::vector <std::vector <std::vector
+        <std::vector <double> > > > &_flux);
 
 #endif

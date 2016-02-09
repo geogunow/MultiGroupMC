@@ -35,13 +35,14 @@ Mesh::Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
     
     // resize _flux and set all its elements = 0
     _flux.resize(_num_groups);
-    for (int i=0; i<_num_groups; ++i) {
-        _flux[i].resize(_axis_sizes[0]);
-        for (int j=0; j<_axis_sizes[0]; ++j) {
-            _flux[i][j].resize(_axis_sizes[1]);
-            for (int k=0; k<_axis_sizes[1]; ++k) {
-                for (int l=0; l<_axis_sizes[2]; ++l) {
-                    _flux[i][j][k].push_back(0.0);
+    for (int g=0; g<_num_groups; ++g) {
+        _flux[g].resize(_axis_sizes[0]);
+        for (int i=0; i<_axis_sizes[0]; ++i) {
+            _flux[g][i].resize(_axis_sizes[1]);
+            for (int j=0; j<_axis_sizes[1]; ++j) {
+                _flux[g][i][j].resize(_axis_sizes[2]);
+                for (int k=0; k<_axis_sizes[2]; ++k) {
+                    _flux[g][i][j][k] = 0.0;
                 }
             }
         }
@@ -64,6 +65,7 @@ Mesh::Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
     _min_locations.resize(3);
     _max_locations.resize(3);
     _default_direction.resize(3);
+    _cell_num_vector.resize(3);
 }
 
 /*
@@ -80,7 +82,6 @@ Mesh::~Mesh() {}
 */
 std::vector <int> Mesh::getCell(std::vector <double>& position,
         std::vector <double>& direction) {
-    _cell_num_vector.clear();
     for (int i=0; i<3; ++i) {
         _cell_num = (int)((position[i] - _boundary_mins[i])/_delta_axes[i]);
         
@@ -89,12 +90,12 @@ std::vector <int> Mesh::getCell(std::vector <double>& position,
         _move_cell = position[i] == _boundary_mins[i] + _cell_num
             * _delta_axes[i] & direction[i] < 0;
         if (_cell_num == _axis_sizes[i] | _move_cell) {
-            _cell_num -= 1;
+            _cell_num --;
         }
-        if (_cell_num == -1 ) {
-            _cell_num =0 ;
+        if (_cell_num == -1) {
+            _cell_num = 0;
         }
-        _cell_num_vector.push_back(_cell_num);
+        _cell_num_vector[i] =_cell_num;
     }
     return _cell_num_vector;
 }
@@ -111,14 +112,14 @@ void Mesh::fluxAdd(std::vector <int> &cell, double distance, int group) {
 }
 
 /*
- @brief clear the flux
+ @brief set the value of each element in the flux array to 0
 */
 void Mesh::fluxClear() {
-    for (int i=0; i<_num_groups; ++i) {
-        for (int j=0; j<_axis_sizes[0]; ++j) {
-            for (int k=0; k<_axis_sizes[1]; ++k) {
-                for (int l=0; l<_axis_sizes[2]; ++l) {
-                    _flux[i][j][k][l] = 0.0;
+    for (int g=0; g<_num_groups; ++g) {
+        for (int i=0; i<_axis_sizes[0]; ++i) {
+            for (int j=0; j<_axis_sizes[1]; ++j) {
+                for (int k=0; k<_axis_sizes[2]; ++k) {
+                    _flux[g][i][j][k] = 0.0;
                 }
             }
         }

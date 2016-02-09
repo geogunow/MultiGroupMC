@@ -7,7 +7,7 @@
 
 #include "Plotter.h"
 
-void plotFlux(std::vector <std::vector <std::vector <std::vector <double> > > >
+void printFluxToFile(std::vector <std::vector <std::vector <std::vector <double> > > >
        &_flux) {
     
     std::ofstream out("flux_plot.txt");

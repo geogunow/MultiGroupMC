@@ -42,15 +42,15 @@ int main() {
     const int num_groups = 2;
 
     // fuel cross sections
-    std::vector <double> fuel_sigma_f;
-    fuel_sigma_f.push_back(1.0/480.0);
-    fuel_sigma_f.push_back(1.0/16.0);
-    std::vector <double> fuel_chi;
-    fuel_chi.push_back(1.0);
-    fuel_chi.push_back(0.0);
-    std::vector <double> fuel_sigma_t;
-    fuel_sigma_t.push_back(2.0/9.0);
-    fuel_sigma_t.push_back(5.0/6.0);
+    std::vector <double> fuel_sigma_f (num_groups);
+    fuel_sigma_f[0] = 1.0/480.0;
+    fuel_sigma_f[1] = 1.0/16.0;
+    std::vector <double> fuel_chi(num_groups);
+    fuel_chi[0] = 1.0;
+    fuel_chi[1] = 0.0;
+    std::vector <double> fuel_sigma_t(num_groups);
+    fuel_sigma_t[0] = 2.0/9.0;
+    fuel_sigma_t[1] = 5.0/6.0;
 
     // create vector fuel sigma_s by first making an array
     static const double a_fuel_sigma_s [num_groups*num_groups] =
@@ -65,15 +65,15 @@ int main() {
     }
 
     // water cross sections
-    std::vector <double> water_sigma_f;
-    water_sigma_f.push_back(0.0);
-    water_sigma_f.push_back(0.0);
-    std::vector <double> water_chi;
-    water_chi.push_back(0.0);
-    water_chi.push_back(0.0);
-    std::vector <double> water_sigma_t;
-    water_sigma_t.push_back(2.0/9.0);
-    water_sigma_t.push_back(5.0/3.0);
+    std::vector <double> water_sigma_f(num_groups);
+    water_sigma_f[0] = 0.0;
+    water_sigma_f[1] = 0.0;
+    std::vector <double> water_chi(num_groups);
+    water_chi[0] = 0.0;
+    water_chi[1] = 0.0;
+    std::vector <double> water_sigma_t(num_groups);
+    water_sigma_t[0] = 2.0/9.0;
+    water_sigma_t[1] = 5.0/3.0;
 
     // create vector water sigma_s by first making an array
     static const double a_water_sigma_s [num_groups*num_groups] =
@@ -87,7 +87,7 @@ int main() {
         }
     }
 
-    // nu
+    // nu: the average number of neutrons released per fission event
     double nu = 2.4;
     
     // create materials
@@ -111,13 +111,16 @@ int main() {
     }
     test_mesh.fillMaterials(fuel, fuel_limits);
 
-    // get neutron histories
-    generateNeutronHistories(1000000, test_boundary, test_mesh, 100);
+    // simulate neutron histories
+    int num_neutrons = 10000;
+    int num_batches = 2;
+    generateNeutronHistories(num_neutrons, test_boundary,
+            test_mesh, num_batches);
 
     // plot neutron flux
     std::vector <std::vector <std::vector <std::vector <double> > > > flux =
         test_mesh.getFlux();
-    plotFlux(flux);
+    printFluxToFile(flux);
 
     // run python script to get flux plots
     system("python Flux_parser.py");

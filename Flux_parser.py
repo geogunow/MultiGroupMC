@@ -1,5 +1,5 @@
 '''
- @file      flux_parser.py
+ @file      Flux_parser.py
  @brief     Parses flux data from a text file
             and plots it as a heat map
  @author    Luke Eure
@@ -44,16 +44,16 @@ with open('flux_plot.txt', 'r') as fh:
 
     flux_to_plot = np.zeros((num_groups, x_cells,
         y_cells, z_cells))
-    for i in range(num_groups):
-        for j in range(x_cells):
-            for k in range(y_cells):
-                for l in range(z_cells):
-                    flux_to_plot[i][j][k][l] = \
-                            flux_list[i*x_cells*y_cells*z_cells \
-                            + j*y_cells*z_cells + k*z_cells + l]
+    for g in range(num_groups):
+        for i in range(x_cells):
+            for j in range(y_cells):
+                for k in range(z_cells):
+                    flux_to_plot[g][i][j][k] = \
+                            flux_list[g*x_cells*y_cells*z_cells \
+                            + i*y_cells*z_cells + j*z_cells + k]
 
     index = 1
-    for i in range(num_groups):
-        plot_heat_map(flux_to_plot[i], index, repeat = 5,
-                title = ('Group ' + str(i+1)))
+    for g in range(num_groups):
+        plot_heat_map(flux_to_plot[g], index, repeat = 5,
+                title = ('Group ' + str(g+1)))
 

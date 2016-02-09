@@ -13,6 +13,9 @@ private:
 
     /** count stored in the tally */
     double _tally_count;
+
+    /** sum of squares of tallied amounts */
+    double _tally_squared;
     
 public:    
     Tally();
@@ -21,7 +24,6 @@ public:
     void add(double tally_addition);
     void clear();
     double getCount();
-
 };
 
 #endif

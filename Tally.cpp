@@ -18,18 +18,20 @@ Tally::Tally() {}
 Tally::~Tally() {}
 
 /*
- @brief add an amount to the tally
+ @brief add an amount to the tally and add its square to _tally_squared
  @param tally_addition an amount to be added
 */
 void Tally::add(double tally_addition) {
     _tally_count += tally_addition;
+    _tally_squared += tally_addition * tally_addition;
 }
 
 /*
- @brief clears the tally
+ @brief sets the tally and _tally_squared equal to zero
 */
 void Tally::clear() {
     _tally_count = 0;
+    _tally_squared = 0;
 }
  
 /*
