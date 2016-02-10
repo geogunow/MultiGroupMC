@@ -115,7 +115,7 @@ int main() {
     int num_neutrons = 10000;
     int num_batches = 2;
     generateNeutronHistories(num_neutrons, test_boundary,
-            test_mesh, num_batches);
+            test_mesh, num_batches, num_groups);
 
     // plot neutron flux
     std::vector <std::vector <std::vector <std::vector <double> > > > flux =

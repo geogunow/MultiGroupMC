@@ -46,7 +46,7 @@ public:
     
     double getSigmaT(int group);
     double getSigmaF(int group);
-    std::vector <double> getChi();
+    double getChi(int group);
     double getSigmaA(int group);
     std::vector <double> getSigmaS(int group);
     double getNu();

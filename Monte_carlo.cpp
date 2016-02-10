@@ -17,9 +17,10 @@
             bounding box
  @param     mesh a Mesh object containing information about the mesh
  @param     num_batches the number of batches to be tested
+ @param     num_groups the number of neutron energy groups
 */
 void generateNeutronHistories(int n_histories, Boundaries bounds,
-        Mesh &mesh, int num_batches) {
+        Mesh &mesh, int num_batches, int num_groups) {
 
     // create arrays for tallies and fissions
     std::vector <Tally> tallies(5);
@@ -50,7 +51,7 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
         // simulate neutron behavior
         for (int i=0; i<n_histories; ++i) {
             transportNeutron(bounds, tallies, first_round,
-                    mesh, old_fission_bank, new_fission_bank);
+                    mesh, old_fission_bank, new_fission_bank, num_groups);
         }
 
         // give results
@@ -87,11 +88,13 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
  @param     mesh a Mesh object containing information about the mesh
  @param     old_fission_banks containing the old fission bank
  @param     new_fission_banks containing the new fission bank
+ @param     num_groups the number of neutron energy groups
+
 */
 void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
         bool first_round, Mesh &mesh,
         std::vector <std::vector <double> >* old_fission_bank,
-        std::vector <std::vector <double> >* new_fission_bank) {
+        std::vector <std::vector <double> >* new_fission_bank, int num_groups) {
     const double TINY_MOVE = 1e-10;
     
     // get neutron starting poinit
@@ -116,10 +119,16 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     neutron.setCell(cell);
 
     // set neutron group
+    // making mat.getChi() accept a group parameter made this much more
+    // complicated
     Material* cell_mat;
     int group;
     cell_mat = mesh.getMaterial(cell);
-    group = sampleNeutronEnergyGroup(cell_mat->getChi());
+    std::vector <double> chi(num_groups);
+    for (int g=0; g<num_groups; ++g) {
+        chi[g] = cell_mat->getChi(g);
+    }
+    group = sampleNeutronEnergyGroup(chi);
     neutron.setGroup(group);
     
     // follow neutron while it's alive
@@ -272,7 +281,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
 
                 // sample new energy group
                 int new_group;
-               std::vector <double> temp_sigma_s_group;
+                std::vector <double> temp_sigma_s_group;
                 temp_sigma_s_group = cell_mat->getSigmaS(group);
                 new_group = sampleScatteredGroup(temp_sigma_s_group, group);
 
