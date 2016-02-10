@@ -55,7 +55,7 @@ private:
     std::vector <std::vector <std::vector <std::vector <double> > > > _flux;
     
     /** materials of each cell */
-    std::vector <std::vector <std::vector <Material> > > _cell_materials;
+    std::vector <std::vector <std::vector <Material*> > > _cell_materials;
 
     /** a cell number */
     int _cell_num;
@@ -68,12 +68,12 @@ private:
 
 public:
     Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
-            Material default_material, int num_groups);
+            Material* default_material, int num_groups);
     virtual ~Mesh();
 
     void fluxAdd(std::vector <int> &cell, double distance, int group);
     void fluxClear();
-    void fillMaterials(Material material_type,
+    void fillMaterials(Material* material_type,
             std::vector <std::vector <double> > &material_bounds);
     bool positionInBounds(std::vector <double> &position);
     std::vector <int> getCell(std::vector <double>& position,

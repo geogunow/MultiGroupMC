@@ -11,7 +11,7 @@
  @brief     constructor for Mesh class
 */
 Mesh::Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
-        Material default_material, int num_groups) {
+        Material* default_material, int num_groups) {
     
     // save deltas 
     _delta_axes.push_back(delta_x);
@@ -53,8 +53,9 @@ Mesh::Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
     for (int i=0; i<_axis_sizes[0]; ++i) {
         _cell_materials[i].resize(_axis_sizes[1]);
         for (int j=0; j<_axis_sizes[1]; ++j) {
+            _cell_materials[i][j].resize(_axis_sizes[2]);
             for (int k=0; k<_axis_sizes[2]; ++k) {
-                _cell_materials[i][j].push_back(default_material);
+                _cell_materials[i][j][k] = default_material;
             }
         }
     }
@@ -169,8 +170,8 @@ std::vector <double> Mesh::getCellMin(std::vector <int> &cell_number) {
  @return    the material of the cell
 */
 Material* Mesh::getMaterial(std::vector <int> &cell_number) {
-    Material *mat = &_cell_materials
-        [cell_number[0]][cell_number[1]][cell_number[2]];
+    Material* mat;
+    mat = _cell_materials[cell_number[0]][cell_number[1]][cell_number[2]];
     return mat;
 }
 
@@ -180,7 +181,7 @@ Material* Mesh::getMaterial(std::vector <int> &cell_number) {
  @param     locations should be a 3x2 vector with the maxes and mins of the area
             to be filled in each direction
 */
-void Mesh::fillMaterials(Material material_type,
+void Mesh::fillMaterials(Material* material_type,
         std::vector <std::vector <double> > &material_bounds) {
     
     // copy the value of material_bounds to locations and nudge the upper

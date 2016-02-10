@@ -95,7 +95,9 @@ int main() {
     Material water(water_sigma_t, water_sigma_s, nu, water_sigma_f, water_chi);
 
     // create mesh
-    Mesh test_mesh(test_boundary, 4.0/9.0, 4.0/9.0, 4.0/9.0, water, num_groups);
+    Material* point_water = &water;
+    Mesh test_mesh(test_boundary, 4.0/9.0, 4.0/9.0, 4.0/9.0, point_water,
+            num_groups);
 
     // fill mesh with some material
     static const double a_fuel_limits [6] =
@@ -109,7 +111,8 @@ int main() {
             fuel_limits[i][j] = a_fuel_limits[i*2+j];
         }
     }
-    test_mesh.fillMaterials(fuel, fuel_limits);
+    Material* point_fuel = &fuel;
+    test_mesh.fillMaterials(point_fuel, fuel_limits);
 
     // simulate neutron histories
     int num_neutrons = 10000;
