@@ -55,9 +55,13 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
         }
 
         // give results
-        std::cout << "For batch " << batch << ", k = "
-            << tallies[FISSIONS].getCount()/(tallies[LEAKS].getCount() +
-                    tallies[ABSORPTIONS].getCount()) << std::endl;
+        double k = tallies[FISSIONS].getCount() /
+            (tallies[LEAKS].getCount() + tallies[ABSORPTIONS].getCount());
+        double sumStandardDev = tallies[LEAKS].getStandardDeviation(n_histories)
+            + tallies[FISSIONS].getStandardDeviation(n_histories)
+            + tallies[ABSORPTIONS].getStandardDeviation(n_histories);
+        std::cout << "For batch " << batch << ", k = " << k
+            << " with standard deviation of " << sumStandardDev << std::endl;
         first_round = false;
     }
     double mean_crow_distance = tallies[CROWS].getCount()

@@ -24,6 +24,7 @@ public:
     void add(double tally_addition);
     void clear();
     double getCount();
+    double getStandardDeviation(int n);
 };
 
 #endif

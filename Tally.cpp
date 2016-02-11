@@ -41,3 +41,14 @@ void Tally::clear() {
 double Tally::getCount() {
     return _tally_count;
 }
+
+/*
+  @brief    returns the standard deviation from the amount held in the tally
+  @param    n the number of sampled data points
+  @return   the standard deviation from the amount held in the tally
+*/
+double Tally::getStandardDeviation(int n) {
+    double standardDev = 
+        _tally_squared/n - (_tally_count / n) * (_tally_count / n);
+    return standardDev;
+}

@@ -115,7 +115,7 @@ int main() {
     test_mesh.fillMaterials(point_fuel, fuel_limits);
 
     // simulate neutron histories
-    int num_neutrons = 10000;
+    int num_neutrons = 1000000;
     int num_batches = 2;
     generateNeutronHistories(num_neutrons, test_boundary,
             test_mesh, num_batches, num_groups);
