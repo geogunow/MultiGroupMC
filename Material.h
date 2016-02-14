@@ -10,6 +10,9 @@
 
 #include <iostream>
 #include <vector>
+#include <time.h>
+#include <math.h>
+#include <stdlib.h>
 
 class Material {
 private:
@@ -38,18 +41,20 @@ private:
     /** number of energy groups */
     int _num_groups;
 
-public:
+
     Material(std::vector <double> &sigma_t, 
             std::vector <std::vector <double> > &sigma_s, double nu, 
             std::vector <double> &sigma_f, std::vector <double> &chi);
     virtual ~Material();
     
+    double arand();
     double getSigmaT(int group);
     double getSigmaF(int group);
     double getChi(int group);
     double getSigmaA(int group);
     std::vector <double> getSigmaS(int group);
     double getNu();
+    int sampleInteraction(int group);
 };
 
 #endif

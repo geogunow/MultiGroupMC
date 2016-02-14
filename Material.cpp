@@ -104,3 +104,22 @@ double Material::getChi(int group) {
 double Material::getSigmaA(int group) {
     return _sigma_a[group];
 }
+
+/* -----------------------------------------------------------------------------------------------------------------------------------------------------*/
+double Material::arand() {
+    return (double) rand() / (double) RAND_MAX;
+}
+/*
+ @brief     function that samples the interaction type (0 = scattering,
+            1 = absorption)
+ @details   based on cross-sections, the interaction is sampled as scattering
+            (0) or absorption (1).
+ @param     mat a Material object that contains information
+            about the material
+ @param     group an int denoting the energy group of the neutron 
+ @return    an interaction type (0 = scattering, 1 = absorption)
+*/
+int Material::sampleInteraction(int group) {
+    return (int) (arand() < getSigmaA(group)
+                / getSigmaT(group));
+}
