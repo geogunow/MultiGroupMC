@@ -12,6 +12,7 @@
 #include <stdlib.h>
 
 #include "Material.h"
+#include "Surface.h"
 #include "Boundaries.h"
 #include "Distributions.h"
 #include "Tally.h"
@@ -22,22 +23,24 @@
 
 int main() {
     
-    srand(time(NULL));
+    srand(time(0));
 
-    // create geometry
+    // create surfaces
+    Surface x_max(VACUUM, 2.0);
+    Surface x_min(VACUUM, -2.0);
+    Surface y_max(VACUUM, 2.0);
+    Surface y_min(VACUUM, -2.0);
+    Surface z_max(VACUUM, 2.0);
+    Surface z_min(VACUUM, -2.0);
+
+    // create geometry with surfaces
     Boundaries test_boundary;
-    test_boundary.setSurfaceCoord(0, 0, -2.0);
-    test_boundary.setSurfaceCoord(0, 1, 2.0);
-    test_boundary.setSurfaceCoord(1, 0, -2.0);
-    test_boundary.setSurfaceCoord(1, 1, 2.0);
-    test_boundary.setSurfaceCoord(2, 0, -2.0);
-    test_boundary.setSurfaceCoord(2, 1, 2.0);
-    test_boundary.setSurfaceType(0, 0, VACUUM);
-    test_boundary.setSurfaceType(0, 1, VACUUM);
-    test_boundary.setSurfaceType(1, 0, VACUUM);
-    test_boundary.setSurfaceType(1, 1, VACUUM);
-    test_boundary.setSurfaceType(2, 0, VACUUM);
-    test_boundary.setSurfaceType(2, 1, VACUUM);
+    test_boundary.setSurface(X, MAX, &x_max);
+    test_boundary.setSurface(X, MIN, &x_min);
+    test_boundary.setSurface(Y, MAX, &y_max);
+    test_boundary.setSurface(Y, MIN, &y_min);
+    test_boundary.setSurface(Z, MAX, &z_max);
+    test_boundary.setSurface(Z, MIN, &z_min);
 
     const int num_groups = 2;
 
@@ -115,7 +118,7 @@ int main() {
     test_mesh.fillMaterials(point_fuel, fuel_limits);
 
     // simulate neutron histories
-    int num_neutrons = 1000000;
+    int num_neutrons = 10000;
     int num_batches = 2;
     generateNeutronHistories(num_neutrons, test_boundary,
             test_mesh, num_batches, num_groups);

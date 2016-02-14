@@ -15,8 +15,6 @@
 #include "Material.h"
 #include "Boundaries.h"
 
-// enumerations used when talking about boundaries
-enum min_max {MIN, MAX};
 
 // function declarations
 double urand();

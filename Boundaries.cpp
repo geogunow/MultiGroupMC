@@ -7,31 +7,41 @@
 
 #include "Boundaries.h"
 
-Boundaries::Boundaries() {
+/*
+ @brief     constructor for Boundaries class
+*/
+Boundaries::Boundaries() {}
 
-    for (int i=0; i<6; ++i) {
-        _surface_coords[i] = 0;
-        _surface_init[i] = false;
-        _surface_type[i] = BOUNDARY_NONE;
-    }
-}
-
+/*
+ @brief     deconstructor
+*/
 Boundaries::~Boundaries() {}
 
+/*
+ @brief     set the surfaces into the geometry
+ @paraam    axis 0, 1, or 2 corresponding to x y and z
+ @param     side 0 or 1 corresponding to the minimum or maximum of the geometry
+*/
+void Boundaries::setSurface(Axes axis, min_max side, Surface* surface) {
+    _surfaces[2*axis + side] = surface;
+}
+
+/*
+ @brief     return the position of the surface
+ @paraam    axis 0, 1, or 2 corresponding to x y and z
+ @param     side 0 or 1 corresponding to the minimum or maximum of the geometry
+ @return    the position of the surface within the geometry
+*/
 float Boundaries::getSurfaceCoord(int axis, int side) {
-    return _surface_coords[axis*2+side];
+    return _surfaces[axis*2+side]->getPosition();
 }
 
-float Boundaries::getSurfaceType(int axis, int side) {
-    return _surface_type[axis*2+side];
-}
-
-void Boundaries::setSurfaceCoord(int axis, int side, float coord) {
-
-    _surface_coords[axis*2+side] = coord;
-    _surface_init[axis*2+side] = true;
-}
-
-void Boundaries::setSurfaceType(int axis, int side, BoundaryType type) {
-    _surface_type[axis*2+side] = type;
+/*
+ @brief     return the type of a surface
+ @paraam    axis 0, 1, or 2 corresponding to x y and z
+ @param     side 0 or 1 corresponding to the minimum or maximum of the geometry
+ @return    the type of the surface, 0 = vacuum 1 = reflective
+*/
+BoundaryType Boundaries::getSurfaceType(int axis, int side) {
+    return _surfaces[axis*2+side]->getType();
 }

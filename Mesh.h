@@ -14,6 +14,7 @@
 
 #include "Material.h"
 #include "Boundaries.h"
+#include "Surface.h"
 
 class Mesh {
 private:

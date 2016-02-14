@@ -28,7 +28,7 @@ Mesh::Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
 
     // save axis sizes
     for (int axis=0; axis<3; ++axis) {
-        int size = (bounds.getSurfaceCoord(axis, 1) - _boundary_mins[axis])
+        int size = (bounds.getSurfaceCoord(axis, MAX) - _boundary_mins[axis])
             / _delta_axes[axis];
         _axis_sizes.push_back(size);
     }
@@ -75,7 +75,7 @@ Mesh::Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
 Mesh::~Mesh() {}
 
 /*
- @brief     get the cell containing a neutron at a given location witha given
+ @brief     get the cell containing a neutron at a given location with a given
             direction of travel
  @param     position a vector containing the location to find the cell of
  @param     direction the direction the nuetron is travelling
@@ -140,7 +140,8 @@ std::vector <std::vector <std::vector <std::vector <double> > > >
  @brief     returns the coordinate for the maximum in the cell
  @param     cell_cell number vector containing the number of a cell to find the 
             max of
- @return    a vector containing the maximum location of that cell in each dimension
+ @return    a vector containing the maximum location of that cell in
+            each dimension
 */
 std::vector <double> Mesh::getCellMax(std::vector <int> &cell_number) {
     for (int i=0; i<3; ++i) {
