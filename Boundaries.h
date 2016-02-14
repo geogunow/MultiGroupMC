@@ -9,6 +9,7 @@
 #define BOUNDARIES_H
 
 #include "Surface.h"
+#include "Distributions.h"
 
 #include <vector>
 
@@ -21,6 +22,7 @@ public:
     float getSurfaceCoord(int axis, int side);
     BoundaryType getSurfaceType(int axis, int side);
     void setSurface(Axes axis, min_max side, Surface* surface);
+    std::vector <double> sampleLocation();
 
 private:
 

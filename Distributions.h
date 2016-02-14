@@ -11,23 +11,14 @@
 #include <time.h>
 #include <math.h>
 #include <stdlib.h>
-
-#include "Material.h"
-#include "Boundaries.h"
-
+#include <vector>
 
 // function declarations
 double urand();
 double sampleAzimuthalAngle();
 double samplePolarAngle();
-double sampleDistance(Material* mat, int group);
-int sampleInteraction(Material* mat, int group);
-int sampleFission(Material* mat, int group);
-int sampleNumFission(Material* mat);
 int sampleNeutronEnergyGroup(std::vector <double> chi);
-int sampleScatteredGroup(std::vector <double> &scattering_matrix,
-                         int group);
-std::vector <double> sampleLocation(Boundaries bounds);
+int sampleScatteredGroup(std::vector <double> &scattering_matrix, int group);
 std::vector <double> sampleFissionSite(
         std::vector <std::vector <double> > &fission_bank);
 

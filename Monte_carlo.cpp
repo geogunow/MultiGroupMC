@@ -93,7 +93,6 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
  @param     old_fission_banks containing the old fission bank
  @param     new_fission_banks containing the new fission bank
  @param     num_groups the number of neutron energy groups
-
 */
 void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
         bool first_round, Mesh &mesh,
@@ -104,7 +103,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     // get neutron starting poinit
     std::vector <double> neutron_starting_point;
     if (first_round) {
-        neutron_starting_point = sampleLocation(bounds);
+        neutron_starting_point = bounds.sampleLocation();
     }
     else {
         neutron_starting_point = sampleFissionSite(*old_fission_bank);
@@ -141,7 +140,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
         cell_mat = mesh.getMaterial(cell);
         group = neutron.getGroup();
         double neutron_distance;
-        neutron_distance = sampleDistance(cell_mat, group);
+        neutron_distance = cell_mat->sampleDistance(group);
         std::vector <double> neutron_position;
     
         // track neutron until collision or leakage
@@ -274,7 +273,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
 
             // sample what the interaction will be
             int neutron_interaction;
-            neutron_interaction = sampleInteraction(cell_mat, group);
+            neutron_interaction = cell_mat->sampleInteraction(group);
 
             // scattering event
             if (neutron_interaction == 0) {
@@ -309,10 +308,10 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                 neutron_position = neutron.getPositionVector();
 
                 // fission event
-                if (sampleFission(cell_mat, group) == 1) {
+                if (cell_mat->sampleFission(group) == 1) {
 
                     // sample number of neutrons
-                    for (int i=0; i<sampleNumFission(cell_mat); ++i) {
+                    for (int i=0; i<cell_mat->sampleNumFission(); ++i) {
                         new_fission_bank->push_back(neutron_position);
                         tallies[FISSIONS].add(1);
                     }

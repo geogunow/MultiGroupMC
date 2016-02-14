@@ -15,25 +15,9 @@
 #include <iostream>
 
 #include "Distributions.h"
+#include "Surface.h"
 
 class Neutron {
-private:
-    
-    /** tells if the neutron is alive */
-    bool _neutron_alive;
-
-    /** energy group of the neutron */
-    int _neutron_group;
-
-    /** position of the neutron */
-    std::vector <double> _xyz;
-
-    /** direction of travel of the neutron */
-    std::vector <double> _neutron_direction;
-
-    /** cell of the neutron */
-    std::vector <int> _neutron_cell;
-
 public:
     Neutron(std::vector <double> &position, double theta, double phi);
     virtual ~Neutron();
@@ -56,6 +40,23 @@ public:
     std::vector <int> getCell();
     std::vector <double> getPositionVector();
     std::vector <double> getDirectionVector();
+
+private:
+    
+    /** tells if the neutron is alive */
+    bool _neutron_alive;
+
+    /** energy group of the neutron */
+    int _neutron_group;
+
+    /** position of the neutron */
+    std::vector <double> _xyz;
+
+    /** direction of travel of the neutron */
+    std::vector <double> _neutron_direction;
+
+    /** cell of the neutron */
+    std::vector <int> _neutron_cell;
 };
 
 #endif

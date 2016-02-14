@@ -17,6 +17,23 @@
 #include "Surface.h"
 
 class Mesh {
+public:
+    Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
+            Material* default_material, int num_groups);
+    virtual ~Mesh();
+
+    void fluxAdd(std::vector <int> &cell, double distance, int group);
+    void fluxClear();
+    void fillMaterials(Material* material_type,
+            std::vector <std::vector <double> > &material_bounds);
+    bool positionInBounds(std::vector <double> &position);
+    std::vector <int> getCell(std::vector <double>& position,
+            std::vector <double>& direction);
+    std::vector <double> getCellMax(std::vector <int> &cell_number);
+    std::vector <double> getCellMin(std::vector <int> &cell_number);
+    std::vector <std::vector <std::vector <std::vector <double> > > > getFlux();
+    Material* getMaterial(std::vector <int> &cell_number);
+    
 private:
 
     /** the width of the cell along each axis */
@@ -67,22 +84,6 @@ private:
     /** bool for use in corrections when a neutron is on a cell boundary */
     bool _move_cell;
 
-public:
-    Mesh(Boundaries bounds, double delta_x, double delta_y, double delta_z,
-            Material* default_material, int num_groups);
-    virtual ~Mesh();
-
-    void fluxAdd(std::vector <int> &cell, double distance, int group);
-    void fluxClear();
-    void fillMaterials(Material* material_type,
-            std::vector <std::vector <double> > &material_bounds);
-    bool positionInBounds(std::vector <double> &position);
-    std::vector <int> getCell(std::vector <double>& position,
-            std::vector <double>& direction);
-    std::vector <double> getCellMax(std::vector <int> &cell_number);
-    std::vector <double> getCellMin(std::vector <int> &cell_number);
-    std::vector <std::vector <std::vector <std::vector <double> > > > getFlux();
-    Material* getMaterial(std::vector <int> &cell_number);
 };
 
 #endif

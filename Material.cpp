@@ -31,7 +31,7 @@ Material::Material(std::vector <double> &sigma_t,
     _num_groups = sigma_t.size();
     _sigma_a.resize(_num_groups);
 
-    // calculate and save the value for apsorption corss sections
+    // calculate and save the value for absorption cross sections
     for (int i=0; i < _num_groups; ++i) {
         _s_sum = 0.0;
         for (int j=0; j < _num_groups; ++j) {
@@ -105,21 +105,49 @@ double Material::getSigmaA(int group) {
     return _sigma_a[group];
 }
 
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------*/
-double Material::arand() {
-    return (double) rand() / (double) RAND_MAX;
-}
 /*
  @brief     function that samples the interaction type (0 = scattering,
             1 = absorption)
  @details   based on cross-sections, the interaction is sampled as scattering
             (0) or absorption (1).
- @param     mat a Material object that contains information
-            about the material
  @param     group an int denoting the energy group of the neutron 
  @return    an interaction type (0 = scattering, 1 = absorption)
 */
 int Material::sampleInteraction(int group) {
-    return (int) (arand() < getSigmaA(group)
-                / getSigmaT(group));
+    return (int) (urand() < _sigma_a[group] / _sigma_t[group]);
+}
+
+/*
+ @brief     function that samples the distance of travel based on a total
+            cross-section.
+ @details   a distance of travel is sampled in [0, infinity) assuming an
+            exponential distibution of the form sigma_t * exp(-sigma_t * d).
+ @param     group an int denoting the energy group of the neutron
+ @return    a randomly sampled distance in [0, infinity)
+*/
+double Material::sampleDistance(int group) {
+    return -log(urand()) / _sigma_t[group];
+}
+
+/*
+ @brief     function that samples the interaction type given an absorption
+            (0 = capture, 1 = fission)
+ @details   based on cross-sections, the interaction is sampled as capture
+            (0) or fission (1).
+ @param     group contains the energy group of the neutron
+ @return    an interaction type (0 = capture, 1 = fission)
+*/
+int Material::sampleFission(int group) {
+    int fission = urand() < _sigma_f[group] / _sigma_a[group];
+    return fission;
+}
+
+/*
+ @brief     samples the nunber of neutrons produced from a fission event
+ @return    number of neutrons emitted from the sampled fission event
+*/
+int Material::sampleNumFission() {
+    int lower = (int) _nu;
+    int add = (int) (urand() < _nu -lower);
+    return lower + add;
 }

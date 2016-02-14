@@ -9,14 +9,7 @@
 #define TALLY_H
 
 class Tally {
-private:
 
-    /** count stored in the tally */
-    double _tally_count;
-
-    /** sum of squares of tallied amounts */
-    double _tally_squared;
-    
 public:    
     Tally();
     virtual ~Tally();
@@ -25,6 +18,14 @@ public:
     void clear();
     double getCount();
     double getStandardDeviation(int n);
+
+private:
+
+    /** count stored in the tally */
+    double _tally_count;
+
+    /** sum of squares of tallied amounts */
+    double _tally_squared;
 };
 
 #endif

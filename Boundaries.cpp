@@ -45,3 +45,21 @@ float Boundaries::getSurfaceCoord(int axis, int side) {
 BoundaryType Boundaries::getSurfaceType(int axis, int side) {
     return _surfaces[axis*2+side]->getType();
 }
+
+/*
+ @brief     function that samples a random location within a bounding box.
+ @details   a point is randomly and uniformally sampled in the bounding box 
+            provided in the input.
+ @param     bounds a Boundaries object containing the limits of the
+            bounding box
+ @return    _dist_location a vector that contains the coordinates of a point
+*/
+std::vector <double> Boundaries::sampleLocation() {
+    std::vector <double> _dist_location(3);
+    for (int axis=0; axis<3; ++axis) {
+        double width = getSurfaceCoord(axis, MAX) - getSurfaceCoord(axis, MIN);
+        double coord = getSurfaceCoord(axis, MIN) + width * urand();
+        _dist_location[axis] = coord;
+    }
+    return _dist_location;
+}
