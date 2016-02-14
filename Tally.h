@@ -14,10 +14,10 @@ public:
     Tally();
     virtual ~Tally();
     
-    void add(double tally_addition);
     void clear();
     double getCount();
     double getStandardDeviation(int n);
+    Tally operator+=(double tally_addition);
 
 private:
 

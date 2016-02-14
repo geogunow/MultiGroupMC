@@ -243,7 +243,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                     if (bounds.getSurfaceType(axis, side) == 0) {
                         neutron.kill();
                         neutron_distance = tempd;
-                        tallies[LEAKS].add(1);
+                        tallies[LEAKS] += 1;
                     }
                 }
             }
@@ -299,7 +299,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
             else {
 
                 // tally absorption
-                tallies[ABSORPTIONS].add(1);
+                tallies[ABSORPTIONS] += 1;
 
                 // sample for fission event
                 group = neutron.getGroup();
@@ -313,7 +313,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                     // sample number of neutrons
                     for (int i=0; i<cell_mat->sampleNumFission(); ++i) {
                         new_fission_bank->push_back(neutron_position);
-                        tallies[FISSIONS].add(1);
+                        tallies[FISSIONS] += 1;
                     }
                 }
 
@@ -326,6 +326,6 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     // tally crow distance
     double crow_distance;
     crow_distance = neutron.getDistance(neutron_starting_point);
-    tallies[CROWS].add(crow_distance);
-    tallies[NUM_CROWS].add(1);
+    tallies[CROWS] += crow_distance;
+    tallies[NUM_CROWS] += 1;
 }
