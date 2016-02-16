@@ -54,7 +54,7 @@ BoundaryType Boundaries::getSurfaceType(int axis, int side) {
             bounding box
  @return    _dist_location a vector that contains the coordinates of a point
 */
-std::vector <double> Boundaries::sampleLocation() {
+std::vector <double> Boundaries::sampleLocation(Neutron* neutron) {
     std::vector <double> _dist_location(3);
     for (int axis=0; axis<3; ++axis) {
         double width = getSurfaceCoord(axis, MAX) - getSurfaceCoord(axis, MIN);

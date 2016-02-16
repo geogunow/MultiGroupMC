@@ -51,7 +51,8 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
         // simulate neutron behavior
         for (int i=0; i<n_histories; ++i) {
             transportNeutron(bounds, tallies, first_round,
-                    mesh, old_fission_bank, new_fission_bank, num_groups);
+                    mesh, old_fission_bank, new_fission_bank, num_groups,
+                    n_histories);
         }
 
         // give results
@@ -97,23 +98,29 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
 void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
         bool first_round, Mesh &mesh,
         std::vector <std::vector <double> >* old_fission_bank,
-        std::vector <std::vector <double> >* new_fission_bank, int num_groups) {
+        std::vector <std::vector <double> >* new_fission_bank, int num_groups,
+        int neutron_num) {
     const double TINY_MOVE = 1e-10;
     
-    // get neutron starting poinit
+    // new way to sample neutron and set its direction
+    Neutron neutron(neutron_num);
+    neutron.setRandomDirection();
+     
+    // get and set neutron starting poinit
     std::vector <double> neutron_starting_point;
     if (first_round) {
-        neutron_starting_point = bounds.sampleLocation();
+        neutron_starting_point = bounds.sampleLocation(&neutron);
     }
     else {
         neutron_starting_point = sampleFissionSite(*old_fission_bank);
     }
+    neutron.setPositionVector(neutron_starting_point);
 
-    // initialize neutron
+/*    // initialize neutron
     double theta = samplePolarAngle();
     double phi = sampleAzimuthalAngle();
-    Neutron neutron(neutron_starting_point, theta, phi);
-     
+    Neutron neutron(neutron_starting_point, theta, phi, neutron_num);
+*/
     // get mesh cell
     std::vector <double> neutron_direction;
     neutron_direction = neutron.getDirectionVector();
@@ -279,8 +286,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
             if (neutron_interaction == 0) {
 
                 // sample scattered direction
-                theta = samplePolarAngle();
-                phi = sampleAzimuthalAngle();
+                neutron.setRandomDirection();
 
                 // sample new energy group
                 int new_group;
@@ -292,7 +298,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                 neutron.setGroup(new_group);
 
                 // set new direction
-                neutron.setDirection(theta, phi);
+                //neutron.setDirection(theta, phi);
             }
 
             // absorption event

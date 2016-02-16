@@ -12,12 +12,12 @@
  @param     position a vector containing the starting position of the neutron
  @param     theta the polar angle of the neutron's initial direction
  @param     phi the azimuthal angle of the neutron's initial direction
+ @param     neutron_num to be saved as the neutron's id number
 */
-Neutron::Neutron(std::vector <double> &position, double theta, double phi) {
-    _xyz = position;
+Neutron::Neutron(int neutron_num) {
     _neutron_alive = true;
     _neutron_direction.resize(3);
-    setDirection(theta, phi);
+    _id = neutron_num;
 }
 
 /*
@@ -167,4 +167,40 @@ double Neutron::getDistance(std::vector <double> &coord) {
 */
 void Neutron::setGroup(int new_group) {
     _neutron_group = new_group;
+}
+
+/*
+  @brief    returns a uniform random number between 0 and 1
+  @return   a double in the range (0, 1)
+*/
+int Neutron::rand_r() {
+    //srand(_id);
+    return (double) rand() / (double) RAND_MAX;
+}
+
+/*
+ @brief     sets the neutron's direction to a random direction based on
+            the neutron's random number seed
+*/
+void Neutron::setRandomDirection() {
+
+    // sample azimuthal angle
+    double phi = 2 * M_PI * urand();
+
+    // sample polar angle
+    double cos_theta = 2 * urand() - 1.0;
+    double theta = acos(cos_theta);
+
+    // set diection
+    _neutron_direction[0] = sin(theta) * cos(phi);
+    _neutron_direction[1] = sin(theta) * sin(phi);
+    _neutron_direction[2] = cos(theta);
+}
+
+/*
+ @brief     sets the neutron's position
+ @param     position the position of the neutron
+*/
+void Neutron::setPositionVector(std::vector <double> &position) {
+    _xyz = position;
 }

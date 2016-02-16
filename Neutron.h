@@ -13,22 +13,25 @@
 #include <stdio.h>
 #include <math.h>
 #include <iostream>
+#include <time.h>
 
 #include "Distributions.h"
 #include "Surface.h"
 
 class Neutron {
 public:
-    Neutron(std::vector <double> &position, double theta, double phi);
+    Neutron(int neutron_num);
     virtual ~Neutron();
     void move(double distance);
     void reflect(int axis);
     void setDirection(double theta, double phi);
     void setPosition(int axis, double value);
+    void setPositionVector(std::vector <double> &position);
     void setCell(std::vector <int> &cell_number);
     void setGroup(int new_group);
     void kill();
     void changeCell(int axis, min_max side);
+    void setRandomDirection();
     double x();
     double y();
     double z();
@@ -37,6 +40,7 @@ public:
     double getDistance(std::vector <double> &coord);
     bool alive();
     int getGroup();
+    int rand_r();
     std::vector <int> getCell();
     std::vector <double> getPositionVector();
     std::vector <double> getDirectionVector();
@@ -57,6 +61,9 @@ private:
 
     /** cell of the neutron */
     std::vector <int> _neutron_cell;
+
+    /** identification number */
+    int _id;
 };
 
 #endif

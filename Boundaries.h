@@ -10,6 +10,7 @@
 
 #include "Surface.h"
 #include "Distributions.h"
+#include "Neutron.h"
 
 #include <vector>
 
@@ -22,7 +23,7 @@ public:
     float getSurfaceCoord(int axis, int side);
     BoundaryType getSurfaceType(int axis, int side);
     void setSurface(Axes axis, min_max side, Surface* surface);
-    std::vector <double> sampleLocation();
+    std::vector <double> sampleLocation(Neutron* neutron);
 
 private:
 
