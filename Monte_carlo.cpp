@@ -116,9 +116,6 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     }
     neutron.setPositionVector(neutron_starting_point);
     
-    //std::cout << "starting position " << neutron.getPosition(X) << " " 
-//    << neutron.getPosition(Y) << " " << neutron.getPosition(Z) << std::endl;
-
     // get mesh cell
     std::vector <double> neutron_direction;
     neutron_direction = neutron.getDirectionVector();

@@ -16,7 +16,6 @@
 #include "Neutron.h"
 
 // function declarations
-double urand();
 int sampleNeutronEnergyGroup(std::vector <double> chi, Neutron *neutron);
 int sampleScatteredGroup(std::vector <double> &scattering_matrix, int group,
         Neutron *neutron);
