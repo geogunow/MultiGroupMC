@@ -13,13 +13,14 @@
 #include <stdlib.h>
 #include <vector>
 
+#include "Neutron.h"
+
 // function declarations
 double urand();
-double sampleAzimuthalAngle();
-double samplePolarAngle();
-int sampleNeutronEnergyGroup(std::vector <double> chi);
-int sampleScatteredGroup(std::vector <double> &scattering_matrix, int group);
+int sampleNeutronEnergyGroup(std::vector <double> chi, Neutron *neutron);
+int sampleScatteredGroup(std::vector <double> &scattering_matrix, int group,
+        Neutron *neutron);
 std::vector <double> sampleFissionSite(
-        std::vector <std::vector <double> > &fission_bank);
+        std::vector <std::vector <double> > &fission_bank, Neutron *neutron);
 
 #endif

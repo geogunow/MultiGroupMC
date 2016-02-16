@@ -52,7 +52,7 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
         for (int i=0; i<n_histories; ++i) {
             transportNeutron(bounds, tallies, first_round,
                     mesh, old_fission_bank, new_fission_bank, num_groups,
-                    n_histories);
+                    i);
         }
 
         // give results
@@ -112,15 +112,13 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
         neutron_starting_point = bounds.sampleLocation(&neutron);
     }
     else {
-        neutron_starting_point = sampleFissionSite(*old_fission_bank);
+        neutron_starting_point = sampleFissionSite(*old_fission_bank, &neutron);
     }
     neutron.setPositionVector(neutron_starting_point);
+    
+    //std::cout << "starting position " << neutron.getPosition(X) << " " 
+//    << neutron.getPosition(Y) << " " << neutron.getPosition(Z) << std::endl;
 
-/*    // initialize neutron
-    double theta = samplePolarAngle();
-    double phi = sampleAzimuthalAngle();
-    Neutron neutron(neutron_starting_point, theta, phi, neutron_num);
-*/
     // get mesh cell
     std::vector <double> neutron_direction;
     neutron_direction = neutron.getDirectionVector();
@@ -129,8 +127,6 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     neutron.setCell(cell);
 
     // set neutron group
-    // making mat.getChi() accept a group parameter made this much more
-    // complicated
     Material* cell_mat;
     int group;
     cell_mat = mesh.getMaterial(cell);
@@ -138,7 +134,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     for (int g=0; g<num_groups; ++g) {
         chi[g] = cell_mat->getChi(g);
     }
-    group = sampleNeutronEnergyGroup(chi);
+    group = sampleNeutronEnergyGroup(chi, &neutron);
     neutron.setGroup(group);
     
     // follow neutron while it's alive
@@ -147,7 +143,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
         cell_mat = mesh.getMaterial(cell);
         group = neutron.getGroup();
         double neutron_distance;
-        neutron_distance = cell_mat->sampleDistance(group);
+        neutron_distance = cell_mat->sampleDistance(group, &neutron);
         std::vector <double> neutron_position;
     
         // track neutron until collision or leakage
@@ -280,7 +276,8 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
 
             // sample what the interaction will be
             int neutron_interaction;
-            neutron_interaction = cell_mat->sampleInteraction(group);
+            neutron_interaction = cell_mat->sampleInteraction(group, &neutron);
+
 
             // scattering event
             if (neutron_interaction == 0) {
@@ -292,13 +289,11 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                 int new_group;
                 std::vector <double> temp_sigma_s_group;
                 temp_sigma_s_group = cell_mat->getSigmaS(group);
-                new_group = sampleScatteredGroup(temp_sigma_s_group, group);
+                new_group = sampleScatteredGroup(temp_sigma_s_group, group,
+                        &neutron);
 
                 // set new group
                 neutron.setGroup(new_group);
-
-                // set new direction
-                //neutron.setDirection(theta, phi);
             }
 
             // absorption event
@@ -314,10 +309,10 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                 neutron_position = neutron.getPositionVector();
 
                 // fission event
-                if (cell_mat->sampleFission(group) == 1) {
+                if (cell_mat->sampleFission(group, &neutron) == 1) {
 
                     // sample number of neutrons
-                    for (int i=0; i<cell_mat->sampleNumFission(); ++i) {
+                    for (int i=0; i<cell_mat->sampleNumFission(&neutron); ++i) {
                         new_fission_bank->push_back(neutron_position);
                         tallies[FISSIONS] += 1;
                     }

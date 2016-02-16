@@ -10,41 +10,13 @@
 #include "Distributions.h"
 
 /*
-  @brief    returns a uniform random number between 0 and 1
-  @return   a double in the range (0, 1)
-*/
-double urand() {
-    return (double) rand() / (double) RAND_MAX;
-}
-
-/*
-  @brief    function that randomly samples an azimuthal angle                   
-  @details  an azimuthal angle is uniformally sampled in [0, 2 pi]              
-  @return   a randomly sampled angle in [0, 2pi] 
-*/
-double sampleAzimuthalAngle() {
-    return 2 * M_PI * urand();
-}
-
-/*
- @brief     function that randomly samples a polar angle
- @details   the cosine of the polar angle is uniformally sampled in [-1, 1]
-            and then transformed to the polar angle with an inverse cosine
- @return    a randomly sampled polar angle in [0, pi]
-*/
-double samplePolarAngle() {
-    double cos_theta = 2 * urand() - 1.0;
-    return acos(cos_theta);
-}
-
-/*
  @brief     samples a neutron position in the fission bank
  @param     fission_bank a Fission object containing neutron locations
  @return    sampled neutron location
 */
 std::vector <double> sampleFissionSite(
-        std::vector <std::vector <double> > &fission_bank) {
-    int index = rand() % fission_bank.size();
+        std::vector <std::vector <double> > &fission_bank, Neutron *neutron) {
+    int index = neutron->rand() % fission_bank.size();
     return fission_bank[index];
 }
 
@@ -53,8 +25,8 @@ std::vector <double> sampleFissionSite(
  @param     chi the neutron emission spectrum from fission
  @return    the group number of the emitted neutron
 */
-int sampleNeutronEnergyGroup(std::vector <double> chi) {
-    double r = urand();
+int sampleNeutronEnergyGroup(std::vector <double> chi, Neutron *neutron) {
+    double r = neutron->arand();
     double chi_sum = 0.0;
     for (int g=0; g<chi.size(); ++g) {
         chi_sum += chi[g];
@@ -71,7 +43,8 @@ int sampleNeutronEnergyGroup(std::vector <double> chi) {
  @param     group the neutron energy group before scattering
  @return    the neutron group after scattering
 */
-int sampleScatteredGroup(std::vector <double> &scattering_matrix, int group) {
+int sampleScatteredGroup(std::vector <double> &scattering_matrix, int group,
+        Neutron *neutron) {
 
     // get the total scattering cross-section from this group
     int num_groups = scattering_matrix.size();
@@ -80,7 +53,7 @@ int sampleScatteredGroup(std::vector <double> &scattering_matrix, int group) {
         scattering_total += scattering_matrix[g];
 
     // sample the outgoing scattered energy group
-    double r = urand() * scattering_total;
+    double r = neutron->arand() * scattering_total;
     double scatter_sum = 0.0;
     for (int g=0; g<num_groups; ++g) {
         scatter_sum += scattering_matrix[g];

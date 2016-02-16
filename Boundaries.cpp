@@ -58,7 +58,7 @@ std::vector <double> Boundaries::sampleLocation(Neutron* neutron) {
     std::vector <double> _dist_location(3);
     for (int axis=0; axis<3; ++axis) {
         double width = getSurfaceCoord(axis, MAX) - getSurfaceCoord(axis, MIN);
-        double coord = getSurfaceCoord(axis, MIN) + width * urand();
+        double coord = getSurfaceCoord(axis, MIN) + width * neutron->arand();
         _dist_location[axis] = coord;
     }
     return _dist_location;

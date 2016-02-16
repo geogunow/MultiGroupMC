@@ -18,6 +18,9 @@ Neutron::Neutron(int neutron_num) {
     _neutron_alive = true;
     _neutron_direction.resize(3);
     _id = neutron_num;
+    const int global_seed = 12;
+    _seed = _id + global_seed;
+    rand_r(&_seed);
 }
 
 /*
@@ -170,25 +173,16 @@ void Neutron::setGroup(int new_group) {
 }
 
 /*
-  @brief    returns a uniform random number between 0 and 1
-  @return   a double in the range (0, 1)
-*/
-int Neutron::rand_r() {
-    //srand(_id);
-    return (double) rand() / (double) RAND_MAX;
-}
-
-/*
  @brief     sets the neutron's direction to a random direction based on
             the neutron's random number seed
 */
 void Neutron::setRandomDirection() {
 
     // sample azimuthal angle
-    double phi = 2 * M_PI * urand();
+    double phi = 2 * M_PI * arand();
 
     // sample polar angle
-    double cos_theta = 2 * urand() - 1.0;
+    double cos_theta = 2 * arand() - 1.0;
     double theta = acos(cos_theta);
 
     // set diection
@@ -203,4 +197,21 @@ void Neutron::setRandomDirection() {
 */
 void Neutron::setPositionVector(std::vector <double> &position) {
     _xyz = position;
+}
+
+/*
+ @brief     returns a pseudo-random number using the seed between 0 and 1
+ @return    a psuedo-random number between 0 and 1
+*/
+double Neutron::arand() {
+    double r = rand_r(&_seed);
+    return (double) r / (double) RAND_MAX;
+}
+
+/*
+ @brief     returns a pseudo-random number using the seed
+ @return    a psuedo-random number
+*/
+int Neutron::rand() {
+    return rand_r(&_seed);
 }

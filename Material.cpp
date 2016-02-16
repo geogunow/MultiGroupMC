@@ -113,8 +113,8 @@ double Material::getSigmaA(int group) {
  @param     group an int denoting the energy group of the neutron 
  @return    an interaction type (0 = scattering, 1 = absorption)
 */
-int Material::sampleInteraction(int group) {
-    return (int) (urand() < _sigma_a[group] / _sigma_t[group]);
+int Material::sampleInteraction(int group, Neutron *neutron) {
+    return (int) (neutron->arand() < _sigma_a[group] / _sigma_t[group]);
 }
 
 /*
@@ -125,8 +125,8 @@ int Material::sampleInteraction(int group) {
  @param     group an int denoting the energy group of the neutron
  @return    a randomly sampled distance in [0, infinity)
 */
-double Material::sampleDistance(int group) {
-    return -log(urand()) / _sigma_t[group];
+double Material::sampleDistance(int group, Neutron *neutron) {
+    return -log(neutron->arand()) / _sigma_t[group];
 }
 
 /*
@@ -137,8 +137,8 @@ double Material::sampleDistance(int group) {
  @param     group contains the energy group of the neutron
  @return    an interaction type (0 = capture, 1 = fission)
 */
-int Material::sampleFission(int group) {
-    int fission = urand() < _sigma_f[group] / _sigma_a[group];
+int Material::sampleFission(int group, Neutron *neutron) {
+    int fission = neutron->arand() < _sigma_f[group] / _sigma_a[group];
     return fission;
 }
 
@@ -146,8 +146,8 @@ int Material::sampleFission(int group) {
  @brief     samples the nunber of neutrons produced from a fission event
  @return    number of neutrons emitted from the sampled fission event
 */
-int Material::sampleNumFission() {
+int Material::sampleNumFission(Neutron *neutron) {
     int lower = (int) _nu;
-    int add = (int) (urand() < _nu -lower);
+    int add = (int) (neutron->arand() < _nu -lower);
     return lower + add;
 }

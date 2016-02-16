@@ -14,8 +14,8 @@
 #include <math.h>
 #include <iostream>
 #include <time.h>
+#include <stdlib.h>
 
-#include "Distributions.h"
 #include "Surface.h"
 
 class Neutron {
@@ -38,9 +38,10 @@ public:
     double getPosition(int axis);
     double getDirection(int axis);
     double getDistance(std::vector <double> &coord);
+    double arand();
     bool alive();
     int getGroup();
-    int rand_r();
+    int rand();
     std::vector <int> getCell();
     std::vector <double> getPositionVector();
     std::vector <double> getDirectionVector();
@@ -64,6 +65,9 @@ private:
 
     /** identification number */
     int _id;
+
+    /** to be used in calling rand_r() */
+    unsigned int _seed;
 };
 
 #endif

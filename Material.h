@@ -15,6 +15,7 @@
 #include <stdlib.h>
 
 #include "Distributions.h"
+#include "Neutron.h"
 
 class Material {
 
@@ -31,10 +32,10 @@ public:
     double getSigmaA(int group);
     std::vector <double> getSigmaS(int group);
     double getNu();
-    int sampleInteraction(int group);
-    double sampleDistance(int group);
-    int sampleFission(int group);
-    int sampleNumFission();
+    int sampleInteraction(int group, Neutron *neutron);
+    double sampleDistance(int group, Neutron *neutron);
+    int sampleFission(int group, Neutron *neutron);
+    int sampleNumFission(Neutron *neutron);
 
 private:
 
