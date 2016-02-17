@@ -12,7 +12,6 @@
 #include <cmath>
 #include <stdio.h>
 #include <math.h>
-#include <iostream>
 #include <time.h>
 #include <stdlib.h>
 
@@ -22,9 +21,9 @@ class Neutron {
 public:
     Neutron(int neutron_num);
     virtual ~Neutron();
+
     void move(double distance);
     void reflect(int axis);
-    void setDirection(double theta, double phi);
     void setPosition(int axis, double value);
     void setPositionVector(std::vector <double> &position);
     void setCell(std::vector <int> &cell_number);
@@ -42,6 +41,9 @@ public:
     bool alive();
     int getGroup();
     int rand();
+    int sampleScatteredGroup(std::vector <double> &scattering_matrix,
+        int group);
+    int sampleNeutronEnergyGroup(std::vector <double> chi);
     std::vector <int> getCell();
     std::vector <double> getPositionVector();
     std::vector <double> getDirectionVector();

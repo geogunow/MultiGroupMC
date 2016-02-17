@@ -14,7 +14,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "Distributions.h"
 #include "Neutron.h"
 
 class Material {

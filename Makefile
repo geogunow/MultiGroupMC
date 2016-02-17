@@ -7,12 +7,12 @@ source = Boundaries.cpp
 source += Surface.cpp
 source += main.cpp
 source += Material.cpp
-source += Distributions.cpp
 source += Tally.cpp
 source += Neutron.cpp
 source += Mesh.cpp
 source += Monte_carlo.cpp
 source += Plotter.cpp
+source += Fission.cpp
 
 CC = g++
 

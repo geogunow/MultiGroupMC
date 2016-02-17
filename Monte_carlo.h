@@ -15,10 +15,10 @@
 #include <stdlib.h>
 #include <algorithm>
 
-#include "Distributions.h"
 #include "Tally.h"
 #include "Mesh.h"
 #include "Neutron.h"
+#include "Fission.h"
 
 enum tally_names {CROWS, NUM_CROWS, LEAKS, ABSORPTIONS, FISSIONS};
 enum fission_bank_names {OLD, NEW};
@@ -27,9 +27,7 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
         Mesh &mesh, int num_batches, int num_groups);
 
 void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
-        bool first_round, Mesh &mesh,
-        std::vector <std::vector <double> >* old_fission_bank,
-        std::vector <std::vector <double> >* new_fission_bank, int num_groups,
+        bool first_round, Mesh &mesh, Fission* fission_banks, int num_groups,
         int neutron_num);
 
 #endif

@@ -24,11 +24,7 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
 
     // create arrays for tallies and fissions
     std::vector <Tally> tallies(5);
-    std::vector <std::vector <double> >* old_fission_bank = 
-        new std::vector <std::vector <double> >;
-    std::vector <std::vector <double> >* new_fission_bank = 
-        new std::vector <std::vector <double> >;
-    std::vector <std::vector <double> >* temp_fission_bank;
+    Fission fission_banks;
     
     bool first_round = true;
 
@@ -38,10 +34,7 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
         mesh.fluxClear();
 
         // assign new fission locations to old fission locations
-        temp_fission_bank = old_fission_bank;
-        old_fission_bank = new_fission_bank;
-        new_fission_bank = temp_fission_bank;
-        new_fission_bank->clear();
+        fission_banks.newBatch();
 
         // clear tallies for leaks absorptions and fissions
         tallies[LEAKS].clear();
@@ -50,9 +43,8 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
 
         // simulate neutron behavior
         for (int i=0; i<n_histories; ++i) {
-            transportNeutron(bounds, tallies, first_round,
-                    mesh, old_fission_bank, new_fission_bank, num_groups,
-                    i);
+            transportNeutron(bounds, tallies, first_round, mesh, &fission_banks,
+                    num_groups, i);
         }
 
         // give results
@@ -68,9 +60,6 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
     double mean_crow_distance = tallies[CROWS].getCount()
         / tallies[NUM_CROWS].getCount();
     std::cout << "Mean crow fly distance = " << mean_crow_distance << std::endl;
-
-    delete old_fission_bank;
-    delete new_fission_bank;
 }
 
 /*
@@ -96,9 +85,7 @@ void generateNeutronHistories(int n_histories, Boundaries bounds,
  @param     num_groups the number of neutron energy groups
 */
 void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
-        bool first_round, Mesh &mesh,
-        std::vector <std::vector <double> >* old_fission_bank,
-        std::vector <std::vector <double> >* new_fission_bank, int num_groups,
+        bool first_round, Mesh &mesh, Fission* fission_banks, int num_groups,
         int neutron_num) {
     const double TINY_MOVE = 1e-10;
     
@@ -108,12 +95,10 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
      
     // get and set neutron starting poinit
     std::vector <double> neutron_starting_point;
-    if (first_round) {
+    if (first_round)
         neutron_starting_point = bounds.sampleLocation(&neutron);
-    }
-    else {
-        neutron_starting_point = sampleFissionSite(*old_fission_bank, &neutron);
-    }
+    else
+        neutron_starting_point = fission_banks->sampleSite(&neutron);
     neutron.setPositionVector(neutron_starting_point);
     
     // get mesh cell
@@ -131,7 +116,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     for (int g=0; g<num_groups; ++g) {
         chi[g] = cell_mat->getChi(g);
     }
-    group = sampleNeutronEnergyGroup(chi, &neutron);
+    group = neutron.sampleNeutronEnergyGroup(chi);
     neutron.setGroup(group);
     
     // follow neutron while it's alive
@@ -286,8 +271,8 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
                 int new_group;
                 std::vector <double> temp_sigma_s_group;
                 temp_sigma_s_group = cell_mat->getSigmaS(group);
-                new_group = sampleScatteredGroup(temp_sigma_s_group, group,
-                        &neutron);
+                new_group = neutron.sampleScatteredGroup(temp_sigma_s_group,
+                        group);
 
                 // set new group
                 neutron.setGroup(new_group);
@@ -310,7 +295,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
 
                     // sample number of neutrons
                     for (int i=0; i<cell_mat->sampleNumFission(&neutron); ++i) {
-                        new_fission_bank->push_back(neutron_position);
+                        fission_banks->add(neutron_position);
                         tallies[FISSIONS] += 1;
                     }
                 }
@@ -327,3 +312,18 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     tallies[CROWS] += crow_distance;
     tallies[NUM_CROWS] += 1;
 }
+
+
+/*
+   make an input file for openmoc
+  
+   I'll need Lattice() 
+   
+   look at sample input:   
+        pincell
+        simpleLattice
+
+   Simple grid 
+   rod_simulation
+ 
+*/

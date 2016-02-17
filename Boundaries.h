@@ -9,7 +9,6 @@
 #define BOUNDARIES_H
 
 #include "Surface.h"
-#include "Distributions.h"
 #include "Neutron.h"
 
 #include <vector>

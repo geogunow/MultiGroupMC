@@ -75,17 +75,6 @@ void Neutron::changeCell(int axis, min_max side) {
 }
 
 /*
- @brief     sets the neutron's direction of travel
- @param     theta the polar angle
- @param     phi the azimuthal angle
-*/
-void Neutron::setDirection(double theta, double phi) {
-    _neutron_direction[0] = sin(theta) * cos(phi);
-    _neutron_direction[1] = sin(theta) * sin(phi);
-    _neutron_direction[2] = cos(theta);
-}
-
-/*
  @brief     sets the neutron's position along an axis
  @param     axis the axis along which the position will be set
  @param     value the value to which the position will be set
@@ -181,14 +170,13 @@ void Neutron::setRandomDirection() {
     // sample azimuthal angle
     double phi = 2 * M_PI * arand();
 
-    // sample polar angle
-    double cos_theta = 2 * arand() - 1.0;
-    double theta = acos(cos_theta);
+    // sample cosine of the polar angle
+    double mu = 2 * arand() - 1.0;
 
     // set diection
-    _neutron_direction[0] = sin(theta) * cos(phi);
-    _neutron_direction[1] = sin(theta) * sin(phi);
-    _neutron_direction[2] = cos(theta);
+    _neutron_direction[0] = sqrt(1 - mu*mu) * cos(phi);
+    _neutron_direction[1] = sqrt(1 - mu*mu) * sin(phi);
+    _neutron_direction[2] = mu;
 }
 
 /*
@@ -214,4 +202,50 @@ double Neutron::arand() {
 */
 int Neutron::rand() {
     return rand_r(&_seed);
+}
+
+/*
+ @brief     samples the neutron energy group after a scattering event
+ @param     scattering_matrix the scattering cross section matrix
+ @param     group the neutron energy group before scattering
+ @return    the neutron group after scattering
+*/
+int Neutron::sampleScatteredGroup(std::vector <double> &scattering_matrix,
+        int group) {
+
+    // get the total scattering cross-section from this group
+    int num_groups = scattering_matrix.size();
+    double scattering_total = 0;
+    for (int g=0; g < num_groups; ++g)
+        scattering_total += scattering_matrix[g];
+
+    // sample the outgoing scattered energy group
+    double r = arand() * scattering_total;
+    double scatter_sum = 0.0;
+    for (int g=0; g<num_groups; ++g) {
+        scatter_sum += scattering_matrix[g];
+        if (r<scatter_sum) {
+            return g;
+        }
+    }
+
+    // return the last group if no group has been found yet 
+    return num_groups - 1;
+}
+
+/*
+ @brief     samples an initial neutron energy group after fission
+ @param     chi the neutron emission spectrum from fission
+ @return    the group number of the emitted neutron
+*/
+int Neutron::sampleNeutronEnergyGroup(std::vector <double> chi) {
+    double r = arand();
+    double chi_sum = 0.0;
+    for (int g=0; g<chi.size(); ++g) {
+        chi_sum += chi[g];
+        if (r<chi_sum) {
+            return g;
+        }
+    }
+    return chi.size() - 1;
 }
