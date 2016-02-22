@@ -22,28 +22,28 @@ public:
     Neutron(int neutron_num);
     virtual ~Neutron();
 
+    void changeCell(int axis, min_max side);
+    void kill();
     void move(double distance);
     void reflect(int axis);
-    void setPosition(int axis, double value);
-    void setPositionVector(std::vector <double> &position);
     void setCell(std::vector <int> &cell_number);
     void setGroup(int new_group);
-    void kill();
-    void changeCell(int axis, min_max side);
-    void setRandomDirection();
+    void setPosition(int axis, double value);
+    void setPositionVector(std::vector <double> &position);
+    void sampleDirection();
+    double arand();
+    double getDirection(int axis);
+    double getDistance(std::vector <double> &coord);
+    double getPosition(int axis);
     double x();
     double y();
     double z();
-    double getPosition(int axis);
-    double getDirection(int axis);
-    double getDistance(std::vector <double> &coord);
-    double arand();
     bool alive();
     int getGroup();
     int rand();
-    int sampleScatteredGroup(std::vector <double> &scattering_matrix,
-        int group);
     int sampleNeutronEnergyGroup(std::vector <double> chi);
+    int sampleScatteredGroup(std::vector <double> &scattering_matrix,
+            int group);
     std::vector <int> getCell();
     std::vector <double> getPositionVector();
     std::vector <double> getDirectionVector();

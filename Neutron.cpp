@@ -165,7 +165,7 @@ void Neutron::setGroup(int new_group) {
  @brief     sets the neutron's direction to a random direction based on
             the neutron's random number seed
 */
-void Neutron::setRandomDirection() {
+void Neutron::sampleDirection() {
 
     // sample azimuthal angle
     double phi = 2 * M_PI * arand();

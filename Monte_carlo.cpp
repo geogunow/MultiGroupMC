@@ -91,7 +91,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     
     // new way to sample neutron and set its direction
     Neutron neutron(neutron_num);
-    neutron.setRandomDirection();
+    neutron.sampleDirection();
      
     // get and set neutron starting poinit
     std::vector <double> neutron_starting_point;
@@ -265,7 +265,7 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
             if (neutron_interaction == 0) {
 
                 // sample scattered direction
-                neutron.setRandomDirection();
+                neutron.sampleDirection();
 
                 // sample new energy group
                 int new_group;
@@ -312,18 +312,3 @@ void transportNeutron(Boundaries bounds, std::vector <Tally> &tallies,
     tallies[CROWS] += crow_distance;
     tallies[NUM_CROWS] += 1;
 }
-
-
-/*
-   make an input file for openmoc
-  
-   I'll need Lattice() 
-   
-   look at sample input:   
-        pincell
-        simpleLattice
-
-   Simple grid 
-   rod_simulation
- 
-*/
